@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUZL — Designer &amp; PM Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f0e8;
+    --yellow: #FFE134;
+    --red: #FF3B2F;
+    --green: #00C853;
+    --blue: #1A6EFF;
+    --border: 3px solid var(--black);
+    --shadow: 5px 5px 0px var(--black);
+    --shadow-lg: 8px 8px 0px var(--black);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--white); font-family: 'DM Sans', sans-serif; color: var(--black); min-height: 100vh; overflow-x: hidden; }
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+  .ticker-wrap { background: var(--black); color: var(--yellow); font-family: 'Space Mono', monospace; font-size: 13px; overflow: hidden; white-space: nowrap; padding: 8px 0; }
+  .ticker-inner { display: inline-block; animation: ticker 28s linear infinite; }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .ticker-sep { margin: 0 24px; opacity: 0.4; }
+  .landing-grid { display: grid; grid-template-columns: 1fr 1fr; flex: 1; }
+  .landing-left { padding: 60px 56px; border-right: var(--border); display: flex; flex-direction: column; justify-content: space-between; }
+  .badge { display: inline-block; background: var(--yellow); border: var(--border); font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; padding: 6px 12px; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: var(--shadow); width: fit-content; }
+  .landing-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px, 9vw, 130px); line-height: 0.92; margin: 32px 0 24px; }
+  .landing-title .accent { color: var(--red); }
+  .landing-sub { font-size: 18px; line-height: 1.5; max-width: 420px; color: #333; margin-bottom: 40px; }
+  .stats-row { display: flex; gap: 24px; margin-bottom: 48px; }
+  .stat-box { border: var(--border); padding: 16px 20px; box-shadow: var(--shadow); }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 42px; line-height: 1; }
+  .stat-label { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; color: #555; }
+  .btn-start { background: var(--black); color: var(--yellow); border: var(--border); padding: 20px 40px; font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.04em; cursor: pointer; box-shadow: var(--shadow-lg); transition: transform 0.12s, box-shadow 0.12s; display: inline-block; }
+  .btn-start:hover { transform: translate(-3px, -3px); box-shadow: 11px 11px 0 var(--black); }
+  .btn-start:active { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--black); }
+  .landing-right { display: flex; flex-direction: column; }
+  .category-list { padding: 48px; flex: 1; }
+  .category-list h3 { font-family: 'Space Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px; color: #666; }
+  .category-item { display: flex; align-items: center; gap: 16px; padding: 18px 20px; border: var(--border); margin-bottom: 12px; box-shadow: var(--shadow); transition: transform 0.1s, box-shadow 0.1s; }
+  .category-item:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
+  .cat-icon { width: 40px; height: 40px; border: var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; background: var(--yellow); }
+  .cat-name { font-weight: 700; font-size: 15px; }
+  .cat-count { font-family: 'Space Mono', monospace; font-size: 11px; color: #777; margin-top: 2px; }
+  .bottom-bar { border-top: var(--border); padding: 20px 48px; background: var(--black); color: var(--white); font-family: 'Space Mono', monospace; font-size: 12px; display: flex; gap: 32px; }
+  .quiz-header { border-bottom: var(--border); padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; background: var(--black); }
+  .quiz-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--yellow); letter-spacing: 0.05em; }
+  .progress-wrap { flex: 1; max-width: 400px; margin: 0 48px; }
+  .progress-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--white); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .progress-track { height: 12px; background: #333; border: 2px solid #555; }
+  .progress-fill { height: 100%; background: var(--yellow); transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .score-chip { font-family: 'Bebas Neue', sans-serif; font-size: 22px; background: var(--yellow); border: 2px solid var(--white); padding: 6px 16px; color: var(--black); }
+  .quiz-body { flex: 1; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
+  .scenario-panel { padding: 52px 56px; border-right: var(--border); display: flex; flex-direction: column; gap: 24px; position: relative; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .scenario-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .category-tag { font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border: 2px solid var(--black); background: var(--yellow); }
+  .difficulty-tag { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 10px; border: 2px solid var(--black); }
+  .diff-easy { background: #d4f7d4; }
+  .diff-medium { background: #fff3cc; }
+  .diff-hard { background: #ffd6d4; }
+  .scenario-q-num { font-family: 'Bebas Neue', sans-serif; font-size: 72px; line-height: 1; color: #ddd; position: absolute; right: 56px; top: 52px; pointer-events: none; }
+  .scenario-context { font-family: 'Space Mono', monospace; font-size: 12px; background: var(--black); color: var(--yellow); padding: 16px 20px; line-height: 1.6; border: var(--border); }
+  .scenario-pm-says { border: var(--border); box-shadow: var(--shadow); }
+  .pm-label { background: var(--red); color: var(--white); font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 6px 14px; display: flex; align-items: center; gap: 8px; }
+  .pm-avatar { width: 20px; height: 20px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .pm-text { padding: 20px; font-size: 17px; font-weight: 500; line-height: 1.55; font-style: italic; }
+  .scenario-question { font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1.1; letter-spacing: 0.02em; }
+  .options-panel { padding: 52px 48px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .options-label { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-bottom: 4px; }
+  .option-btn { border: var(--border); padding: 18px 20px; background: var(--white); cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.45; box-shadow: var(--shadow); transition: transform 0.12s, box-shadow 0.12s, background 0.15s; display: flex; gap: 14px; align-items: flex-start; animation: slideUp 0.3s ease both; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .option-btn:nth-child(2) { animation-delay: 0.06s; }
+  .option-btn:nth-child(3) { animation-delay: 0.12s; }
+  .option-btn:nth-child(4) { animation-delay: 0.18s; }
+  .option-btn:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); background: #fffbe6; }
+  .option-btn:disabled { cursor: default; }
+  .option-letter { font-family: 'Bebas Neue', sans-serif; font-size: 24px; line-height: 1; flex-shrink: 0; width: 28px; color: #aaa; transition: color 0.15s; }
+  .option-btn:hover:not(:disabled) .option-letter { color: var(--black); }
+  .option-btn.correct { background: #d4f7d4; border-color: var(--green); box-shadow: 5px 5px 0 var(--green); transform: none; }
+  .option-btn.correct .option-letter { color: var(--green); }
+  .option-btn.wrong { background: #ffd6d4; border-color: var(--red); box-shadow: 5px 5px 0 var(--red); transform: none; }
+  .option-btn.wrong .option-letter { color: var(--red); }
+  .option-btn.reveal-best { background: #e6f0ff; border-color: var(--blue); box-shadow: 5px 5px 0 var(--blue); }
+  .option-btn.reveal-best .option-letter { color: var(--blue); }
+  .feedback-box { display: none; border: var(--border); padding: 20px; margin-top: 8px; background: var(--white); }
+  .feedback-box.show { display: block; }
+  .feedback-verdict { font-family: 'Bebas Neue', sans-serif; font-size: 22px; margin-bottom: 8px; }
+  .feedback-verdict.win { color: var(--green); }
+  .feedback-verdict.lose { color: var(--red); }
+  .feedback-text { font-size: 14px; line-height: 1.55; color: #333; }
+  .tip-tag { display: inline-block; margin-top: 10px; font-family: 'Space Mono', monospace; font-size: 10px; background: var(--yellow); border: 2px solid var(--black); padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .btn-next { margin-top: 8px; background: var(--black); color: var(--yellow); border: var(--border); padding: 16px 32px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.04em; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.12s, box-shadow 0.12s; display: none; align-self: flex-start; }
+  .btn-next:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
+  .btn-next.show { display: inline-block; }
+  #screen-results { background: var(--black); color: var(--white); align-items: center; justify-content: center; text-align: center; padding: 60px 40px; position: relative; overflow: hidden; }
+  .results-bg-text { position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: 300px; color: rgba(255,255,255,0.03); pointer-events: none; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; }
+  .results-inner { position: relative; z-index: 1; max-width: 700px; width: 100%; }
+  .results-label { font-family: 'Space Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: #888; margin-bottom: 20px; }
+  .results-grade { font-family: 'Bebas Neue', sans-serif; font-size: clamp(100px, 18vw, 180px); line-height: 0.9; margin-bottom: 8px; }
+  .results-score-line { font-family: 'Space Mono', monospace; font-size: 18px; color: var(--yellow); margin-bottom: 32px; }
+  .results-title { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 0.03em; margin-bottom: 12px; }
+  .results-desc { font-size: 16px; line-height: 1.6; color: #aaa; max-width: 500px; margin: 0 auto 48px; }
+  .category-breakdown { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 48px; }
+  .cat-score-box { border: 2px solid #333; padding: 16px 12px; text-align: center; }
+  .cat-score-icon { font-size: 22px; margin-bottom: 8px; }
+  .cat-score-pct { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--yellow); }
+  .cat-score-name { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; color: #666; margin-top: 4px; line-height: 1.4; }
+  .results-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-retry { background: var(--yellow); color: var(--black); border: 2px solid var(--yellow); padding: 18px 36px; font-family: 'Bebas Neue', sans-serif; font-size: 24px; cursor: pointer; box-shadow: 5px 5px 0 #cbb800; transition: transform 0.12s, box-shadow 0.12s; }
+  .btn-retry:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 #cbb800; }
+  .btn-home { background: transparent; color: var(--white); border: 2px solid #555; padding: 18px 36px; font-family: 'Bebas Neue', sans-serif; font-size: 24px; cursor: pointer; transition: border-color 0.15s; }
+  .btn-home:hover { border-color: var(--white); }
+  .btn-switch { background: transparent; color: var(--white); border: 2px solid #333; padding: 18px 36px; font-family: 'Bebas Neue', sans-serif; font-size: 24px; cursor: pointer; transition: border-color 0.15s, color 0.15s; letter-spacing: 0.04em; }
+  .btn-switch:hover { border-color: var(--yellow); color: var(--yellow); }
+  .btn-switch-role { background: transparent; color: #666; border: 2px solid #444; padding: 6px 14px; font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; transition: border-color 0.15s, color 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .btn-switch-role:hover { border-color: var(--yellow); color: var(--yellow); }
+
+  /* ---- FILTER BAR ---- */
+  .filter-bar {
+    border-bottom: var(--border);
+    background: var(--white);
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+    white-space: nowrap;
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 12px 18px;
+    border: none;
+    border-right: var(--border);
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #666;
+    flex-shrink: 0;
+  }
+  .filter-btn:first-of-type { border-left: var(--border); }
+  .filter-btn:hover { background: #fffbe6; color: var(--black); }
+  .filter-btn.active { background: var(--black); color: var(--yellow); }
+
+  /* ---- QUESTION DRAWER ---- */
+  .drawer-toggle {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--black);
+    color: var(--yellow);
+    border: var(--border);
+    border-right: none;
+    padding: 12px 8px;
+    cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    z-index: 100;
+    box-shadow: -3px 0 0 var(--black);
+    transition: background 0.12s;
+    display: none;
+  }
+  .drawer-toggle.visible { display: block; }
+  .drawer-toggle:hover { background: #222; }
+
+  .question-drawer {
+    position: fixed;
+    right: -320px;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background: var(--white);
+    border-left: var(--border);
+    z-index: 99;
+    transition: right 0.25s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -5px 0 0 var(--black);
+  }
+  .question-drawer.open { right: 0; }
+
+  .drawer-header {
+    background: var(--black);
+    color: var(--yellow);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .drawer-close {
+    background: none;
+    border: 2px solid #555;
+    color: var(--white);
+    cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    padding: 4px 10px;
+    transition: border-color 0.12s;
+  }
+  .drawer-close:hover { border-color: var(--yellow); color: var(--yellow); }
+
+  .drawer-filter {
+    padding: 12px 16px;
+    border-bottom: var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .drawer-filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 8px;
+    border: 2px solid var(--black);
+    background: var(--white);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .drawer-filter-btn:hover { background: #fffbe6; }
+  .drawer-filter-btn.active { background: var(--black); color: var(--yellow); }
+
+  .drawer-grid {
+    overflow-y: auto;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    align-content: start;
+  }
+  .q-dot {
+    aspect-ratio: 1;
+    border: 2px solid var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--white);
+    transition: background 0.1s, transform 0.1s;
+    color: var(--black);
+    position: relative;
+  }
+  .q-dot:hover { background: #fffbe6; transform: translate(-1px,-1px); box-shadow: 2px 2px 0 var(--black); }
+  .q-dot.current { background: var(--black); color: var(--yellow); }
+  .q-dot.answered-correct { background: #d4f7d4; border-color: var(--green); }
+  .q-dot.answered-wrong { background: #ffd6d4; border-color: var(--red); }
+  .q-dot.hidden { opacity: 0.2; pointer-events: none; }
+  .q-dot.locked {
+    background: var(--white);
+    border-color: #bbb;
+    border-style: dashed;
+    color: #999;
+    cursor: pointer;
+    position: relative;
+  }
+  .q-dot.locked:hover { background: #fff8e6; border-color: var(--black); color: var(--black); box-shadow: 2px 2px 0 var(--black); transform: translate(-1px,-1px); }
+  .q-dot.locked::after {
+    content: '🔒';
+    position: absolute;
+    font-size: 7px;
+    bottom: 1px;
+    right: 1px;
+    line-height: 1;
+  }
+
+  .drawer-legend {
+    padding: 12px 16px;
+    border-top: var(--border);
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #666;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--black);
+    flex-shrink: 0;
+  }
+  .legend-dot.correct { background: #d4f7d4; border-color: var(--green); }
+  .legend-dot.wrong { background: #ffd6d4; border-color: var(--red); }
+  .legend-dot.current { background: var(--black); }
+  .legend-dot.unanswered { background: var(--white); }
+  /* ---- ROLE SELECTOR ---- */
+  .role-selector { flex: 1; display: grid; grid-template-columns: 1fr 1fr; }
+  .role-card { padding: 64px 56px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: background 0.15s; position: relative; overflow: hidden; }
+  .role-card:first-child { border-right: var(--border); }
+  .role-card.designer-card:hover { background: #fffde6; }
+  .role-card.pm-card { background: var(--black); color: var(--white); }
+  .role-card.pm-card:hover { background: #111; }
+  .role-eyebrow { font-family: "Space Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-bottom: 16px; }
+  .pm-card .role-eyebrow { color: #666; }
+  .role-title { font-family: "Bebas Neue", sans-serif; font-size: clamp(52px, 6vw, 90px); line-height: 0.9; margin-bottom: 24px; }
+  .designer-card .role-title { color: var(--black); }
+  .pm-card .role-title { color: var(--yellow); }
+  .role-desc { font-size: 16px; line-height: 1.55; max-width: 380px; margin-bottom: 32px; }
+  .designer-card .role-desc { color: #444; }
+  .pm-card .role-desc { color: #aaa; }
+  .role-stats { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+  .role-stat { border: var(--border); padding: 12px 16px; box-shadow: var(--shadow); }
+  .pm-card .role-stat { border-color: #444; box-shadow: 5px 5px 0 #333; }
+  .role-stat-num { font-family: "Bebas Neue", sans-serif; font-size: 32px; line-height: 1; }
+  .designer-card .role-stat-num { color: var(--black); }
+  .pm-card .role-stat-num { color: var(--yellow); }
+  .role-stat-label { font-family: "Space Mono", monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-top: 2px; }
+  .btn-role { border: var(--border); padding: 18px 28px; font-family: "Bebas Neue", sans-serif; font-size: 22px; letter-spacing: 0.04em; cursor: pointer; box-shadow: var(--shadow-lg); transition: transform 0.12s, box-shadow 0.12s; width: 100%; display: block; text-align: center; }
+  .designer-card .btn-role { background: var(--black); color: var(--yellow); }
+  .pm-card .btn-role { background: var(--yellow); color: var(--black); border-color: var(--yellow); box-shadow: 8px 8px 0 #cbb800; }
+  .btn-role:hover { transform: translate(-3px,-3px); box-shadow: 11px 11px 0 var(--black); }
+  .pm-card .btn-role:hover { box-shadow: 11px 11px 0 #cbb800; }
+  .role-bg-num { position: absolute; font-family: "Bebas Neue", sans-serif; font-size: 280px; line-height: 1; pointer-events: none; bottom: -20px; right: -10px; opacity: 0.04; }
+  .designer-card .role-bg-num { color: var(--black); }
+  .pm-card .role-bg-num { color: var(--white); }
+  .role-footer { font-family: "Space Mono", monospace; font-size: 11px; color: #999; margin-top: 24px; }
+  .pm-card .role-footer { color: #555; }
+
+  /* PM mode accent */
+  body.pm-mode .quiz-header { background: #1a1a2e; }
+  body.pm-mode .quiz-logo { color: #a78bfa; }
+  body.pm-mode .progress-fill { background: #a78bfa; }
+  body.pm-mode .score-chip { background: #a78bfa; color: var(--white); }
+  body.pm-mode .pm-label { background: #2563eb; }
+  body.pm-mode .category-tag { background: #e0d9ff; }
+  body.pm-mode .filter-btn.active { background: #1a1a2e; color: #a78bfa; }
+  body.pm-mode .tip-tag { background: #e0d9ff; }
+  body.pm-mode .drawer-toggle { background: #1a1a2e; color: #a78bfa; }
+  body.pm-mode .drawer-header { background: #1a1a2e; color: #a78bfa; }
+  body.pm-mode .q-dot.current { background: #1a1a2e; color: #a78bfa; }
+  body.pm-mode .btn-next { background: #1a1a2e; color: #a78bfa; }
+  body.pm-mode .option-btn:hover:not(:disabled) { background: #f0ecff; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 860px) {
+    .role-selector { grid-template-columns: 1fr; }
+    .role-card { padding: 44px 28px; min-height: auto; }
+    .role-card:first-child { border-right: none; border-bottom: var(--border); }
+    .role-title { font-size: clamp(52px, 14vw, 80px); margin-bottom: 16px; }
+    .role-desc { font-size: 15px; margin-bottom: 24px; max-width: 100%; }
+    .role-stats { gap: 10px; margin-bottom: 24px; }
+    .role-stat { padding: 10px 14px; }
+    .role-stat-num { font-size: 26px; }
+    .btn-role { font-size: 20px; padding: 16px 24px; }
+    .role-bg-num { font-size: 180px; }
+    .role-footer { margin-top: 20px; }
+    .quiz-header { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+    .quiz-logo { font-size: 20px; order: 1; }
+    .score-chip { font-size: 16px; padding: 4px 12px; order: 2; margin-left: auto; }
+    .progress-wrap { order: 3; flex: 0 0 100%; margin: 0; max-width: 100%; }
+    .progress-label { font-size: 10px; }
+    .filter-bar { padding: 0; }
+    .filter-label { display: none; }
+    .filter-btn { padding: 10px 11px; font-size: 10px; }
+    #screen-quiz { min-height: 100vh; height: auto; }
+    .quiz-body { grid-template-columns: 1fr; overflow: visible; }
+    .scenario-panel { border-right: none; border-bottom: var(--border); padding: 24px 20px; gap: 16px; overflow-y: visible; }
+    .options-panel { padding: 20px; gap: 12px; overflow-y: visible; }
+    .scenario-q-num { display: none; }
+    .scenario-context { font-size: 11px; padding: 12px 14px; }
+    .pm-text { font-size: 15px; padding: 14px; }
+    .scenario-question { font-size: 22px; }
+    .option-btn { padding: 14px 16px; font-size: 14px; gap: 10px; }
+    .option-letter { font-size: 20px; width: 22px; }
+    .feedback-box { padding: 16px; }
+    .feedback-verdict { font-size: 18px; }
+    .feedback-text { font-size: 13px; }
+    .btn-next { font-size: 18px; padding: 14px 24px; width: 100%; text-align: center; }
+    #screen-results { padding: 40px 20px; }
+    .results-grade { font-size: clamp(80px, 22vw, 140px); }
+    .results-title { font-size: 28px; }
+    .results-score-line { font-size: 14px; }
+    .results-desc { font-size: 14px; margin-bottom: 28px; }
+    .category-breakdown { grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 28px; }
+    .cat-score-box { padding: 12px 8px; }
+    .cat-score-pct { font-size: 24px; }
+    .cat-score-name { font-size: 8px; }
+    .results-btns { flex-direction: column; align-items: center; gap: 12px; }
+    .btn-retry, .btn-home, .btn-switch { width: 100%; max-width: 320px; text-align: center; font-size: 20px; padding: 16px 24px; }
+    .btn-switch-role { font-size: 9px; padding: 5px 10px; }
+    .question-drawer { width: 260px; right: -280px; }
+    .drawer-grid { grid-template-columns: repeat(5, 1fr); }
+    .drawer-toggle { padding: 10px 6px; font-size: 11px; }
+  }
+
+  @media (max-width: 480px) {
+    .role-card { padding: 32px 20px; }
+    .role-title { font-size: 48px; }
+    .role-desc { font-size: 14px; }
+    .btn-role { font-size: 18px; padding: 14px 20px; }
+    .role-stat-num { font-size: 22px; }
+    .role-stat { padding: 8px 12px; }
+    .category-breakdown { grid-template-columns: repeat(2, 1fr); }
+    .filter-btn { padding: 10px 8px; font-size: 9px; }
+    .quiz-logo { font-size: 16px; }
+    .scenario-panel { padding: 20px 16px; }
+    .options-panel { padding: 16px; }
+    .results-bg-text { font-size: 180px; }
+  }
+
+  /* ---- LOGIN SCREEN ---- */
+  #screen-login {
+    background: var(--black);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .login-bg {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 340px;
+    color: rgba(255,255,255,0.025);
+    pointer-events: none;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .login-box {
+    position: relative;
+    z-index: 1;
+    background: var(--white);
+    border: var(--border);
+    box-shadow: 10px 10px 0 var(--yellow);
+    padding: 48px 48px 40px;
+    width: 100%;
+    max-width: 440px;
+  }
+  .login-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #888;
+    margin-bottom: 8px;
+  }
+  .login-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 0.95;
+    margin-bottom: 32px;
+    color: var(--black);
+  }
+  .login-title span { color: var(--red); }
+  .login-field { margin-bottom: 20px; }
+  .login-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #555;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .login-input {
+    width: 100%;
+    border: var(--border);
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    background: var(--white);
+    color: var(--black);
+    outline: none;
+    box-shadow: 3px 3px 0 var(--black);
+    transition: box-shadow 0.12s;
+  }
+  .login-input:focus { box-shadow: 5px 5px 0 var(--black); }
+  .login-error {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    margin-bottom: 16px;
+    display: none;
+    padding: 8px 12px;
+    border: 2px solid var(--red);
+    background: #fff0ef;
+  }
+  .login-error.show { display: block; }
+  .btn-login {
+    width: 100%;
+    background: var(--black);
+    color: var(--yellow);
+    border: var(--border);
+    padding: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.12s, box-shadow 0.12s;
+    margin-top: 8px;
+  }
+  .btn-login:hover { transform: translate(-2px,-2px); box-shadow: 10px 10px 0 var(--black); }
+  .login-footer {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #888;
+    margin-top: 24px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .login-back {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 16px;
+    display: block;
+    text-align: center;
+  }
+  .login-back:hover { color: var(--black); }
+
+  /* ---- WAITLIST SCREEN ---- */
+  #screen-waitlist {
+    background: var(--black);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .waitlist-bg {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 300px;
+    color: rgba(255,225,52,0.04);
+    pointer-events: none;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .waitlist-box {
+    position: relative;
+    z-index: 1;
+    background: var(--white);
+    border: var(--border);
+    box-shadow: 10px 10px 0 var(--yellow);
+    padding: 48px 48px 40px;
+    width: 100%;
+    max-width: 480px;
+  }
+  .waitlist-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #888;
+    margin-bottom: 8px;
+  }
+  .waitlist-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 0.95;
+    margin-bottom: 12px;
+    color: var(--black);
+  }
+  .waitlist-title span { color: var(--red); }
+  .waitlist-desc {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.55;
+    margin-bottom: 28px;
+  }
+  .waitlist-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .waitlist-field { margin-bottom: 16px; }
+  .waitlist-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #555;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .waitlist-input, .waitlist-select {
+    width: 100%;
+    border: var(--border);
+    padding: 13px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    background: var(--white);
+    color: var(--black);
+    outline: none;
+    box-shadow: 3px 3px 0 var(--black);
+    transition: box-shadow 0.12s;
+    appearance: none;
+  }
+  .waitlist-input:focus, .waitlist-select:focus { box-shadow: 5px 5px 0 var(--black); }
+  .waitlist-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230a0a0a' stroke-width='2' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+  .waitlist-error {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    margin-bottom: 16px;
+    display: none;
+    padding: 8px 12px;
+    border: 2px solid var(--red);
+    background: #fff0ef;
+  }
+  .waitlist-error.show { display: block; }
+  .btn-waitlist {
+    width: 100%;
+    background: var(--black);
+    color: var(--yellow);
+    border: var(--border);
+    padding: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.12s, box-shadow 0.12s;
+    margin-top: 8px;
+  }
+  .btn-waitlist:hover { transform: translate(-2px,-2px); box-shadow: 10px 10px 0 var(--black); }
+  .waitlist-success {
+    display: none;
+    text-align: center;
+    padding: 8px 0 16px;
+  }
+  .waitlist-success.show { display: block; }
+  .waitlist-success-icon { font-size: 48px; margin-bottom: 12px; }
+  .waitlist-success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--green);
+  }
+  .waitlist-success-msg {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .waitlist-back {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 16px;
+    display: block;
+    text-align: center;
+  }
+  .waitlist-back:hover { color: var(--black); }
+  .waitlist-count {
+    display: inline-block;
+    background: var(--yellow);
+    border: var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    margin-bottom: 20px;
+    letter-spacing: 0.06em;
+  }
+  @media (max-width: 600px) {
+    .waitlist-row { grid-template-columns: 1fr; gap: 0; }
+    .waitlist-box { padding: 32px 24px; }
+  }
+
+  /* ---- DASHBOARD SCREEN ---- */
+  #screen-dashboard {
+    background: var(--white);
+  }
+  .dashboard-header {
+    background: var(--black);
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--border);
+  }
+  .dashboard-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--yellow);
+    letter-spacing: 0.05em;
+  }
+  .dashboard-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .user-chip {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .user-avatar {
+    width: 28px; height: 28px;
+    background: var(--yellow);
+    border: 2px solid var(--yellow);
+    border-radius: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    color: var(--black);
+  }
+  .btn-logout {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: none;
+    border: 2px solid #444;
+    color: #888;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .btn-logout:hover { border-color: var(--red); color: var(--red); }
+  .dashboard-body {
+    padding: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .dashboard-welcome {
+    grid-column: 1 / -1;
+  }
+  .dashboard-welcome h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    line-height: 0.95;
+    margin-bottom: 12px;
+  }
+  .dashboard-welcome h1 span { color: var(--red); }
+  .dashboard-welcome p {
+    font-size: 16px;
+    color: #555;
+    max-width: 520px;
+    line-height: 1.55;
+  }
+  .dash-card {
+    border: var(--border);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .dash-card-header {
+    padding: 20px 24px 16px;
+    border-bottom: var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dash-card-icon {
+    font-size: 24px;
+    width: 44px; height: 44px;
+    border: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    background: var(--yellow);
+    flex-shrink: 0;
+  }
+  .dash-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    line-height: 1;
+  }
+  .dash-card-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+  .dash-card-body { padding: 20px 24px; flex: 1; }
+  .dash-card-body p { font-size: 14px; color: #555; line-height: 1.55; margin-bottom: 16px; }
+  .dash-stat-row { display: flex; gap: 12px; margin-bottom: 20px; }
+  .dash-stat {
+    border: var(--border);
+    padding: 10px 14px;
+    flex: 1;
+    text-align: center;
+  }
+  .dash-stat-n { font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; }
+  .dash-stat-l { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; color: #888; margin-top: 2px; }
+  .btn-dash {
+    border: var(--border);
+    padding: 14px 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.12s, box-shadow 0.12s;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .btn-dash.primary { background: var(--black); color: var(--yellow); }
+  .btn-dash.secondary { background: var(--white); color: var(--black); margin-top: 10px; }
+  .btn-dash:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black); }
+  .pro-badge {
+    display: inline-block;
+    background: var(--yellow);
+    border: 2px solid var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+  .plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border: 2px solid var(--black);
+  }
+  .plan-badge.standard { background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; }
+  .plan-badge.premium { background: var(--yellow); color: var(--black); }
+  .plan-badge.coming-soon { background: #f3f3f3; color: #999; border-color: #ccc; }
+  .weekly-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    background: var(--black);
+    color: var(--yellow);
+    border: 2px solid var(--black);
+    margin-bottom: 12px;
+  }
+  .dash-section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+    grid-column: 1 / -1;
+    padding-bottom: 8px;
+    border-bottom: var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dash-card.premium-card { position: relative; }
+  .dash-card.premium-card .premium-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(245,240,232,0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    z-index: 2;
+    backdrop-filter: blur(1px);
+  }
+  .premium-overlay-icon { font-size: 32px; }
+  .premium-overlay-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .premium-overlay-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #666;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .btn-premium-tease {
+    background: var(--black);
+    color: var(--yellow);
+    border: var(--border);
+    padding: 10px 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .btn-premium-tease:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black); }
+  .scenario-form { display: flex; flex-direction: column; gap: 10px; }
+  .scenario-textarea {
+    width: 100%;
+    border: var(--border);
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--white);
+    color: var(--black);
+    outline: none;
+    box-shadow: 3px 3px 0 var(--black);
+    resize: vertical;
+    min-height: 80px;
+    transition: box-shadow 0.12s;
+  }
+  .scenario-textarea:focus { box-shadow: 5px 5px 0 var(--black); }
+
+  /* ---- PAYWALL MODAL ---- */
+  .paywall-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .paywall-overlay.show { display: flex; }
+  .paywall-box {
+    background: var(--white);
+    border: var(--border);
+    box-shadow: 10px 10px 0 var(--yellow);
+    padding: 48px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  .paywall-icon { font-size: 48px; margin-bottom: 16px; }
+  .paywall-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    line-height: 0.95;
+    margin-bottom: 8px;
+  }
+  .paywall-title span { color: var(--red); }
+  .paywall-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+  .paywall-desc {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .paywall-perks {
+    text-align: left;
+    margin-bottom: 28px;
+    border: var(--border);
+    padding: 16px 20px;
+    background: #fffbe6;
+  }
+  .paywall-perk {
+    font-size: 14px;
+    color: #333;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .paywall-perk:last-child { border-bottom: none; }
+  .perk-check { color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .btn-paywall-login {
+    width: 100%;
+    background: var(--black);
+    color: var(--yellow);
+    border: var(--border);
+    padding: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.12s, box-shadow 0.12s;
+    margin-bottom: 10px;
+  }
+  .btn-paywall-login:hover { transform: translate(-2px,-2px); box-shadow: 10px 10px 0 var(--black); }
+  .btn-paywall-dismiss {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 8px;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .btn-paywall-dismiss:hover { color: var(--black); }
+
+  @media (max-width: 860px) {
+    .dashboard-body { grid-template-columns: 1fr; padding: 24px 20px; gap: 20px; }
+    .dashboard-header { padding: 16px 20px; }
+    .login-box { padding: 32px 24px; }
+    .paywall-box { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- WAITLIST SCREEN -->
+<div id="screen-waitlist" class="screen">
+  <div class="waitlist-bg">WAIT</div>
+  <div class="waitlist-box" style="max-width:580px;padding:0;overflow:hidden;">
+    <div style="background:var(--black);padding:24px 32px;border-bottom:var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#666;margin-bottom:4px;">⚡ PUZL</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--yellow);line-height:1;">JOIN THE WAITLIST</div>
+      </div>
+      <button onclick="showScreen('landing')" style="font-family:'Space Mono',monospace;font-size:10px;color:#666;background:none;border:2px solid #444;cursor:pointer;padding:6px 12px;text-transform:uppercase;letter-spacing:0.06em;transition:border-color 0.12s,color 0.12s;" onmouseover="this.style.borderColor='var(--yellow)';this.style.color='var(--yellow)'" onmouseout="this.style.borderColor='#444';this.style.color='#666'">← Back</button>
+    </div>
+    <iframe
+      src="https://form.typeform.com/to/J3v4NgIW"
+      style="width:100%;height:520px;border:none;display:block;background:var(--white);"
+      allow="camera; microphone; autoplay; encrypted-media;"
+    ></iframe>
+  </div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="screen-login" class="screen">
+  <div class="login-bg">HTL</div>
+  <div class="login-box">
+    <div class="login-eyebrow">⚡ PUZL</div>
+    <div class="login-title">WELCOME<br><span>BACK.</span></div>
+    <div class="login-error" id="login-error">Incorrect username or password. Try again.</div>
+    <div class="login-field">
+      <label class="login-label" for="login-user">Username</label>
+      <input class="login-input" id="login-user" type="text" placeholder="Enter username" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label class="login-label" for="login-pass">Password</label>
+      <input class="login-input" id="login-pass" type="password" placeholder="Enter password" autocomplete="current-password">
+    </div>
+    <button class="btn-login" onclick="attemptLogin()">LOG IN →</button>
+    <div class="login-footer">
+      Don't have an account? <button onclick="showScreen('waitlist')" style="font-family:'Space Mono',monospace;font-size:10px;color:#555;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Join the waitlist →</button>
+    </div>
+    <button class="login-back" onclick="showScreen('landing')">← Back to role selection</button>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN -->
+<div id="screen-dashboard" class="screen">
+  <div class="dashboard-header">
+    <div class="dashboard-logo">PUZL</div>
+    <div class="dashboard-user">
+      <div class="user-chip">
+        <div class="user-avatar" id="dash-avatar">T</div>
+        <span id="dash-username">test</span>
+        <span style="color:#555;">· PRO</span>
+      </div>
+      <button class="btn-logout" onclick="logout()">LOG OUT</button>
+    </div>
+  </div>
+  <div class="dashboard-body">
+    <div class="dashboard-welcome">
+      <h1>READY TO<br><span>TRAIN?</span></h1>
+      <p>New scenarios drop every week. Pick your role, tackle the situations, and find the best way forward.</p>
+    </div>
+
+    <!-- STANDARD SECTION -->
+    <div class="dash-section-label">
+      <span class="plan-badge standard">✓ Standard — Included</span>
+      All scenarios, weekly drops, full results
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <div class="dash-card-icon">✏️</div>
+        <div>
+          <div class="dash-card-title">PRODUCT DESIGNER</div>
+          <div class="dash-card-sub">54 scenarios · 6 categories</div>
+        </div>
+      </div>
+      <div class="dash-card-body">
+        <div class="weekly-badge">🗓 New scenarios every week</div>
+        <p>Learn to push back against PMs without burning bridges. Navigate scope creep, accessibility fights, and power dynamics.</p>
+        <div class="dash-stat-row">
+          <div class="dash-stat"><div class="dash-stat-n">54</div><div class="dash-stat-l">Scenarios</div></div>
+          <div class="dash-stat"><div class="dash-stat-n">6</div><div class="dash-stat-l">Categories</div></div>
+          <div class="dash-stat"><div class="dash-stat-n">~20m</div><div class="dash-stat-l">Est. time</div></div>
+        </div>
+        <button class="btn-dash primary" onclick="startAsRole('designer')">START AS DESIGNER →</button>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card-header" style="background:var(--black);">
+        <div class="dash-card-icon" style="background:var(--yellow);border-color:#333;">📋</div>
+        <div>
+          <div class="dash-card-title" style="color:var(--yellow);">PRODUCT MANAGER</div>
+          <div class="dash-card-sub" style="color:#666;">10 scenarios · 4 categories</div>
+        </div>
+      </div>
+      <div class="dash-card-body" style="background:var(--black);color:var(--white);">
+        <div class="weekly-badge" style="background:var(--yellow);color:var(--black);border-color:var(--yellow);">🗓 New scenarios every week</div>
+        <p style="color:#aaa;">See how your decisions land on the design side. Learn to brief better, review smarter, and advocate for design with leadership.</p>
+        <div class="dash-stat-row">
+          <div class="dash-stat" style="border-color:#333;"><div class="dash-stat-n" style="color:var(--yellow);">10</div><div class="dash-stat-l">Scenarios</div></div>
+          <div class="dash-stat" style="border-color:#333;"><div class="dash-stat-n" style="color:var(--yellow);">4</div><div class="dash-stat-l">Categories</div></div>
+          <div class="dash-stat" style="border-color:#333;"><div class="dash-stat-n" style="color:var(--yellow);">~5m</div><div class="dash-stat-l">Est. time</div></div>
+        </div>
+        <button class="btn-dash primary" onclick="startAsRole('pm')" style="background:var(--yellow);color:var(--black);border-color:var(--yellow);box-shadow:5px 5px 0 #cbb800;">START AS PM →</button>
+      </div>
+    </div>
+
+    <!-- PREMIUM SECTION -->
+    <div class="dash-section-label">
+      <span class="plan-badge premium">★ Premium — Coming Soon</span>
+      Submit your own scenarios, get AI-powered feedback
+    </div>
+
+    <div class="dash-card premium-card" style="grid-column: 1 / -1;">
+      <!-- PREMIUM OVERLAY -->
+      <div class="premium-overlay">
+        <div class="premium-overlay-icon">⭐</div>
+        <div class="premium-overlay-title">PREMIUM FEATURE</div>
+        <p class="premium-overlay-sub">Submit real situations you've faced.<br>Get the best way to handle them — coming soon.</p>
+        <button class="btn-premium-tease" onclick="showScreen('waitlist')">JOIN WAITLIST FOR EARLY ACCESS →</button>
+      </div>
+      <!-- CARD CONTENT (blurred behind overlay) -->
+      <div class="dash-card-header">
+        <div class="dash-card-icon">💬</div>
+        <div>
+          <div class="dash-card-title">SUBMIT YOUR OWN SCENARIO</div>
+          <div class="dash-card-sub">Premium · Describe a real situation you've faced</div>
+        </div>
+      </div>
+      <div class="dash-card-body">
+        <p>Describe a real situation from your work. PUZL will analyse it and suggest the best way forward — plus add it to the scenario library if it's a good one.</p>
+        <div class="scenario-form">
+          <textarea class="scenario-textarea" placeholder="e.g. My PM asked me to ship a feature without usability testing two days before launch..."></textarea>
+          <button class="btn-dash primary">SUBMIT SCENARIO →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAYWALL MODAL -->
+<div class="paywall-overlay" id="paywall-overlay">
+  <div class="paywall-box">
+    <div class="paywall-icon">🔒</div>
+    <div class="paywall-title">THIS ONE'S<br><span>LOCKED.</span></div>
+    <div class="paywall-sub">Questions 6+ require a free account</div>
+    <p class="paywall-desc">You've had a taste — log in or join the waitlist to unlock all scenarios and see how you really score.</p>
+    <div class="paywall-perks">
+      <div class="paywall-perk" style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#888;border-bottom:2px solid #eee;padding-bottom:8px;margin-bottom:4px;">✓ Standard — Free with account</div>
+      <div class="paywall-perk"><span class="perk-check">✓</span> All 54 designer scenarios</div>
+      <div class="paywall-perk"><span class="perk-check">✓</span> All 10 PM scenarios</div>
+      <div class="paywall-perk"><span class="perk-check">✓</span> New scenarios every week</div>
+      <div class="paywall-perk"><span class="perk-check">✓</span> Category filters & question jump</div>
+      <div class="paywall-perk"><span class="perk-check">✓</span> Score tracking & detailed results</div>
+      <div class="paywall-perk" style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#888;border-bottom:2px solid #eee;padding-bottom:8px;margin-top:8px;margin-bottom:4px;">★ Premium — Coming soon</div>
+      <div class="paywall-perk" style="color:#aaa;"><span style="color:#aaa;">✦</span> Submit your own scenarios</div>
+      <div class="paywall-perk" style="color:#aaa;"><span style="color:#aaa;">✦</span> AI-powered best way forward</div>
+    </div>
+    <button class="btn-paywall-login" onclick="goToLogin()">LOG IN TO CONTINUE →</button>
+    <button class="btn-paywall-login" onclick="showScreen('waitlist')" style="background:var(--white);color:var(--black);border:var(--border);box-shadow:var(--shadow);margin-bottom:0;">JOIN THE WAITLIST →</button>
+    <button class="btn-paywall-dismiss" onclick="dismissPaywall()">Maybe later — go back to start</button>
+  </div>
+</div>
+
+<div class="ticker-wrap">
+  <div class="ticker-inner">★ PUZL <span class="ticker-sep">|</span> DESIGNER PUSHBACK TRAINING <span class="ticker-sep">|</span> KNOW YOUR WORTH <span class="ticker-sep">|</span> DATA BEATS OPINIONS <span class="ticker-sep">|</span> DESIGN IS NOT DECORATION <span class="ticker-sep">|</span> RESEARCH IS NOT OPTIONAL <span class="ticker-sep">|</span> YOUR INSTINCTS MATTER <span class="ticker-sep">|</span> ★ PUZL <span class="ticker-sep">|</span> DESIGNER PUSHBACK TRAINING <span class="ticker-sep">|</span> KNOW YOUR WORTH <span class="ticker-sep">|</span> DATA BEATS OPINIONS <span class="ticker-sep">|</span> DESIGN IS NOT DECORATION <span class="ticker-sep">|</span> RESEARCH IS NOT OPTIONAL <span class="ticker-sep">|</span> YOUR INSTINCTS MATTER <span class="ticker-sep">|</span></div>
+</div>
+
+<!-- LANDING — ROLE SELECTOR -->
+<div id="screen-landing" class="screen active">
+  <div class="role-selector">
+
+    <!-- DESIGNER CARD -->
+    <div class="role-card designer-card">
+      <div class="role-bg-num">D</div>
+      <div>
+        <div class="role-eyebrow">⚡ I am a...</div>
+        <div class="role-title">PRODUCT<br>DESIGNER</div>
+        <p class="role-desc">Real scenarios. Tough calls. Learn how to push back against PMs without burning bridges — or your design integrity.</p>
+        <div class="role-stats">
+          <div class="role-stat"><div class="role-stat-num">54</div><div class="role-stat-label">Scenarios</div></div>
+          <div class="role-stat"><div class="role-stat-num">6</div><div class="role-stat-label">Categories</div></div>
+          <div class="role-stat"><div class="role-stat-num">~20m</div><div class="role-stat-label">Est. time</div></div>
+        </div>
+        <button class="btn-role" onclick="startAsRole('designer')">START AS DESIGNER →</button>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:#999;margin-top:32px;">First 5 free · <button onclick="showScreen('login')" style="font-family:'Space Mono',monospace;font-size:11px;color:#555;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Log in</button> · <button onclick="showScreen('waitlist')" style="font-family:'Space Mono',monospace;font-size:11px;color:#555;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Join waitlist →</button></div>
+    </div>
+
+    <!-- PM CARD -->
+    <div class="role-card pm-card">
+      <div class="role-bg-num">P</div>
+      <div>
+        <div class="role-eyebrow">⚡ I am a...</div>
+        <div class="role-title">PRODUCT<br>MANAGER</div>
+        <p class="role-desc">See how your decisions land on the design side. Learn to brief better, review smarter, and become the PM designers actually want to work with.</p>
+        <div class="role-stats">
+          <div class="role-stat"><div class="role-stat-num">10</div><div class="role-stat-label">Scenarios</div></div>
+          <div class="role-stat"><div class="role-stat-num">4</div><div class="role-stat-label">Categories</div></div>
+          <div class="role-stat"><div class="role-stat-num">~5m</div><div class="role-stat-label">Est. time</div></div>
+        </div>
+        <button class="btn-role" onclick="startAsRole('pm')">START AS PM →</button>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:#555;margin-top:32px;">First 5 free · <button onclick="showScreen('login')" style="font-family:'Space Mono',monospace;font-size:11px;color:#666;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Log in</button> · <button onclick="showScreen('waitlist')" style="font-family:'Space Mono',monospace;font-size:11px;color:#666;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Join waitlist →</button></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-logo" id="quiz-logo">PUZL</div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">Question 1 of 54</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="score-chip">SCORE: <span id="score-display">0</span></div>
+    <button class="btn-switch-role" onclick="goHome()" title="Switch Role">⇄ SWITCH ROLE</button>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('✂️ Cutting Time', this)">✂️ Cutting Time</button>
+    <button class="filter-btn" onclick="setFilter('🔬 Skipping Research', this)">🔬 Research</button>
+    <button class="filter-btn" onclick="setFilter('♿ Accessibility', this)">♿ Accessibility</button>
+    <button class="filter-btn" onclick="setFilter('📦 Scope Creep', this)">📦 Scope Creep</button>
+    <button class="filter-btn" onclick="setFilter('🎨 Design Override', this)">🎨 Override</button>
+    <button class="filter-btn" onclick="setFilter('💼 Power Dynamics', this)">💼 Power</button>
+  </div>
+
+  <div class="quiz-body">
+    <div class="scenario-panel">
+      <div class="scenario-meta">
+        <span class="category-tag" id="q-category">Category</span>
+        <span class="difficulty-tag" id="q-difficulty">Medium</span>
+      </div>
+      <div class="scenario-q-num" id="q-num-bg">01</div>
+      <div class="scenario-context" id="q-context"></div>
+      <div class="scenario-pm-says">
+        <div class="pm-label"><div class="pm-avatar">👔</div> <span id="speaker-label">PM SAYS</span></div>
+        <div class="pm-text" id="q-pm-says"></div>
+      </div>
+      <div class="scenario-question" id="q-question">How do you respond?</div>
+    </div>
+    <div class="options-panel" id="options-panel">
+      <div class="options-label">Choose your response</div>
+      <div class="feedback-box" id="feedback-box">
+        <div class="feedback-verdict" id="feedback-verdict"></div>
+        <div class="feedback-text" id="feedback-text"></div>
+        <span class="tip-tag" id="feedback-tip"></span>
+      </div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">NEXT SCENARIO →</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUESTION DRAWER TOGGLE -->
+<button class="drawer-toggle" id="drawer-toggle" onclick="toggleDrawer()">Q JUMP</button>
+
+<!-- QUESTION DRAWER -->
+<div class="question-drawer" id="question-drawer">
+  <div class="drawer-header">
+    <span>JUMP TO QUESTION</span>
+    <button class="drawer-close" onclick="toggleDrawer()">✕ CLOSE</button>
+  </div>
+  <div class="drawer-filter" id="drawer-filter">
+    <button class="drawer-filter-btn active" onclick="setDrawerFilter('all', this)">All</button>
+    <button class="drawer-filter-btn" onclick="setDrawerFilter('✂️ Cutting Time', this)">✂️</button>
+    <button class="drawer-filter-btn" onclick="setDrawerFilter('🔬 Skipping Research', this)">🔬</button>
+    <button class="drawer-filter-btn" onclick="setDrawerFilter('♿ Accessibility', this)">♿</button>
+    <button class="drawer-filter-btn" onclick="setDrawerFilter('📦 Scope Creep', this)">📦</button>
+    <button class="drawer-filter-btn" onclick="setDrawerFilter('🎨 Design Override', this)">🎨</button>
+    <button class="drawer-filter-btn" onclick="setDrawerFilter('💼 Power Dynamics', this)">💼</button>
+  </div>
+  <div class="drawer-grid" id="drawer-grid"></div>
+  <div class="drawer-legend">
+    <div class="legend-item"><div class="legend-dot current"></div>Current</div>
+    <div class="legend-item"><div class="legend-dot correct"></div>Correct</div>
+    <div class="legend-item"><div class="legend-dot wrong"></div>Wrong</div>
+    <div class="legend-item"><div class="legend-dot unanswered"></div>Unseen</div>
+    <div class="legend-item" id="legend-locked" style="display:none"><div class="legend-dot" style="background:var(--white);border-color:#bbb;border-style:dashed;"></div>Locked</div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="screen-results" class="screen">
+  <div class="results-bg-text" id="results-grade-bg">B+</div>
+  <div class="results-inner">
+    <div class="results-label">Training Complete — Final Report</div>
+    <div class="results-grade" id="results-grade">B+</div>
+    <div class="results-score-line" id="results-score-line"></div>
+    <div class="results-title" id="results-title"></div>
+    <p class="results-desc" id="results-desc"></p>
+    <div class="category-breakdown" id="category-breakdown"></div>
+    <div class="results-btns">
+      <button class="btn-retry" onclick="startAsRole(currentRole)">RETRY TRAINING</button>
+      <button class="btn-home" onclick="goHome()">← BACK TO HOME</button>
+      <button class="btn-switch" onclick="goHome()">SWITCH ROLE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- SCENARIOS ARRAY (populated below) ----
+const SCENARIOS = [
+  {category:"✂️ Cutting Time",difficulty:"Medium",context:"Sprint planning. The PM has just cut your design time from 2 weeks to 3 days for a complex checkout redesign.",pmSays:"We need to ship fast. Just use the existing components — good enough is good enough here. We can polish it later.",question:"How do you respond?",options:[{text:"Agree and do your best with the time given, silently noting the risk.",correct:false},{text:"Ask for a meeting to walk through which design decisions carry the most risk if rushed, and propose a phased approach.",correct:true},{text:"Tell the PM this is impossible and refuse to commit to the timeline.",correct:false},{text:"Do the work in 3 days but document every shortcut you took.",correct:false}],feedback:"Proposing a phased approach acknowledges the constraint while protecting the most critical design decisions. It reframes the conversation from 'yes/no' to 'how.'",tip:"🔑 Tactic: Prioritise & phase"},
+  {category:"✂️ Cutting Time",difficulty:"Hard",context:"You've just finished 3 weeks of design work on a new onboarding flow. The PM says leadership wants to launch in 2 days.",pmSays:"Leadership moved up the deadline. We just need to launch something — we'll iterate based on real data.",question:"What's your best move?",options:[{text:"Push back with data: share the known friction points in the current flow and the cost of fixing them post-launch.",correct:true},{text:"Agree — real data is always better than assumptions anyway.",correct:false},{text:"Escalate immediately to your design manager to block the launch.",correct:false},{text:"Ask the PM to put the request in writing so you're not accountable.",correct:false}],feedback:"Using data to illustrate post-launch cost makes the risk tangible. Fixing a broken onboarding flow post-launch costs 4x more than getting it right now.",tip:"🔑 Tactic: Make risk visible"},
+  {category:"✂️ Cutting Time",difficulty:"Easy",context:"The PM wants to ship a new feature without any design review, saying engineers can 'figure out the UI'.",pmSays:"The engineers know the product really well. Let's let them make the UI calls on this one to save time.",question:"How do you respond?",options:[{text:"Offer to do a 30-minute async design review that gives engineers clear direction without delaying them.",correct:true},{text:"Agree — engineers have good instincts and this isn't a complex feature.",correct:false},{text:"Tell the PM that design must review everything before it ships.",correct:false},{text:"Ask the PM which specific parts you're allowed to review.",correct:false}],feedback:"A 30-minute async review is low-effort, high-value. It respects the timeline while ensuring design has a voice — and it's hard to say no to 'just 30 minutes.'",tip:"🔑 Tactic: Offer a minimum viable review"},
+  {category:"✂️ Cutting Time",difficulty:"Medium",context:"Mid-project, the PM asks you to skip the hi-fi prototype and go straight to dev handoff with lo-fi wireframes.",pmSays:"We're behind. Can you just hand off the wireframes? The developers are smart, they'll figure out the interactions.",question:"What do you do?",options:[{text:"Hand off the wireframes with a note that interactions need to be defined.",correct:false},{text:"Refuse — lo-fi wireframes are never appropriate for handoff.",correct:false},{text:"Identify the 2-3 interactions that are genuinely complex and create quick specs for just those; hand off the rest as wireframes.",correct:true},{text:"Create a hi-fi prototype anyway and tell the PM it was faster than they thought.",correct:false}],feedback:"Selective fidelity is smart. Protecting only the complex interactions prevents the most costly dev mistakes without holding up the whole project.",tip:"🔑 Tactic: Selective fidelity"},
+  {category:"✂️ Cutting Time",difficulty:"Hard",context:"You're asked to design a new feature in 1 day. Similar work at other companies took your team 2 weeks.",pmSays:"I know it's tight but we promised the client this feature. Just do a quick version. We'll do a proper one later.",question:"How do you handle this?",options:[{text:"Ask what 'a proper one later' means — get a commitment to a real design pass in writing before agreeing.",correct:true},{text:"Do the quick version. 'Later' is a common promise and usually doesn't happen but you don't have a choice.",correct:false},{text:"Say you'll do it in 1 day but you need 2 engineers to implement exactly what you produce.",correct:false},{text:"Decline the request and suggest using an existing pattern instead.",correct:false}],feedback:"'We'll do it properly later' is how design debt accumulates. Getting a time-boxed commitment (e.g. 'Q2 sprint 3') before you agree turns a vague promise into a real plan.",tip:"🔑 Tactic: Get the future commitment now"},
+  {category:"✂️ Cutting Time",difficulty:"Easy",context:"A PM asks you to use a dark pattern to make the cancellation flow harder to find in order to hit this quarter's retention metric.",pmSays:"Can you just bury the cancel button a bit more? Competitor X does this. It'll help our numbers.",question:"What do you say?",options:[{text:"Explain that dark patterns create short-term gains but lead to long-term trust loss, churn, and regulatory risk — then offer an ethical alternative.",correct:true},{text:"Do it but make sure it's subtle enough not to be noticed.",correct:false},{text:"Escalate to legal immediately.",correct:false},{text:"Tell the PM you'll do it if they put the request in writing.",correct:false}],feedback:"This is an ethical line. Regulatory risk (EU Dark Patterns enforcement) + brand trust + competitor churn data are your strongest arguments. Always offer an ethical alternative.",tip:"🔑 Tactic: Ethics + business case"},
+  {category:"✂️ Cutting Time",difficulty:"Medium",context:"You've been told to copy a competitor's UI exactly to save design time.",pmSays:"Just use what Competitor Y has. They've clearly done the research. Why reinvent the wheel?",question:"How do you respond?",options:[{text:"Copy the layout but adapt to your design system and user needs, then explain the tradeoffs.",correct:true},{text:"Copy it exactly — competitors have big research budgets and this is pragmatic.",correct:false},{text:"Refuse and insist on original design work.",correct:false},{text:"Ask the PM if they're aware of the IP risk of direct copying.",correct:false}],feedback:"Competitive analysis is valid — blind copying isn't. Your users aren't the same as the competitor's users. Adapting to your design system means you get the 'research' benefit without the legal or UX risk.",tip:"🔑 Tactic: Informed adaptation, not blind copying"},
+  {category:"✂️ Cutting Time",difficulty:"Hard",context:"The PM wants to remove design from the process entirely for a 'small' update that affects 3 core user flows.",pmSays:"This is just a small text change. We don't need design involved — the content team can handle it.",question:"What's your move?",options:[{text:"Let it go — if it's truly just text, design involvement might slow things down unnecessarily.",correct:false},{text:"Quickly map the 3 affected flows and share this with the PM to redefine what 'small' means, then propose lightweight involvement.",correct:true},{text:"Insist design must be involved in every change, no exceptions.",correct:false},{text:"Ask the content team to loop you in once they're done.",correct:false}],feedback:"The PM doesn't know what they don't know. A quick visual of the impact zones reframes 'small text change' into 'cross-flow update.' Propose lightweight involvement (a 15-min review) rather than full ownership.",tip:"🔑 Tactic: Map the blast radius"},
+  {category:"✂️ Cutting Time",difficulty:"Medium",context:"The PM suggests skipping documentation for a complex new pattern you've designed.",pmSays:"Don't bother documenting it. Devs will ask questions if they need to know something.",question:"What's your response?",options:[{text:"Agree — reactive documentation is often more accurate anyway.",correct:false},{text:"Write a short annotation doc (1-2 hours) for the complex states and edge cases, and share it proactively.",correct:true},{text:"Write full documentation regardless of the PM's preference.",correct:false},{text:"Ask the devs if they want documentation before doing it.",correct:false}],feedback:"Reactive 'ask me if you need something' leads to decision-making in Slack threads with no paper trail. A 1-2 hour annotation doc for edge cases is a small investment that prevents costly misinterpretation.",tip:"🔑 Tactic: Minimum viable documentation"},
+  {category:"🔬 Skipping Research",difficulty:"Medium",context:"The team is about to design a new navigation system. The PM says user research isn't needed because 'we know our users.'",pmSays:"We've been building this product for 3 years. We know what users want. Let's just design the nav and ship it.",question:"How do you respond?",options:[{text:"Agree — 3 years of product experience is meaningful signal.",correct:false},{text:"Propose a lightweight research method (e.g. 5 card sort sessions, 1 week) and tie it to reduced redesign risk.",correct:true},{text:"Insist on 6 weeks of ethnographic research before designing anything.",correct:false},{text:"Ask the PM to define 'knowing users' with specific evidence.",correct:false}],feedback:"Offering lightweight research lowers the barrier to yes. A card sort with 5 users takes a week and reveals navigation mental models you can't predict from gut feel — even after 3 years.",tip:"🔑 Tactic: Right-size the research"},
+  {category:"🔬 Skipping Research",difficulty:"Hard",context:"Leadership has decided on a feature based on one enterprise client's feedback. The PM wants to design it immediately.",pmSays:"Our biggest client asked for this. They represent a huge chunk of ARR. Let's just build what they asked for.",question:"What do you do?",options:[{text:"Design the feature as requested — enterprise clients are an important signal.",correct:false},{text:"Ask for 1 week to interview 4 other enterprise clients to validate if this need is shared, preventing a one-size-one solution.",correct:true},{text:"Push back completely and say one client's opinion isn't enough data.",correct:false},{text:"Design two versions: one for this client and one for the broader audience.",correct:false}],feedback:"One vocal client isn't a user segment. Quickly checking with 4 other clients determines if this is a broad need or a custom request — which affects whether it should be a core feature or a config option.",tip:"🔑 Tactic: Validate scope with 4 more data points"},
+  {category:"🔬 Skipping Research",difficulty:"Easy",context:"The PM wants to use the PM's personal preference as a proxy for user feedback.",pmSays:"I use this product every day. I know what's confusing. Let's just go with my gut on this one.",question:"How do you handle this?",options:[{text:"Agree — PM intuition from daily use is valid and underrated.",correct:false},{text:"Acknowledge the PM's experience and suggest augmenting it with 3-5 quick user interviews to see if others share the same intuition.",correct:true},{text:"Tell the PM that self-reporting bias makes personal experience unreliable.",correct:false},{text:"Run research without telling the PM and present findings later.",correct:false}],feedback:"Acknowledging before challenging is the right sequence. The PM's intuition may be correct — but it needs validation. 3-5 interviews either confirm it or reveal nuance that leads to a better solution.",tip:"🔑 Tactic: Validate, don't dismiss"},
+  {category:"🔬 Skipping Research",difficulty:"Medium",context:"Post-launch, metrics show a feature isn't working. The PM says to iterate without talking to users first.",pmSays:"We have all the data we need in the analytics. Let's just look at the drop-off rates and fix the worst offenders.",question:"What's the best response?",options:[{text:"Agree — quantitative data is objective and faster than qual.",correct:false},{text:"Propose a combined approach: use analytics to prioritise which flows to test, then do 4 moderated sessions to understand the 'why' behind the drop-offs.",correct:true},{text:"Insist on qualitative research only — numbers don't explain user behaviour.",correct:false},{text:"Ask engineering to add more analytics events before doing any design work.",correct:false}],feedback:"Analytics shows 'what' but not 'why.' Drop-off could mean confusion, distrust, irrelevance, or technical issues. 4 sessions mapped to your highest drop-off points tells you which problem to actually solve.",tip:"🔑 Tactic: Quant to prioritise, qual to understand"},
+  {category:"🔬 Skipping Research",difficulty:"Hard",context:"The PM has presented a solution to users without any design exploration first, and is now asking you to design it.",pmSays:"I showed the mockup I built in Canva to three clients — they loved it. Let's use that as the design direction.",question:"What do you do?",options:[{text:"Use the PM's Canva mockup as a base and refine it.",correct:false},{text:"Ask what questions were asked and what 'loved it' means — then reframe this as a direction to validate, not a solution to execute.",correct:true},{text:"Refuse to use research that wasn't conducted by a proper researcher.",correct:false},{text:"Design your own alternative and present it as a better option.",correct:false}],feedback:"'They loved it' after seeing a concept isn't the same as usability or desirability validation. Understanding the methodology lets you build on the signal without being constrained by a premature solution.",tip:"🔑 Tactic: Interrogate the methodology"},
+  {category:"🔬 Skipping Research",difficulty:"Medium",context:"A PM wants to replace your planned research with a company-wide survey instead.",pmSays:"Instead of user interviews, let's just send a survey to all 50k users. More data is better data.",question:"How do you respond?",options:[{text:"Agree — 50k responses will be more statistically significant.",correct:false},{text:"Explain that surveys can complement but not replace interviews for exploratory research, and propose running both in parallel.",correct:true},{text:"Tell the PM surveys aren't real research and refuse.",correct:false},{text:"Design the survey yourself to ensure the questions are valid.",correct:false}],feedback:"Surveys at scale are great for validating hypotheses — not generating them. If you don't know what questions to ask yet, a survey gives you noisy data at scale. Interviews first, survey to validate, is the right order.",tip:"🔑 Tactic: Sequence qual before quant"},
+  {category:"🔬 Skipping Research",difficulty:"Easy",context:"The PM is using internal employee testing as a substitute for real user research.",pmSays:"We tested it with the team and everyone found it intuitive. I think we're good to ship.",question:"What's your response?",options:[{text:"Trust the team feedback — internal testing is better than nothing.",correct:false},{text:"Point out that internal users have expert bias and suggest 3-5 sessions with actual users before shipping.",correct:true},{text:"Say internal testing is completely invalid and demand external research.",correct:false},{text:"Ask which team members were tested and whether they represent the user demographic.",correct:false}],feedback:"Internal team members know the product too well to represent real users. Familiarity bias means they'll often find things 'intuitive' that are actually confusing to newcomers. 3-5 external sessions catches what internal testing can't.",tip:"🔑 Tactic: Name the expert bias"},
+  {category:"🔬 Skipping Research",difficulty:"Hard",context:"A PM tells you there's no budget for user research and you should just design based on the PRD.",pmSays:"There's no budget for research this quarter. We've got a solid PRD — just design from that.",question:"What do you do?",options:[{text:"Design from the PRD as instructed.",correct:false},{text:"Identify no-cost or low-cost research options (hallway testing, existing customers, Maze) and propose running research within the current project budget.",correct:true},{text:"Refuse to design without research and escalate the budget issue.",correct:false},{text:"Add assumptions to the design doc and flag them as unvalidated.",correct:false}],feedback:"No budget doesn't mean no research. Guerrilla testing, Maze unmoderated studies, and tapping existing customer relationships are all low/no-cost options. Proposing alternatives shifts the conversation from 'no' to 'how.'",tip:"🔑 Tactic: Low-cost research options"},
+  {category:"🔬 Skipping Research",difficulty:"Medium",context:"The PM cites a study from 5 years ago to justify a design decision, dismissing the need for new research.",pmSays:"We ran a big study on this in 2019. Users clearly prefer option A. We don't need to revisit it.",question:"How do you respond?",options:[{text:"Accept the historical data — user preferences don't change that fast.",correct:false},{text:"Acknowledge the study and suggest a quick validation with current users, noting that the competitive landscape and user expectations have shifted since 2019.",correct:true},{text:"Dismiss the study completely as outdated.",correct:false},{text:"Run new research without telling the PM until you have results.",correct:false}],feedback:"User expectations evolve — especially post-pandemic. A quick validation (not a full study) is a low-cost insurance policy.",tip:"🔑 Tactic: Acknowledge then revalidate"},
+  {category:"♿ Accessibility",difficulty:"Medium",context:"The PM wants to launch a new feature that you know fails WCAG AA colour contrast standards.",pmSays:"The brand team signed off on these colours. They look great. Let's just ship it.",question:"How do you respond?",options:[{text:"Ship it — brand consistency is important and the contrast is close enough.",correct:false},{text:"Document the WCAG failure with the specific contrast ratio, link to legal precedents, and propose a palette adjustment that satisfies both brand and accessibility.",correct:true},{text:"Refuse to ship the design until it's fixed.",correct:false},{text:"Escalate to the brand team to resolve the conflict.",correct:false}],feedback:"Colour contrast failures are a legal exposure and exclude real users. Showing the specific ratio (e.g. 2.8:1 vs required 4.5:1) makes it concrete, not subjective, and offering a compliant alternative removes the PM's objection.",tip:"🔑 Tactic: Data + solution, not just complaint"},
+  {category:"♿ Accessibility",difficulty:"Hard",context:"The PM says accessibility is 'nice to have' and can be done in a future sprint.",pmSays:"Let's ship it first and add accessibility later. It's not a priority for our core users right now.",question:"What's your best move?",options:[{text:"Agree to ship now and track it as tech debt for later.",correct:false},{text:"Frame accessibility as a legal liability (ADA, EN 301 549), not a feature — retrofitting is 3x more expensive than building in from the start.",correct:true},{text:"Escalate to legal immediately.",correct:false},{text:"Propose an accessibility audit as a separate project.",correct:false}],feedback:"Accessibility isn't optional under ADA or EN 301 549. Retrofitting it into shipped code is significantly more expensive than building it in. Both the legal and cost arguments land harder than 'it's the right thing to do.'",tip:"🔑 Tactic: Legal + cost of retrofit"},
+  {category:"♿ Accessibility",difficulty:"Easy",context:"A PM dismisses screen reader support as affecting 'barely anyone.'",pmSays:"How many of our users actually use screen readers? It's probably less than 1%. Not worth the effort.",question:"How do you respond?",options:[{text:"Agree to deprioritise if the data shows low screen reader usage.",correct:false},{text:"Share that 26% of adults have some form of disability, that screen reader users often represent power users, and that it's a legal requirement.",correct:true},{text:"Say it doesn't matter if it's 0.1% — we should build accessibly regardless.",correct:false},{text:"Propose running analytics to measure actual screen reader usage before deciding.",correct:false}],feedback:"The '1%' argument collapses when you note that analytics undercount assistive tech users, 1% of 1 million is 10,000 people, and the ADA doesn't have a minimum usage threshold for compliance.",tip:"🔑 Tactic: Reframe the numbers"},
+  {category:"♿ Accessibility",difficulty:"Medium",context:"The PM wants to use animation-heavy microinteractions that you know will cause problems for vestibular disorder users.",pmSays:"The animations look premium and differentiate us. Motion is a core part of our brand now.",question:"What do you say?",options:[{text:"Implement the animations as designed — prefers-reduced-motion is an edge case.",correct:false},{text:"Implement the animations AND build a prefers-reduced-motion CSS media query alternative — both can coexist.",correct:true},{text:"Remove all animations to ensure safety.",correct:false},{text:"Ask the brand team to revisit their motion guidelines.",correct:false}],feedback:"This is a 'yes, and' solution. You can have expressive animations for users who want them AND a calm alternative for users who need it. The prefers-reduced-motion media query is a few lines of CSS — no real tradeoff.",tip:"🔑 Tactic: Yes and — not either/or"},
+  {category:"♿ Accessibility",difficulty:"Hard",context:"The PM wants to deprioritise keyboard navigation support because 'nobody uses keyboards anymore.'",pmSays:"Keyboard nav is a legacy concern. Our users are all on touchscreens. Let's not spend time on it.",question:"How do you respond?",options:[{text:"Agree — mobile-first products genuinely have fewer keyboard users.",correct:false},{text:"Explain that keyboard navigation is required for screen readers, power users, enterprise users, and motor impaired users — and that WCAG 2.1 requires it regardless of device mix.",correct:true},{text:"Implement keyboard nav anyway and don't tell the PM.",correct:false},{text:"Propose user testing to see how many users actually use keyboards.",correct:false}],feedback:"Keyboard navigation isn't just for 'people who prefer keyboards' — it's the underlying mechanism for all assistive technology, including screen readers. Enterprise software often has WCAG compliance policy requirements.",tip:"🔑 Tactic: Clarify who keyboard nav is really for"},
+  {category:"♿ Accessibility",difficulty:"Medium",context:"The PM says the design team is overthinking alt text and it slows down content production.",pmSays:"Our content team doesn't have time to write alt text for every image. Let's just skip it or auto-generate it.",question:"What do you do?",options:[{text:"Agree to use auto-generated alt text from the CMS.",correct:false},{text:"Create a simple alt text guide for the content team that takes 2 minutes per image, and propose automated tooling for decorative images.",correct:true},{text:"Insist every image needs hand-crafted alt text — no shortcuts.",correct:false},{text:"Remove all images that don't have alt text from the design.",correct:false}],feedback:"The real problem is the content team doesn't have a clear process. A quick guide reduces decision fatigue. Decorative images can be safely marked with empty alt attributes — saving time where it doesn't matter.",tip:"🔑 Tactic: Process not just policy"},
+  {category:"♿ Accessibility",difficulty:"Easy",context:"The PM wants to use placeholder text as the primary label for form fields to 'keep the design clean.'",pmSays:"Labels inside the field look so much cleaner. When users start typing, they'll remember what the field is for.",question:"What's your response?",options:[{text:"Implement floating labels — they solve this problem elegantly.",correct:true},{text:"Agree — the design is cleaner and modern patterns work this way.",correct:false},{text:"Keep external labels — no compromises on this accessibility issue.",correct:false},{text:"Ask the PM to show evidence that users remember placeholder text while typing.",correct:false}],feedback:"Floating labels are the right answer — they give you the clean initial state the PM wants AND maintain label visibility once the user starts interacting. A 'yes, and' answer that satisfies both requirements.",tip:"🔑 Tactic: Solve for both constraints"},
+  {category:"♿ Accessibility",difficulty:"Hard",context:"The PM wants to launch a video feature without captions to hit the deadline.",pmSays:"Captions can come in a post-launch update. It's not like we're legally required for a Beta.",question:"What do you say?",options:[{text:"Agree — Beta products often have a legal grace period.",correct:false},{text:"Clarify that ADA applies to Betas when they're public-facing, and propose auto-captions as a minimum viable solution that can launch with the feature.",correct:true},{text:"Block the launch until captions are properly implemented.",correct:false},{text:"Ship the video feature with a visible disclaimer about captions being unavailable.",correct:false}],feedback:"The 'Beta' carve-out is a myth for publicly accessible products. Auto-generated captions (YouTube, AWS Transcribe, AssemblyAI) can be implemented quickly and are a genuine minimum viable accessibility solution.",tip:"🔑 Tactic: Minimum viable accessibility"},
+  {category:"📦 Scope Creep",difficulty:"Medium",context:"2 days before launch, the PM asks to add a completely new feature that wasn't in the original brief.",pmSays:"The CEO saw a competitor doing X. Can we just add it before we ship? It shouldn't take long.",question:"How do you respond?",options:[{text:"Try to add it — CEO visibility means this needs to happen.",correct:false},{text:"Say no and explain the timeline risk.",correct:false},{text:"Estimate the actual time required, show the impact on current launch quality, and offer two choices: delay launch or add it to sprint 2 with a date commitment.",correct:true},{text:"Ask the CEO directly if they want the feature or an on-time launch.",correct:false}],feedback:"Presenting two explicit choices makes the PM own the decision — not you. The PM can't say 'just add it' when they're choosing between two concrete outcomes with dates attached.",tip:"🔑 Tactic: Force a real tradeoff decision"},
+  {category:"📦 Scope Creep",difficulty:"Hard",context:"The PM keeps adding items to an 'almost done' project, each time saying it's 'just one more thing.'",pmSays:"This is the last thing, I promise. After this we're locked. It's really small.",question:"What do you do?",options:[{text:"Add the item — it's probably actually small.",correct:false},{text:"Add the item but log it in a running scope change document, then share the cumulative impact of all additions with the PM.",correct:true},{text:"Refuse to add anything after the original scope is locked.",correct:false},{text:"Ask the PM to get sign-off from their manager for each addition.",correct:false}],feedback:"Each 'small thing' is invisible in isolation. A scope change log with cumulative hours makes the pattern visible and creates a natural moment to have the scope conversation before it becomes a crisis.",tip:"🔑 Tactic: Document the cumulative drift"},
+  {category:"📦 Scope Creep",difficulty:"Easy",context:"Stakeholders outside your team keep sending design requests directly to you, bypassing the PM.",pmSays:"Just action what the VP of Marketing asked for — they sent it directly to you so it must be important.",question:"How do you respond?",options:[{text:"Action the request — VP requests should be prioritised.",correct:false},{text:"Kindly redirect the VP to submit requests through the proper channel, loop in your PM, and explain that you need prioritisation guidance before actioning.",correct:true},{text:"Ignore the request and pretend you didn't receive it.",correct:false},{text:"Action the request but tell the PM after.",correct:false}],feedback:"Direct requests bypass prioritisation and create untracked work. Redirecting to the process isn't being difficult — it's protecting the team's focus. Looping in your PM ensures they can make the prioritisation call.",tip:"🔑 Tactic: Protect the process, not just your time"},
+  {category:"📦 Scope Creep",difficulty:"Medium",context:"A feature that was marked as 'descoped' keeps reappearing in design reviews from the PM.",pmSays:"While we're looking at this screen, maybe we should also solve that problem we descoped last month?",question:"What do you say?",options:[{text:"Say 'sure, let me sketch something quickly' — showing initiative is good.",correct:false},{text:"Acknowledge the idea, add it to the backlog formally, and explain that solving it now would require rescoping the current project.",correct:true},{text:"Remind the PM firmly that it was descoped and move on.",correct:false},{text:"Sketch it in your own time and present it as a bonus.",correct:false}],feedback:"Adding it to the backlog validates the PM's instinct without opening a scope discussion in a design review. 'Great idea, let's properly scope it for the next sprint' keeps momentum without making commitments.",tip:"🔑 Tactic: Backlog it, don't dismiss it"},
+  {category:"📦 Scope Creep",difficulty:"Hard",context:"The PM has committed to a client that the product will include a feature your team hasn't scoped or designed yet.",pmSays:"I told the client we'd have it. I know we haven't started yet but we have to make it happen.",question:"What's your move?",options:[{text:"Make it happen — client commitments are sacred.",correct:false},{text:"Immediately size the work with engineering, present the realistic timeline to the PM, and discuss whether to reset client expectations or reprioritise existing work.",correct:true},{text:"Tell the PM they shouldn't have committed without checking the team first.",correct:false},{text:"Design something quickly and present it as a feasibility prototype.",correct:false}],feedback:"The commitment is made — now the job is damage control. A realistic sizing conversation immediately gives the PM the information they need to either reset client expectations or make informed tradeoff calls.",tip:"🔑 Tactic: Size fast, decide together"},
+  {category:"📦 Scope Creep",difficulty:"Medium",context:"The PM wants to expand a simple bug fix into a full feature redesign mid-sprint.",pmSays:"While we're in there fixing it, we might as well redesign the whole section. Let's do it right.",question:"How do you handle this?",options:[{text:"Agree — it makes technical sense to fix it all at once.",correct:false},{text:"Fix the bug as scoped. Flag the redesign opportunity, estimate it, and propose it as a candidate for the next sprint.",correct:true},{text:"Refuse to expand the scope under any circumstances.",correct:false},{text:"Split your time: fix the bug plus do a quick version of the redesign.",correct:false}],feedback:"'While we're in there' is how sprints lose their integrity. Fix the bug (committed). Flag the redesign (valid). Schedule it properly (sustainable). This is how teams stay predictable.",tip:"🔑 Tactic: Commit to scope, harvest the opportunity"},
+  {category:"📦 Scope Creep",difficulty:"Easy",context:"The PM asks you to design for a new platform (tablet) that wasn't in the original brief, a week before launch.",pmSays:"Sales just told us a big client needs a tablet version. Can we add it this sprint?",question:"What do you say?",options:[{text:"Design a basic tablet version — it's probably mostly responsive anyway.",correct:false},{text:"Estimate the actual effort for a proper tablet design, explain the risk of a rushed version, and suggest delaying the client's tablet access until the next release cycle.",correct:true},{text:"Say yes to the PM and flag it to the sales team directly.",correct:false},{text:"Ask engineering if they can just make the responsive design work on tablets without new design work.",correct:false}],feedback:"A rushed tablet version often performs worse than a honest 'coming in release 2' message. Clients respond better to a clear date than a broken experience. Show the PM what 'quick' actually means in hours, then let them decide.",tip:"🔑 Tactic: Show the real cost before committing"},
+  {category:"📦 Scope Creep",difficulty:"Hard",context:"Post-launch feedback has the PM wanting to make major design changes based on a single negative review.",pmSays:"A top user said the navigation is confusing. Let's redesign it this sprint — we need to move fast.",question:"What do you do?",options:[{text:"Start the redesign — user feedback should be actioned quickly.",correct:false},{text:"Propose waiting for quantitative data (1-2 weeks) to see if the feedback is representative before committing to a major redesign.",correct:true},{text:"Dismiss the feedback as a one-off and advocate for keeping the current design.",correct:false},{text:"Run 3 usability tests immediately to validate the feedback before acting.",correct:false}],feedback:"One negative review is signal, not a mandate. 1-2 weeks of session recording data, support ticket volume, and analytics will tell you if this is a pattern or an outlier — preventing a reactive redesign that introduces new problems.",tip:"🔑 Tactic: Signal vs. pattern"},
+  {category:"🎨 Design Override",difficulty:"Medium",context:"The PM has changed your UI in the engineering handoff Figma file without telling you.",pmSays:"I tweaked a few things to match what I thought we agreed — nothing major. Engineers are already on it.",question:"How do you handle this?",options:[{text:"Let it go — it's already in development and the changes are probably fine.",correct:false},{text:"Review the changes, revert what affects usability or accessibility, and establish a clear rule that design file edits require design sign-off.",correct:true},{text:"Tell the PM this was a serious overstep and that they're not allowed in the design files.",correct:false},{text:"Ask engineering to implement your original design instead.",correct:false}],feedback:"Act quickly but diplomatically. Review and revert what matters, ignore what doesn't. Then establish the process: design files are the source of truth and any changes need design review.",tip:"🔑 Tactic: Revert + establish protocol"},
+  {category:"🎨 Design Override",difficulty:"Hard",context:"The PM overrode your recommended IA in a meeting with engineering, saying a different structure 'makes more sense.'",pmSays:"I've used a lot of apps. I think tabs make more sense here than a sidebar — I told the engineers to go with tabs.",question:"What's your best response?",options:[{text:"Accept the decision — the PM has authority over product decisions.",correct:false},{text:"Ask to present your IA rationale in a 15-minute session before engineering begins, grounded in user research and mental models.",correct:true},{text:"Design both options and let users vote.",correct:false},{text:"Tell the PM that IA is a design decision and they overstepped.",correct:false}],feedback:"The PM's intuition might be right — but 'I've used a lot of apps' isn't a design rationale. Asking for 15 minutes to present your research-backed rationale is a reasonable, professional request that often changes the outcome.",tip:"🔑 Tactic: Earn the decision with rationale"},
+  {category:"🎨 Design Override",difficulty:"Easy",context:"The PM wants to use a colour that directly violates your design system to 'stand out.'",pmSays:"Let's use hot pink for this CTA. It'll pop. The design system colours are too boring.",question:"What do you say?",options:[{text:"Use hot pink — a bold CTA choice can be right for the moment.",correct:false},{text:"Explain the design system's role in consistency and trust, show the PM the high-contrast CTA options that exist in the system, and escalate the hot pink idea as a design system evolution request.",correct:true},{text:"Use hot pink this once but document it as a one-off exception.",correct:false},{text:"Tell the PM to take it up with the design system team.",correct:false}],feedback:"Design systems aren't arbitrary rules — they're trust and recognition infrastructure. Showing bold-but-consistent options within the system satisfies the 'stand out' goal. If hot pink is right, the system should evolve to include it.",tip:"🔑 Tactic: Redirect to the system, evolve it properly"},
+  {category:"🎨 Design Override",difficulty:"Medium",context:"Leadership has changed the copy on a key UI element at the last minute, breaking the design layout.",pmSays:"Legal said the button copy needs to say 'I acknowledge and accept these terms' instead of 'Agree.' That's final.",question:"How do you respond?",options:[{text:"Implement it as-is — legal decisions are final.",correct:false},{text:"Redesign the layout to accommodate the new copy properly, flagging that the original design will break at this copy length.",correct:true},{text:"Push back on legal's decision as a design concern.",correct:false},{text:"Shorten the copy yourself and send legal an alternative for approval.",correct:false}],feedback:"Legal decisions are final — but the design execution is yours. A button that overflows or truncates is worse than the original problem. Adapting gracefully to constraints is a design skill.",tip:"🔑 Tactic: Adapt, don't abandon"},
+  {category:"🎨 Design Override",difficulty:"Hard",context:"The PM uses their own taste as a veto on design decisions, saying they 'just don't like it.'",pmSays:"I don't know — I just don't like how it looks. Can you make it look more... premium? Something just feels off.",question:"What do you do?",options:[{text:"Iterate until the PM likes it.",correct:false},{text:"Ask the PM to articulate what 'premium' means to them using reference points, then connect the feedback to specific design principles and user goals.",correct:true},{text:"Defend your design decision and ask the PM to provide evidence-based feedback.",correct:false},{text:"Present three alternatives and let the PM pick.",correct:false}],feedback:"'I don't like it' is the start of a conversation, not feedback. Asking 'what does premium look like — can you show me a reference?' converts taste into direction. It also reveals whether the concern is aesthetic or functional.",tip:"🔑 Tactic: Convert taste into direction"},
+  {category:"🎨 Design Override",difficulty:"Medium",context:"A PM insists on adding more features to the homepage because it 'shows value to users.'",pmSays:"Users need to see everything we offer upfront. Let's add the 6 new feature blocks to the home screen.",question:"How do you respond?",options:[{text:"Add the 6 blocks — surface area on the homepage does communicate value.",correct:false},{text:"Share research on progressive disclosure and cognitive load, then propose a home screen that highlights the core value prop with a clear 'explore all features' path.",correct:true},{text:"Add 3 of the 6 blocks as a compromise.",correct:false},{text:"Test both versions with users before deciding.",correct:false}],feedback:"More features on the homepage often communicates less value, not more. Users see complexity and feel overwhelmed. Framing this around cognitive load and progressive disclosure is design education that helps the PM understand why less can be more.",tip:"🔑 Tactic: Educate on progressive disclosure"},
+  {category:"🎨 Design Override",difficulty:"Easy",context:"The PM wants to use a stock photo you flagged as inauthentic and off-brand.",pmSays:"The stock photo works fine. Finding real photography takes too long. Ship it.",question:"What do you do?",options:[{text:"Use the stock photo — photography is a production detail, not a core design issue.",correct:false},{text:"Find 2-3 better stock alternatives from approved libraries in the next 30 minutes, and make the case for authenticity with 1-2 brand equity examples.",correct:true},{text:"Block the launch until real photography is sourced.",correct:false},{text:"Use the photo with a colour overlay to make it feel more on-brand.",correct:false}],feedback:"If your objection is valid, solve the problem — don't just raise it. 30 minutes of searching Unsplash or your brand library often yields better options. Bringing solutions, not just objections, is what earns you design authority.",tip:"🔑 Tactic: Bring solutions, not just objections"},
+  {category:"🎨 Design Override",difficulty:"Hard",context:"The CEO saw a feature in a meeting and directly asked engineers to implement it without any design process.",pmSays:"The CEO demoed it to a big client and loved it. Engineers are already building it. Can you just polish it after?",question:"What's your move?",options:[{text:"Polish it post-build — the decision is made and the relationship isn't worth the fight.",correct:false},{text:"Ask for a 30-minute session to do a rapid design review before build progresses too far, framing it as protecting the CEO's demo from embarrassing edge cases.",correct:true},{text:"Escalate to your design manager to block the build.",correct:false},{text:"Polish it but document all the design problems for future reference.",correct:false}],feedback:"The 'polish after' model produces the worst outcomes — you're retrofitting design into already-built engineering. Framing a rapid review as 'protecting the CEO's vision from edge cases' is compelling to both the PM and the CEO.",tip:"🔑 Tactic: Reframe as protection, not process"},
+
+  {category:"✂️ Cutting Time",difficulty:"Hard",context:"You're the only designer on a team of 12 engineers. The PM has just added 3 more concurrent projects to your plate, claiming design is 'not the bottleneck.'",pmSays:"Design doesn't take as long as engineering. You should be able to handle all three streams at once — just timebox each one.",question:"How do you respond?",options:[{text:"Try to manage all three — showing you can handle pressure will build trust.",correct:false},{text:"Accept it but quietly deprioritise quality across all three streams.",correct:false},{text:"Map out the actual design hours required across all three projects, show the conflict clearly, and ask the PM to make an explicit prioritisation decision rather than leaving it implicit.",correct:true},{text:"Ask for a second designer to be hired before committing to anything.",correct:false}],feedback:"'Design isn't the bottleneck' is often said by people who've never watched a designer work. A visual timeline showing design hours vs. available hours makes the constraint legible. Force the PM to choose the priority order — don't absorb the decision silently.",tip:"🔑 Tactic: Visualise the resource conflict"},
+
+  {category:"✂️ Cutting Time",difficulty:"Hard",context:"Your company is under pressure to ship a rebrand. The PM wants to update every surface in the product in a 2-week sprint.",pmSays:"It's just swapping colours and fonts — how long can it really take? Let's just push it through.",question:"What do you do?",options:[{text:"Attempt it — rebrands are mostly find-and-replace in a design system.",correct:false},{text:"Audit the actual number of components, screens, and states affected, then present the real scope with a phased rollout proposal — starting with high-visibility surfaces.",correct:true},{text:"Refuse until a proper rebrand timeline is agreed.",correct:false},{text:"Do the design work in 2 weeks but flag to engineering that implementation will take longer.",correct:false}],feedback:"'Just swapping colours and fonts' routinely balloons into hundreds of component states, edge cases, and legacy screens. An audit that shows the actual number of affected surfaces resets expectations without confrontation. Phased rollout lets you ship momentum while being realistic.",tip:"🔑 Tactic: Audit before committing"},
+
+  {category:"🔬 Skipping Research",difficulty:"Hard",context:"The PM wants to shut down a long-running usability testing programme to cut costs, citing that the findings 'rarely change anything anyway.'",pmSays:"We've been running these tests for 2 years and the product hasn't changed much based on findings. It's hard to justify the cost.",question:"How do you respond?",options:[{text:"Agree — if findings aren't driving change, the programme isn't working.",correct:false},{text:"Pull together 3-5 specific examples where research directly prevented a bad decision or changed a shipped feature, and use them to reframe research as risk reduction rather than idea generation.",correct:true},{text:"Argue that research has intrinsic value regardless of immediate output.",correct:false},{text:"Propose reducing the frequency of tests to cut costs while keeping the programme alive.",correct:false}],feedback:"'Findings rarely change anything' is sometimes true — but the right response is to demonstrate ROI, not defend research as a principle. Concrete examples of prevented bad decisions are far more convincing than abstract arguments about research value.",tip:"🔑 Tactic: Prove ROI with specific examples"},
+
+  {category:"🔬 Skipping Research",difficulty:"Hard",context:"A PM is using NPS scores as evidence that users are happy with the current design, arguing against a redesign you know is needed.",pmSays:"Our NPS is 52 — that's pretty good. Users are clearly happy with the current experience. Why fix what isn't broken?",question:"What's your move?",options:[{text:"Accept the NPS data — 52 is above average and hard to argue with.",correct:false},{text:"Acknowledge the NPS score but explain its limitations: it measures overall sentiment, not specific interaction quality, and doesn't explain where users struggle. Propose supplementing it with task-completion rates and session recordings.",correct:true},{text:"Argue that NPS is a flawed metric and shouldn't be used for design decisions.",correct:false},{text:"Run a competitor benchmarking study to show users prefer competitor products.",correct:false}],feedback:"NPS measures loyalty, not usability. A user can love your product overall and still struggle with a specific flow. Proposing supplementary metrics (task success rate, time-on-task, rage clicks) shifts the conversation from 'is the product good' to 'which parts are broken and why.'",tip:"🔑 Tactic: Expose the metric's blind spots"},
+
+  {category:"🔬 Skipping Research",difficulty:"Hard",context:"The PM has hired an external consultancy to do a 'design audit' without involving you. The consultancy's recommendations directly contradict your research.",pmSays:"The consultancy has done this for 50 companies. I think we should go with their recommendations — they have a lot of experience.",question:"How do you respond?",options:[{text:"Accept the consultancy's recommendations — external expertise is valuable.",correct:false},{text:"Dismiss the consultancy's work as generic and defend your existing research.",correct:false},{text:"Request a joint session where you map the consultancy's recommendations against your user research findings to identify where they align, conflict, and where more evidence is needed.",correct:true},{text:"Ask the PM why they felt external input was needed instead of trusting the internal design team.",correct:false}],feedback:"Dismissing the consultancy looks defensive; blindly accepting it ignores your contextual knowledge. A joint synthesis session positions you as collaborative and rigorous — and often reveals that the contradiction is more apparent than real once both evidence sets are in the same room.",tip:"🔑 Tactic: Synthesise, don't battle"},
+
+  {category:"♿ Accessibility",difficulty:"Hard",context:"Your company's legal team has told the PM that accessibility compliance 'isn't legally required for our product type.' The PM is using this to kill all accessibility work.",pmSays:"Legal says we're in the clear. We don't need to spend time on accessibility — let's redirect that effort to features.",question:"What do you do?",options:[{text:"Accept the legal opinion — if legal says it's fine, it's fine.",correct:false},{text:"Challenge the legal opinion directly in front of the PM.",correct:false},{text:"Acknowledge the legal finding but present the business case independently: accessible products have larger addressable markets, better SEO, and lower support costs — then propose a minimum viable accessibility baseline.",correct:true},{text:"Continue doing accessibility work quietly without the PM's knowledge.",correct:false}],feedback:"Legal clearance isn't the same as business wisdom. Even if you're not legally required, accessible products serve more users, rank better in search, and reduce friction for all users (not just those with disabilities). Decoupling the business case from the legal argument keeps the conversation open.",tip:"🔑 Tactic: Separate legal from business case"},
+
+  {category:"♿ Accessibility",difficulty:"Hard",context:"During a design review, a senior engineer says that implementing your accessibility specifications will 'double the development time' and pushes back hard.",pmSays:"Engineering says your accessibility specs are too complex to implement in the timeline. We need to cut them back significantly.",question:"How do you handle this?",options:[{text:"Cut the accessibility specs to unblock the sprint.",correct:false},{text:"Ask for a specific technical session with the engineer to understand exactly which specs are complex and why — then look for implementation approaches that achieve the same accessible outcome with less engineering overhead.",correct:true},{text:"Escalate to the engineering manager to enforce the specs.",correct:false},{text:"Agree to cut the specs but schedule a dedicated accessibility sprint for later.",correct:false}],feedback:"'Double the development time' is often an estimate made without exploring alternatives. A technical pairing session frequently reveals that the concern is about one specific pattern, not all accessibility specs. Finding the specific blocker lets you solve it without abandoning the whole requirement.",tip:"🔑 Tactic: Find the specific blocker"},
+
+  {category:"📦 Scope Creep",difficulty:"Hard",context:"You're 3 weeks into a 4-week project when you discover that engineering has been building a significantly different version of the feature than what you designed.",pmSays:"The engineers made some changes during build because they thought it would be easier to implement. It's mostly the same thing.",question:"What's your move?",options:[{text:"Accept what's been built — changing it now would cause more disruption.",correct:false},{text:"Do a side-by-side comparison of what was designed vs. what was built, identify the user-facing differences, and hold a joint session to decide which gaps are worth fixing before launch.",correct:true},{text:"Tell the PM this is unacceptable and insist on implementing the original design.",correct:false},{text:"Update the design files to match what was built and move on.",correct:false}],feedback:"'Mostly the same' often means meaningfully different for users. A side-by-side gap analysis turns a confrontational 'you built it wrong' into a practical 'let's triage what matters' — which engineering will respond to much better. Some gaps may be fine; others may be critical.",tip:"🔑 Tactic: Triage the gap, don't relitigate"},
+
+  {category:"📦 Scope Creep",difficulty:"Hard",context:"The PM wants to combine two separate products into one 'super app' without any user research, claiming it will 'simplify the offering.'",pmSays:"Users have to switch between two apps. Let's just merge them — it'll be simpler. We can figure out the IA as we go.",question:"How do you respond?",options:[{text:"Start designing the merged IA — combining the apps is a reasonable strategy.",correct:false},{text:"Point out that 'simpler offering' for the business often means 'more complex experience' for users, and propose a 3-week discovery phase to understand how users currently switch between the apps and what they actually need.",correct:true},{text:"Refuse to start design work until a full strategy is agreed.",correct:false},{text:"Propose a phased merger starting with shared navigation only.",correct:false}],feedback:"Merging two products is one of the highest-risk UX decisions a company can make. Users who've built workflows around two separate tools often find a merged experience harder, not easier. Framing the discovery phase as 'protecting the merger investment' rather than 'slowing it down' is the right pitch.",tip:"🔑 Tactic: Reframe discovery as investment protection"},
+
+  {category:"📦 Scope Creep",difficulty:"Hard",context:"You've been asked to present design work at a board meeting in 3 days. The work isn't ready and the PM has been inflating the progress in their reports.",pmSays:"I've been telling the board we're 80% done. Can you just put something together that looks polished even if it's not final?",question:"What do you do?",options:[{text:"Create polished-looking mockups that represent the current state — it's just a board presentation.",correct:false},{text:"Tell the PM directly that showing unfinished work as finished creates false expectations that will backfire, and offer to present an honest 'work in progress' narrative with a clear completion timeline instead.",correct:true},{text:"Refuse to present anything until the work is genuinely ready.",correct:false},{text:"Present the work but add small disclaimers that it's still in progress.",correct:false}],feedback:"Presenting unfinished work as finished to a board sets expectations that will constrain every subsequent decision — timelines, resources, and feature scope. An honest WIP narrative with a compelling vision is more credible and less risky than a polished fiction.",tip:"🔑 Tactic: Honest narrative beats polished fiction"},
+
+  {category:"🎨 Design Override",difficulty:"Hard",context:"A PM has been holding 1:1s with individual engineers to get design decisions overturned after you've already aligned the full team.",pmSays:"I spoke with a couple of engineers who think the sidebar approach won't work technically. I think we need to go back to the drawing board.",question:"How do you respond?",options:[{text:"Go back to the drawing board — engineering feasibility is a valid reason to revisit.",correct:false},{text:"Request a full team session where the technical concerns are raised openly, so they can be evaluated in context rather than through back-channel influence.",correct:true},{text:"Confront the PM about going around the agreed process.",correct:false},{text:"Ask the engineers directly whether they actually raised those concerns.",correct:false}],feedback:"Back-channel influence is a pattern that erodes team trust and process integrity. Requesting a full team session isn't confrontational — it's just good process. Technical concerns raised in the open can be evaluated on merit; concerns raised in private are often misrepresented or taken out of context.",tip:"🔑 Tactic: Surface back-channels into the open"},
+
+  {category:"🎨 Design Override",difficulty:"Hard",context:"Your design system has been systematically ignored by a fast-moving new product team. The PM says the design system is 'too slow to evolve' to meet their needs.",pmSays:"The design system team takes 3 sprints to add a new component. We can't wait that long. We're building our own patterns.",question:"What's your move?",options:[{text:"Accept it — if the design system can't keep up, the team has to find alternatives.",correct:false},{text:"Acknowledge the legitimate speed concern, then propose a 'contribution model' where the new team can build components that get fast-tracked into the design system with design system team support.",correct:true},{text:"Escalate to the design system team to prioritise this team's requests.",correct:false},{text:"Tell the PM that diverging from the design system will create long-term technical and design debt.",correct:false}],feedback:"'The design system is too slow' is often a legitimate complaint about process, not a rejection of the system itself. A contribution model — where teams build and the design system team reviews and absorbs — solves the speed problem without fragmenting the design language.",tip:"🔑 Tactic: Contribution model over confrontation"},
+
+  {category:"🎨 Design Override",difficulty:"Hard",context:"During a high-stakes product demo to potential investors, the CEO made promises about features that don't exist yet and showed design concepts you clearly marked as exploratory.",pmSays:"The investors loved the concepts you showed in last month's explorations. We need to build exactly what was in those slides.",question:"How do you respond?",options:[{text:"Start building toward the exploratory concepts — investor excitement is a mandate.",correct:false},{text:"Request a prioritisation session to map which exploratory concepts are feasible in the near term, which need more research, and which were purely speculative — before any build commitments are made.",correct:true},{text:"Tell the PM that exploratory work was never meant to be treated as a product roadmap.",correct:false},{text:"Redesign the concepts to be more buildable without flagging the change.",correct:false}],feedback:"Investor-driven roadmaps built on exploratory mockups are a major source of product failure. The concepts excited investors because they showed potential — not because they were ready to build. A prioritisation session that maps feasibility, research needs, and speculation prevents committing to a fiction.",tip:"🔑 Tactic: Map feasibility before committing"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"You've shared detailed design feedback on a VP's pet feature with clear rationale. The VP has acknowledged your points but implemented exactly what they originally wanted anyway.",pmSays:"Thanks for the feedback. We're going to go ahead with the original direction — I think it's the right call for the business.",question:"What do you do now?",options:[{text:"Accept the decision quietly — VPs have the authority and you've done your job.",correct:false},{text:"Send a follow-up email restating your concerns so you're on record, then ask the VP what evidence would change their mind in the future.",correct:true},{text:"Escalate to your design director to overrule the VP.",correct:false},{text:"Refuse to implement the design until the VP addresses your concerns.",correct:false}],feedback:"When someone with authority overrides your feedback, your job has two parts: protect the record and understand the decision-making criteria. A follow-up email creates a paper trail without being confrontational. Asking 'what evidence would change this in future' is a genuinely useful question — it tells you whether feedback is actually welcome or purely performative.",tip:"🔑 Tactic: Record it, then learn the real criteria"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"A VP has been rewriting your design briefs after you submit them, changing the problem framing to match their preferred solution before sending them to engineering.",pmSays:"I cleaned up the brief a little before sending it on — just made sure the direction was clear for the engineers.",question:"How do you handle this?",options:[{text:"Let it go — VPs often need to add business context that designers miss.",correct:false},{text:"Request a standing pre-send review with the VP so you can align on framing together before the brief goes to engineering — framing it as improving brief quality, not protecting territory.",correct:true},{text:"Tell the VP that editing your briefs without your knowledge is undermining the design process.",correct:false},{text:"Start cc'ing your design manager on all briefs to create a paper trail.",correct:false}],feedback:"Rewritten briefs that embed the solution in the problem framing are one of the most effective ways to shut down design thinking. A standing pre-send review stops the rewriting from happening in private while giving the VP a legitimate channel to add business context. It's a process fix, not a territorial dispute.",tip:"🔑 Tactic: Create a legitimate channel for their input"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"The CPO publicly dismissed your design recommendation in a full-team meeting without engaging with your rationale, saying 'I just don't see it.'",pmSays:"The CPO said they don't think the direction is right. We should probably just move on and try something else.",question:"What's your move?",options:[{text:"Move on — a CPO veto in a public meeting is final.",correct:false},{text:"Ask for 20 minutes with the CPO after the meeting to understand what specifically didn't land, so you can either address the concern or understand the decision criteria better.",correct:true},{text:"Defend your recommendation publicly in the meeting before it ends.",correct:false},{text:"Ask the PM to advocate for your recommendation with the CPO.",correct:false}],feedback:"Public dismissal without engagement is demoralising, but reacting in the meeting usually makes it worse. A quiet follow-up conversation does two things: it shows professional confidence (you're not retreating, you're seeking understanding) and it occasionally reveals that the CPO had a specific objection that could actually be addressed.",tip:"🔑 Tactic: Private follow-up over public defence"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"A senior PM keeps crediting themselves for design decisions in stakeholder updates, presenting your work as their own ideas.",pmSays:"I told the exec team about the new onboarding approach I came up with — they loved it. We should keep that momentum going.",question:"How do you respond?",options:[{text:"Let it go — visibility politics aren't worth the relationship cost.",correct:false},{text:"Start sending your own brief design update emails to the same stakeholders, creating a paper trail of your contributions without directly calling out the PM.",correct:true},{text:"Confront the PM directly and tell them to attribute design work correctly.",correct:false},{text:"Tell your manager that the PM is taking credit for your work.",correct:false}],feedback:"Credit theft compounds over time — it affects your performance reviews, your reputation, and your leverage. Sending your own stakeholder updates (framed as 'design team progress' rather than competitive positioning) creates visibility without conflict. It also makes the pattern harder to continue without looking obviously duplicative.",tip:"🔑 Tactic: Build your own visibility channel"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"Your design manager has agreed with a VP to cut the design team's involvement in a major project to 'move faster,' without consulting you or the team.",pmSays:"Leadership has decided design will be in a support role on this one — just reviewing before launch rather than being embedded. It'll help with speed.",question:"What do you do?",options:[{text:"Accept the decision — management has the right to structure team involvement.",correct:false},{text:"Request a conversation with your manager to understand the rationale and share specific risks of a review-only model for this project type, giving them information to push back up the chain if appropriate.",correct:true},{text:"Go directly to the VP to argue for full design involvement.",correct:false},{text:"Agree but quietly document all the design issues that arise from the reduced involvement.",correct:false}],feedback:"Your manager may not fully understand the project's complexity, or may have agreed under pressure without having the full picture. Sharing specific risks (e.g. 'this project involves 3 new interaction patterns that need design input during build, not just review') gives them something concrete to take back to the VP.",tip:"🔑 Tactic: Arm your manager with specifics"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"A VP has set up a competing design process in parallel with yours, asking a marketing designer to create product UI concepts without any coordination.",pmSays:"I asked the marketing team to explore some ideas in parallel. It'll give us more options. You can both present and we'll pick the best one.",question:"How do you respond?",options:[{text:"Compete — produce the best work and let the best design win.",correct:false},{text:"Accept the parallel process privately but escalate to your manager.",correct:false},{text:"Meet with the marketing designer to align on user context, constraints, and research — framing it as collaboration so the VP gets better options from both of you, not two disconnected proposals.",correct:true},{text:"Tell the VP that parallel design processes lead to inconsistent outputs and create confusion for engineering.",correct:false}],feedback:"Competing with a marketing designer on product UI puts you both in a bad position. Collaborating — sharing research, constraints, and the design system — means whichever direction wins, it's grounded in product reality. It also builds a relationship that prevents this dynamic from recurring.",tip:"🔑 Tactic: Collaborate with the competition"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"You've raised a serious usability issue with a feature three times across three sprints. Each time it's been deprioritised. The feature is now about to launch.",pmSays:"We've noted the feedback. We need to ship — we'll monitor it after launch and fix it if it's actually a problem.",question:"What's your final move before launch?",options:[{text:"Accept it — you've done your job by raising it three times.",correct:false},{text:"Write a clear, brief risk memo addressed to the PM and your design manager that documents the issue, the three times it was raised, the predicted user impact, and what you'd need to fix it — then let the launch proceed.",correct:true},{text:"Refuse to sign off on the design and escalate to block the launch.",correct:false},{text:"Go directly to the engineering team and ask them to delay the launch.",correct:false}],feedback:"At some point you've done your professional duty — the decision is above your pay grade. A risk memo before launch does three things: it creates accountability, it gives leadership information to make an informed decision, and it protects you professionally if the predicted problem materialises. This isn't about being right — it's about being on record.",tip:"🔑 Tactic: The pre-launch risk memo"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"A VP has started attending design crits and giving direct feedback to junior designers that contradicts your team's design principles and your feedback.",pmSays:"I like giving direct input to the team — it's faster than going through layers. The junior designers seem to appreciate it.",question:"How do you handle this?",options:[{text:"Let it continue — VP input is valuable and junior designers benefit from senior exposure.",correct:false},{text:"Have a private conversation with the VP acknowledging the value of their input, but explaining that contradictory feedback in crits undermines junior designers' learning and the team's design coherence — propose a structured way for VP input to flow in.",correct:true},{text:"Stop inviting the VP to design crits.",correct:false},{text:"Debrief with junior designers after each crit to correct the VP's contradictory feedback.",correct:false}],feedback:"VP feedback that contradicts established principles isn't just confusing — it's professionally destabilising for junior designers who don't know whose direction to follow. Framing the conversation around junior designers' development (not your authority) is the right angle. Proposing a structured input channel (e.g. brief written notes after the crit) gives the VP a face-saving alternative.",tip:"🔑 Tactic: Protect the team, not your authority"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"Your company's founder keeps redesigning the product in Keynote and sharing it with the team as 'the vision,' effectively bypassing all design process.",pmSays:"The founder shared some new directions last night. They're really excited about it. Can we make these happen?",question:"What do you do?",options:[{text:"Implement the founder's Keynote — founder vision is the company's vision.",correct:false},{text:"Treat the Keynote as inspiration, not specification — extract the intent behind each concept, validate against user needs, and present back a version that achieves the founder's goals through a properly designed solution.",correct:true},{text:"Tell the PM that founder Keynotes shouldn't bypass the design process.",correct:false},{text:"Request a meeting with the founder to understand their vision before doing anything.",correct:false}],feedback:"Fighting the founder Keynote is a losing battle — the founder will always have final say. The skill is in extracting the underlying intent (what problem are they trying to solve? what emotion do they want to evoke?) and channelling it through a proper design process. Done well, the founder feels heard and the team gets to do real design work.",tip:"🔑 Tactic: Extract intent, then design properly"},
+
+  {category:"💼 Power Dynamics",difficulty:"Hard",context:"After you pushed back on a PM's decision using data and research, they've started excluding you from key planning meetings, saying they'll 'loop you in when the design phase starts.'",pmSays:"We'll get you involved once we've aligned on direction internally. No point bringing design in too early.",question:"How do you respond?",options:[{text:"Accept the new process — getting involved at the design phase is the traditional model.",correct:false},{text:"Make the case directly to the PM (and your manager if needed) that excluding design from planning increases rework risk, using a specific example of a planning decision that led to design problems in the past.",correct:true},{text:"Attend the meetings anyway and say you were confused about the new process.",correct:false},{text:"Raise a formal complaint about being excluded from planning meetings.",correct:false}],feedback:"Being excluded after pushing back is a classic political response. The best counter isn't to escalate immediately — it's to make the business cost of late design involvement undeniable using a concrete example. If that doesn't work, involving your manager becomes appropriate. The goal is to reframe design involvement as a project efficiency issue, not a personal slight.",tip:"🔑 Tactic: Make the cost of exclusion concrete"}
+];
+
+// ---- PM SCENARIOS ----
+const PM_SCENARIOS = [
+  {category:"📋 Writing Briefs",difficulty:"Medium",context:"You have a strong conviction about how a new onboarding flow should work. You've already sketched it out in your head and just need the designer to execute it.",designerSays:"I'd love to understand the problem we're solving before we jump to a solution — can you share the brief?",question:"How do you write the brief?",options:[{text:"Detail your solution clearly so the designer can implement it efficiently — you've already done the thinking.",correct:false},{text:"Describe the user problem, the business goal, and the constraints — but leave the solution space open for the designer to explore.",correct:true},{text:"Share your sketch and ask the designer to improve the visual design.",correct:false},{text:"Write a brief that mentions the problem but steers toward your preferred solution 'as a starting point.'",correct:false}],feedback:"A brief that embeds a solution stops design thinking before it starts. Your job is to define the problem clearly and the success criteria precisely — the designer's job is to find the best solution. The best outcomes come from PMs who brief the 'what and why' and let designers own the 'how.'",tip:"🔑 Tactic: Problem brief, not solution brief"},
+
+  {category:"📋 Writing Briefs",difficulty:"Hard",context:"Leadership wants a new feature shipped in 3 weeks. You write a brief but leave out context about technical constraints, existing user research, and competing initiatives because you assume the designer will figure it out.",designerSays:"I have a lot of questions before I can start — I'm missing context about constraints and what we already know.",question:"What should your brief have included?",options:[{text:"Just the feature requirements — designers shouldn't need business context to design.",correct:false},{text:"The problem statement, success metrics, known constraints, relevant existing research, timeline, and who the key stakeholders are.",correct:true},{text:"A rough wireframe to show the designer what you're imagining.",correct:false},{text:"The feature requirements and a deadline — designers can ask questions as they go.",correct:false}],feedback:"A designer can only work with what you give them. Missing context forces them to make assumptions that lead to rework. A complete brief — problem, metrics, constraints, existing knowledge, stakeholders, timeline — is not overhead. It's the foundation that makes fast, accurate design possible.",tip:"🔑 Tactic: Complete context upfront"},
+
+  {category:"📋 Writing Briefs",difficulty:"Medium",context:"You send a brief that describes a feature but also includes a note saying 'I was thinking something like the Spotify homescreen' as a reference.",designerSays:"Are you asking me to use Spotify's layout specifically, or is this just a feel reference?",question:"How do you respond?",options:[{text:"Tell the designer you want the Spotify layout — it's been well-tested and users know it.",correct:false},{text:"Clarify that it's a feel reference — you liked the personalisation and content hierarchy, not the literal layout — and ask the designer to interpret that for your context.",correct:true},{text:"Say it's just inspiration and leave the designer to interpret it however they want.",correct:false},{text:"Remove the reference to avoid confusion and just add more written detail.",correct:false}],feedback:"References are powerful when they're specific about what you're referencing. 'I like how Spotify surfaces personalised content quickly' is actionable. 'Make it like Spotify' is a trap. Unpacking what you're drawn to in the reference — the behaviour, the hierarchy, the feeling — gives designers useful signal without constraining their solution.",tip:"🔑 Tactic: Unpack references, don't just cite them"},
+
+  {category:"🔍 Running Design Reviews",difficulty:"Hard",context:"You're in a design review. The designer presents three directions. You immediately say 'I like option B' before hearing the rationale for any of them.",designerSays:"I was about to walk you through the thinking behind each direction before we decide...",question:"What should you have done?",options:[{text:"Nothing — quick decisions show confidence and save time.",correct:false},{text:"Listened to the full rationale for all three options before sharing any preference, asking questions about user needs and tradeoffs, not just aesthetic preference.",correct:true},{text:"Said 'I like B but tell me more' — you can still listen while sharing your initial reaction.",correct:false},{text:"Asked the designer to just present the one they recommend.",correct:false}],feedback:"Sharing a preference before hearing the rationale anchors the entire room. Designers will stop advocating for better options the moment they think the decision is made. Design reviews are most valuable when PMs ask questions first — 'which of these best solves the problem we set?' — and form opinions after hearing the evidence.",tip:"🔑 Tactic: Ask before you react"},
+
+  {category:"🔍 Running Design Reviews",difficulty:"Medium",context:"In a design review, you give feedback like 'make it feel more premium' and 'it needs more energy.' The designer looks unsure how to action it.",designerSays:"Can you help me understand what premium and energy mean specifically for this product?",question:"How do you give better feedback?",options:[{text:"Find reference examples that show what you mean, and describe the specific quality you're responding to — e.g. 'I want it to feel trustworthy like this banking app' or 'more urgency like a countdown.'",correct:true},{text:"Explain that you'll know it when you see it — the designer should try a few interpretations.",correct:false},{text:"Ask the designer what they think premium means and defer to their interpretation.",correct:false},{text:"Skip the subjective feedback and focus only on functional requirements.",correct:false}],feedback:"Vague adjectives are not feedback — they're feelings without direction. Your job is to translate business intent and brand values into something actionable. 'Premium' could mean minimal, or bold, or expensive-looking. Reference examples, specific qualities ('I want the whitespace to signal breathing room') and business context ('our competitors feel chaotic — we should feel calm') turn subjective feedback into design direction.",tip:"🔑 Tactic: References + specifics, not adjectives"},
+
+  {category:"🔍 Running Design Reviews",difficulty:"Hard",context:"The designer presents work you asked for but it's not what you imagined. Your instinct is to say 'this isn't right' and ask them to redo it.",designerSays:"I can walk you through the decisions I made and why, if that would help.",question:"What's the right response?",options:[{text:"Tell the designer it's not right and explain what you were imagining instead.",correct:false},{text:"Let the designer walk you through their rationale before responding — you might have imagined a solution, but they may have solved the problem better than your imagined version would have.",correct:true},{text:"Accept the work even if it's not what you imagined — the designer has more expertise.",correct:false},{text:"Ask why the designer didn't check in earlier if they were going in a different direction.",correct:false}],feedback:"'Not what I imagined' is not the same as 'doesn't solve the problem.' Before redirecting, understand the designer's reasoning. They may have found a better solution than the one you were picturing. If after hearing the rationale you still believe it misses the brief, then redirect — but to the problem, not your imagined solution.",tip:"🔑 Tactic: Understand before redirecting"},
+
+  {category:"🗣️ Responding to Pushback",difficulty:"Hard",context:"Your designer says the timeline you've set is too short to do the work properly and presents a risk assessment showing what will be compromised. You feel the pressure from leadership to ship.",designerSays:"I can hit the deadline, but here's what we'd have to skip — and here's the likely user impact of each.",question:"What's your move?",options:[{text:"Tell the designer to hit the deadline — leadership pressure is real and the team needs to find a way.",correct:false},{text:"Thank the designer for making the risks explicit, use their assessment to have an informed conversation with leadership about the tradeoffs, and make the decision jointly rather than absorbing it alone.",correct:true},{text:"Ask the designer to just do their best and you'll handle any fallout after launch.",correct:false},{text:"Tell the designer you appreciate the concern but this is how product works — you ship and iterate.",correct:false}],feedback:"When a designer shows you a risk assessment, they've done your job for you. That document is exactly what you need to have an honest conversation with leadership. A PM who absorbs pressure silently and just passes deadlines down is not protecting the team or the product — they're deferring a problem that will be harder to fix later.",tip:"🔑 Tactic: Use risk assessments, don't suppress them"},
+
+  {category:"🗣️ Responding to Pushback",difficulty:"Medium",context:"Your designer pushes back on a feature, citing user research that shows users don't actually want it. Your gut says the research is wrong.",designerSays:"The research from last month is pretty clear — users said this workflow step is unnecessary. Can we talk about it before we build?",question:"How do you respond?",options:[{text:"Tell the designer your experience with users outweighs one research study.",correct:false},{text:"Engage with the research — ask to see it, understand the methodology, and if you still disagree, propose a quick additional validation rather than overriding based on gut alone.",correct:true},{text:"Agree to review the research but proceed with the feature anyway — shipping is more important than debate.",correct:false},{text:"Ask the researcher to re-run the study with a different set of users.",correct:false}],feedback:"'My gut says the research is wrong' is a valid feeling that deserves examination — not a reason to override evidence. Engaging with the research methodology, understanding who was tested and what was asked, lets you identify legitimate gaps rather than just dismissing findings you don't like. If the research has a real flaw, you'll find it. If it doesn't, your gut is the thing that needs updating.",tip:"🔑 Tactic: Challenge methodology, not findings"},
+
+  {category:"📢 Advocating for Design",difficulty:"Hard",context:"Leadership has asked you to cut design time from the roadmap to hit a delivery date. You know this will result in lower quality and more rework. You're tempted to just pass the directive to the designer.",designerSays:"I heard the timeline got cut — does that mean we're skipping the research phase?",question:"What's the right move?",options:[{text:"Pass the directive on and let the designer manage the quality implications.",correct:false},{text:"Push back to leadership before passing the directive — bring the designer's risk assessment, quantify the likely rework cost, and ask for a decision from leadership that's informed by those tradeoffs.",correct:true},{text:"Tell the designer to do their best and you'll protect them from criticism post-launch.",correct:false},{text:"Accept the timeline cut but secretly plan to extend it later when leadership isn't watching.",correct:false}],feedback:"Your job is to be a buffer between leadership pressure and the team — not a conduit for it. When leadership cuts design time, they're often not aware of the downstream cost. Your role is to make that cost explicit before the decision is final, not after it's felt. A PM who just passes directives down isn't leading — they're relaying.",tip:"🔑 Tactic: Be a buffer, not a conduit"},
+
+  {category:"📢 Advocating for Design",difficulty:"Hard",context:"In a leadership meeting, an exec dismisses a design recommendation as 'just aesthetics' and overrules it without discussion. Your designer isn't in the room.",designerSays:"(You're the only one representing design in this meeting)",question:"What do you do?",options:[{text:"Accept the exec's decision — you don't have enough design expertise to push back.",correct:false},{text:"Speak up and reframe the design recommendation in business terms — explain what user problem it solves, what the expected impact is, and ask for a brief pause before the decision is final so the designer can present the rationale directly.",correct:true},{text:"Note the decision and tell the designer about it after the meeting.",correct:false},{text:"Ask the exec to attend a future design review where the designer can present their work.",correct:false}],feedback:"'Just aesthetics' is one of the most damaging framings in product development — it signals that design decisions are decorative rather than functional. As the PM in the room, you're the designer's advocate. Reframing in business terms ('this isn't about how it looks — it's about whether users understand what to do next, which affects our conversion rate') is a skill every PM needs. Saying nothing is a choice too, and the designer will notice.",tip:"🔑 Tactic: Reframe design as function, not decoration"}
+];
+
+// ---- QUIZ ENGINE ----
+const FREE_LIMIT = 5;
+let currentRole = 'designer';
+let isLoggedIn = false;
+let questions = [], currentIndex = 0, score = 0, answered = false, categoryScores = {};
+let questionResults = {};
+let activeFilter = 'all';
+let drawerFilter = 'all';
+let drawerOpen = false;
+
+// ---- WAITLIST ----
+// Handled entirely by Typeform embed — no JS needed
+
+function attemptLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value.trim();
+  const err = document.getElementById('login-error');
+  if (user === 'test' && pass === 'test') {
+    isLoggedIn = true;
+    err.classList.remove('show');
+    document.getElementById('dash-username').textContent = user;
+    document.getElementById('dash-avatar').textContent = user[0].toUpperCase();
+    showScreen('dashboard');
+  } else {
+    err.classList.add('show');
+    document.getElementById('login-pass').value = '';
+  }
+}
+
+function logout() {
+  isLoggedIn = false;
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  showScreen('landing');
+}
+
+function goToLogin() {
+  document.getElementById('paywall-overlay').classList.remove('show');
+  showScreen('login');
+}
+
+function dismissPaywall() {
+  document.getElementById('paywall-overlay').classList.remove('show');
+  showScreen('landing');
+}
+
+// Allow Enter key to submit login
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') attemptLogin();
+  });
+  document.getElementById('login-user').addEventListener('keydown', e => {
+    if (e.key === 'Enter') attemptLogin();
+  });
+});
+
+function shuffle(arr) {
+  let a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startAsRole(role) {
+  currentRole = role;
+  document.body.classList.toggle('pm-mode', role === 'pm');
+  const filterBar = document.getElementById('filter-bar');
+  filterBar.style.display = role === 'pm' ? 'none' : '';
+  document.getElementById('speaker-label').textContent = role === 'pm' ? 'DESIGNER SAYS' : 'PM SAYS';
+  document.getElementById('quiz-logo').textContent = role === 'pm' ? 'PUZL' : 'PUZL';
+  startQuiz('all');
+}
+
+function startQuiz(filterCat) {
+  const sourcePool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+  activeFilter = filterCat || 'all';
+  const filtered = activeFilter === 'all' ? sourcePool : sourcePool.filter(s => s.category === activeFilter);
+  questions = shuffle(filtered);
+  // Guests only get FREE_LIMIT questions
+  if (!isLoggedIn) questions = questions.slice(0, FREE_LIMIT);
+  currentIndex = 0; score = 0; answered = false; categoryScores = {}; questionResults = {};
+  sourcePool.forEach(s => { if (!categoryScores[s.category]) categoryScores[s.category] = { correct: 0, total: 0 }; });
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = [...document.querySelectorAll('.filter-btn')].find(b => {
+    const match = b.getAttribute('onclick').match(/'([^']+)'/);
+    return match && match[1] === activeFilter;
+  });
+  if (activeBtn) activeBtn.classList.add('active');
+  else document.querySelector('.filter-btn') && document.querySelector('.filter-btn').classList.add('active');
+  showScreen('quiz');
+  document.getElementById('drawer-toggle').classList.add('visible');
+  renderQuestion();
+  renderDrawer();
+}
+
+function setFilter(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  startQuiz(cat === 'all' ? 'all' : cat);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  if (id !== 'quiz') {
+    document.getElementById('drawer-toggle').classList.remove('visible');
+    closeDrawer();
+  }
+  if (id === 'waitlist') {
+    const formState = document.getElementById('waitlist-form-state');
+    const successState = document.getElementById('waitlist-success');
+    if (formState && successState && !successState.classList.contains('show')) {
+      formState.style.display = '';
+    }
+  }
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  answered = false;
+  document.getElementById('progress-text').textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+  const pct = Math.round((currentIndex / questions.length) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('q-num-bg').textContent = String(currentIndex + 1).padStart(2, '0');
+  document.getElementById('q-category').textContent = q.category;
+  const diffEl = document.getElementById('q-difficulty');
+  diffEl.textContent = q.difficulty;
+  diffEl.className = 'difficulty-tag diff-' + q.difficulty.toLowerCase();
+  document.getElementById('q-context').textContent = q.context;
+  document.getElementById('q-pm-says').textContent = '\u201c' + (q.designerSays || q.pmSays) + '\u201d';
+  document.getElementById('q-question').textContent = q.question;
+  const panel = document.getElementById('options-panel');
+  panel.querySelectorAll('.option-btn').forEach(b => b.remove());
+  document.getElementById('feedback-box').classList.remove('show');
+  const btnNext = document.getElementById('btn-next');
+  btnNext.classList.remove('show');
+  btnNext.textContent = currentIndex === questions.length - 1 ? 'SEE RESULTS \u2192' : 'NEXT SCENARIO \u2192';
+  const letters = ['A', 'B', 'C', 'D'];
+  const opts = shuffle(q.options.map((o, i) => ({ ...o, origIndex: i })));
+  const feedbackBox = document.getElementById('feedback-box');
+  opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.style.animationDelay = (i * 0.07) + 's';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt.text}</span>`;
+    btn.onclick = () => selectOption(opt.correct, btn, opts, q);
+    panel.insertBefore(btn, feedbackBox);
+  });
+  // If already answered (jumping back), restore state
+  if (questionResults[currentIndex] !== undefined) {
+    restoreAnsweredState(q, opts);
+  }
+  renderDrawer();
+}
+
+function restoreAnsweredState(q, opts) {
+  answered = true;
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => {
+    b.disabled = true;
+    const txt = b.querySelector('span:last-child').textContent;
+    const opt = opts.find(o => o.text === txt);
+    if (!opt) return;
+    if (opt.correct) b.classList.add(questionResults[currentIndex] === 'correct' ? 'correct' : 'reveal-best');
+    if (!opt.correct && questionResults[currentIndex] === 'wrong') {
+      // mark chosen wrong — we don't track which was chosen, so just show best
+    }
+  });
+  const wasCorrect = questionResults[currentIndex] === 'correct';
+  const verdict = document.getElementById('feedback-verdict');
+  verdict.textContent = wasCorrect ? '\u2713 GOOD CALL' : '\u2717 NOT THE BEST MOVE';
+  verdict.className = 'feedback-verdict ' + (wasCorrect ? 'win' : 'lose');
+  document.getElementById('feedback-text').textContent = q.feedback;
+  document.getElementById('feedback-tip').textContent = q.tip;
+  document.getElementById('feedback-box').classList.add('show');
+  document.getElementById('btn-next').classList.add('show');
+}
+
+function selectOption(isCorrect, clickedBtn, opts, q) {
+  if (answered) return;
+  answered = true;
+  categoryScores[q.category].total++;
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => b.disabled = true);
+  if (isCorrect) {
+    clickedBtn.classList.add('correct');
+    score++;
+    categoryScores[q.category].correct++;
+    questionResults[currentIndex] = 'correct';
+  } else {
+    clickedBtn.classList.add('wrong');
+    questionResults[currentIndex] = 'wrong';
+    allBtns.forEach(b => {
+      const txt = b.querySelector('span:last-child').textContent;
+      if (opts.find(o => o.correct && o.text === txt)) b.classList.add('reveal-best');
+    });
+  }
+  document.getElementById('score-display').textContent = score;
+  const verdict = document.getElementById('feedback-verdict');
+  verdict.textContent = isCorrect ? '\u2713 GOOD CALL' : '\u2717 NOT THE BEST MOVE';
+  verdict.className = 'feedback-verdict ' + (isCorrect ? 'win' : 'lose');
+  document.getElementById('feedback-text').textContent = q.feedback;
+  document.getElementById('feedback-tip').textContent = q.tip;
+  document.getElementById('feedback-box').classList.add('show');
+  document.getElementById('btn-next').classList.add('show');
+  renderDrawer();
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) {
+    if (!isLoggedIn) {
+      // Show paywall instead of results for guests
+      document.getElementById('paywall-overlay').classList.add('show');
+    } else {
+      showResults();
+    }
+  } else {
+    renderQuestion();
+    document.getElementById('options-panel').scrollTop = 0;
+  }
+}
+
+function jumpToQuestion(idx) {
+  // If guest trying to jump to a locked question, show paywall
+  if (!isLoggedIn && idx >= FREE_LIMIT) {
+    closeDrawer();
+    document.getElementById('paywall-overlay').classList.add('show');
+    return;
+  }
+  currentIndex = idx;
+  renderQuestion();
+  document.getElementById('options-panel').scrollTop = 0;
+  closeDrawer();
+}
+
+// ---- DRAWER ----
+function toggleDrawer() {
+  drawerOpen = !drawerOpen;
+  document.getElementById('question-drawer').classList.toggle('open', drawerOpen);
+  // Show locked legend for guests
+  const lockedLegend = document.getElementById('legend-locked');
+  if (lockedLegend) lockedLegend.style.display = !isLoggedIn ? 'flex' : 'none';
+}
+function closeDrawer() {
+  drawerOpen = false;
+  document.getElementById('question-drawer').classList.remove('open');
+}
+
+function setDrawerFilter(cat, btn) {
+  drawerFilter = cat;
+  document.querySelectorAll('.drawer-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDrawer();
+}
+
+function renderDrawer() {
+  const grid = document.getElementById('drawer-grid');
+  grid.innerHTML = '';
+  // Always show the full pool so guests can see what they're missing
+  const fullPool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+  const displayList = isLoggedIn ? questions : fullPool.slice(0, Math.max(fullPool.length, 1));
+  const totalToShow = isLoggedIn ? questions.length : fullPool.length;
+
+  for (let i = 0; i < totalToShow; i++) {
+    const q = isLoggedIn ? questions[i] : fullPool[i];
+    const isLocked = !isLoggedIn && i >= FREE_LIMIT;
+    const hidden = drawerFilter !== 'all' && q.category !== drawerFilter;
+
+    const dot = document.createElement('div');
+    dot.className = 'q-dot';
+
+    if (isLocked) {
+      dot.classList.add('locked');
+      dot.title = `Q${i+1}: Login to unlock`;
+    } else {
+      if (i === currentIndex) dot.classList.add('current');
+      else if (questionResults[i] === 'correct') dot.classList.add('answered-correct');
+      else if (questionResults[i] === 'wrong') dot.classList.add('answered-wrong');
+      dot.title = `Q${i+1}: ${q.category}`;
+    }
+
+    if (hidden) dot.classList.add('hidden');
+    dot.textContent = i + 1;
+    dot.onclick = () => jumpToQuestion(i);
+    grid.appendChild(dot);
+  }
+}
+
+function showResults() {
+  const total = questions.length, pct = Math.round((score / total) * 100);
+  let grade, title, desc;
+  if (currentRole === 'pm') {
+    if (pct >= 90) { grade = 'A+'; title = 'DESIGN CHAMPION'; desc = "You get it. You brief clearly, review thoughtfully, and advocate hard. Designers want to work with PMs like you."; }
+    else if (pct >= 80) { grade = 'A'; title = 'DESIGN-LITERATE PM'; desc = 'Strong instincts. You mostly create the conditions for great design — a few situations still trip you up.'; }
+    else if (pct >= 70) { grade = 'B+'; title = 'GROWING COLLABORATOR'; desc = "You're improving. You respect the process but sometimes let pressure override it. Keep practising the hard situations."; }
+    else if (pct >= 60) { grade = 'B'; title = 'WORK IN PROGRESS'; desc = "You mean well but your instincts sometimes create friction for designers. Awareness is the first step — now act on it."; }
+    else if (pct >= 50) { grade = 'C'; title = 'UNINTENTIONAL BLOCKER'; desc = "You're creating more design debt than you realise. Small changes to how you brief and review will make a big difference."; }
+    else { grade = 'D'; title = 'THE PROBLEM PM'; desc = "Designers dread working with PMs who score here. The good news: everything on this quiz is learnable. Start with the briefs."; }
+  } else {
+    if (pct >= 90) { grade = 'A+'; title = 'DESIGN ADVOCATE'; desc = 'You push back with precision, empathy, and evidence. PMs respect your perspective because you always come with a better alternative.'; }
+    else if (pct >= 80) { grade = 'A'; title = 'STRATEGIC DESIGNER'; desc = 'Strong instincts and solid rationale. You pick your battles well and win most of them. A few edge cases still trip you up.'; }
+    else if (pct >= 70) { grade = 'B+'; title = 'GROWING YOUR VOICE'; desc = 'You know when to push, but sometimes take the path of least resistance. Keep practising the uncomfortable scenarios.'; }
+    else if (pct >= 60) { grade = 'B'; title = 'FINDING YOUR GROUND'; desc = "You're developing your instincts. You get the easy calls right but struggle when the pressure is real. Practice is paying off."; }
+    else if (pct >= 50) { grade = 'C'; title = 'TOO AGREEABLE'; desc = "You're accommodating at the expense of design quality. Users deserve a stronger advocate. Try again — the answers are there."; }
+    else { grade = 'D'; title = 'DOORMAT MODE'; desc = "You're consistently going along to get along. This might feel safe, but it's costing users and your craft. Time to find your voice."; }
+  }
+  document.getElementById('results-grade').textContent = grade;
+  document.getElementById('results-grade-bg').textContent = grade;
+  document.getElementById('results-score-line').textContent = `${score} / ${total} correct \u2014 ${pct}%`;
+  document.getElementById('results-title').textContent = title;
+  document.getElementById('results-desc').textContent = desc;
+  const breakdown = document.getElementById('category-breakdown');
+  breakdown.innerHTML = '';
+  const cats = currentRole === 'pm'
+    ? [{ key:'📋 Writing Briefs', icon:'📋', name:'Writing<br>Briefs' }, { key:'🔍 Running Design Reviews', icon:'🔍', name:'Design<br>Reviews' }, { key:'🗣️ Responding to Pushback', icon:'🗣️', name:'Pushback' }, { key:'📢 Advocating for Design', icon:'📢', name:'Advocating' }]
+    : [{ key:'✂️ Cutting Time', icon:'✂️', name:'Cutting<br>Time' }, { key:'🔬 Skipping Research', icon:'🔬', name:'Skipping<br>Research' }, { key:'♿ Accessibility', icon:'♿', name:'Accessibility' }, { key:'📦 Scope Creep', icon:'📦', name:'Scope<br>Creep' }, { key:'🎨 Design Override', icon:'🎨', name:'Design<br>Override' }, { key:'💼 Power Dynamics', icon:'💼', name:'Power<br>Dynamics' }];
+  cats.forEach(c => {
+    const d = categoryScores[c.key] || { correct: 0, total: 0 };
+    const p = d.total > 0 ? Math.round((d.correct / d.total) * 100) : 0;
+    const box = document.createElement('div');
+    box.className = 'cat-score-box';
+    box.innerHTML = `<div class="cat-score-icon">${c.icon}</div><div class="cat-score-pct">${p}%</div><div class="cat-score-name">${c.name}</div>`;
+    breakdown.appendChild(box);
+  });
+  showScreen('results');
+}
+
+function goHome() {
+  currentRole = 'designer';
+  document.body.classList.remove('pm-mode');
+  showScreen(isLoggedIn ? 'dashboard' : 'landing');
+  document.getElementById('drawer-toggle').classList.remove('visible');
+  closeDrawer();
+}
+</script>
+</body>
+</html>
