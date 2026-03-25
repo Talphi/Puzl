@@ -2276,6 +2276,13 @@ async function saveScenario() {
 
 async function seedDatabase() {
   const statusEl = document.getElementById('seed-status');
+  // Check if scenarios already exist
+  const { count } = await _supa.from('scenarios').select('*', { count: 'exact', head: true });
+  if (count > 0) {
+    const ok = confirm(`The database already has ${count} scenarios. This will DELETE all of them and re-import. Continue?`);
+    if (!ok) return;
+    await _supa.from('scenarios').delete().gte('created_at', '2000-01-01');
+  }
   statusEl.textContent = 'Seeding…';
   const rows = [
     ...SCENARIOS_RAW.map((s, i) => ({
