@@ -863,6 +863,7 @@
   }
 
   /* ---- LOGIN OVERLAY ---- */
+  /* ---- LOGIN OVERLAY ---- */
   .login-overlay {
     display: none;
     position: fixed;
@@ -876,64 +877,98 @@
     padding: 20px;
   }
   .login-overlay.show { display: flex; }
-  .login-bg { display: none; }
   .login-box {
-    position: relative;
-    z-index: 1;
     background: var(--white);
     border: var(--border);
-    padding: 48px 48px 40px;
     width: 100%;
-    max-width: 440px;
+    max-width: 420px;
+    position: relative;
+    overflow: hidden;
   }
-  .login-eyebrow {
+  /* Header strip — black, like the waitlist overlay */
+  .login-header {
+    background: var(--black);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--border);
+  }
+  .login-header-wordmark {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .login-header-wordmark .lh-de   { color: var(--white); }
+  .login-header-wordmark .lh-sep  { color: var(--white); opacity: 0.3; font-size: 0.82em; }
+  .login-header-wordmark .lh-puzl { color: var(--yellow); }
+  .login-close {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 6px;
+    transition: color 0.15s;
+  }
+  .login-close:hover { color: #AAA; }
+  /* Body */
+  .login-body {
+    padding: 32px 28px 28px;
+  }
+  .login-tagline {
     font-size: 10px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: #AAA;
-    margin-bottom: 8px;
-    font-weight: 600;
+    margin-bottom: 6px;
   }
   .login-title {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
-    font-size: 48px;
-    line-height: 0.95;
-    margin-bottom: 32px;
+    font-size: 36px;
+    line-height: 1.0;
+    margin-bottom: 28px;
     color: var(--black);
   }
-  .login-title span { color: var(--red); }
-  .login-field { margin-bottom: 20px; }
+  .login-title .accent { color: var(--red); }
+  .login-field { margin-bottom: 16px; }
   .login-label {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #888;
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
     font-weight: 600;
   }
   .login-input {
     width: 100%;
     border: var(--border);
-    padding: 13px 16px;
+    padding: 12px 14px;
     font-family: 'DM Sans', sans-serif;
     font-size: 15px;
     background: var(--white);
     color: var(--black);
     outline: none;
     transition: border-color 0.15s;
+    border-radius: 0;
+    appearance: none;
   }
-  .login-input:focus { border-color: var(--blue); }
+  .login-input:focus { border-color: var(--black); outline: 2px solid rgba(17,17,17,0.08); outline-offset: 0; }
   .login-error {
     font-size: 12px;
     font-weight: 600;
     color: var(--red);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     display: none;
     padding: 10px 12px;
-    border: 1px solid var(--red);
-    background: #FDF0F0;
+    border-left: 3px solid var(--red);
+    background: rgba(214,40,40,0.05);
   }
   .login-error.show { display: block; }
   .btn-login {
@@ -941,40 +976,34 @@
     background: var(--black);
     color: var(--white);
     border: none;
-    padding: 16px;
+    padding: 15px;
     font-family: 'Outfit', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s;
-    margin-top: 8px;
+    margin-top: 6px;
+    border-radius: 0;
   }
   .btn-login:hover { background: var(--red); }
-  .login-footer {
-    font-size: 11px;
-    color: #AAA;
-    margin-top: 20px;
-    text-align: center;
-    line-height: 1.6;
-  }
   .login-divider {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin: 20px 0;
     color: #CCC;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
   .login-divider::before, .login-divider::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: var(--border-color, #E5E5E5);
+    background: #E4E4E4;
   }
   .btn-google-login {
     width: 100%;
@@ -985,28 +1014,25 @@
     background: var(--white);
     color: var(--black);
     border: var(--border);
-    padding: 13px 16px;
+    padding: 12px 16px;
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
+    border-radius: 0;
+    letter-spacing: 0.01em;
   }
-  .btn-google-login:hover { background: var(--bg); border-color: #AAA; }
-  .login-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: #BBB;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px 6px;
-    transition: color 0.15s;
+  .btn-google-login:hover { background: #F5F4EF; border-color: #AAA; }
+  .login-footer {
+    font-size: 11px;
+    color: #AAA;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: var(--border-light);
+    text-align: center;
+    line-height: 1.6;
   }
-  .login-close:hover { color: var(--black); }
 
 
   /* ---- WAITLIST SCREEN ---- */
@@ -1587,36 +1613,49 @@
 
 <!-- LOGIN OVERLAY -->
 <div id="login-overlay" class="login-overlay" onclick="if(event.target===this)hideLoginOverlay()">
-  <div class="login-box" style="position:relative;">
-    <button class="login-close" onclick="hideLoginOverlay()">✕</button>
-    <div class="login-eyebrow">De:Puzl</div>
-    <div class="login-title">WELCOME<br><span>BACK.</span></div>
-    <div class="login-error" id="login-error">Incorrect username or password. Try again.</div>
-    <div class="login-field">
-      <label class="login-label" for="login-user">Username</label>
-      <input class="login-input" id="login-user" type="text" placeholder="Enter username" autocomplete="username">
-    </div>
-    <div class="login-field">
-      <label class="login-label" for="login-pass">Password</label>
-      <input class="login-input" id="login-pass" type="password" placeholder="Enter password" autocomplete="current-password">
-    </div>
-    <button class="btn-login" onclick="attemptLogin()">LOG IN →</button>
+  <div class="login-box">
 
-    <div class="login-divider"><span>or</span></div>
-
-    <button class="btn-google-login" onclick="alert('Google login coming soon!')">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
-        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-      </svg>
-      Continue with Google
-    </button>
-
-    <div class="login-footer">
-      Don't have an account? <button onclick="hideLoginOverlay(); showWaitlistOverlay();" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:600;">Join the waitlist →</button>
+    <div class="login-header">
+      <div class="login-header-wordmark">
+        <span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span>
+      </div>
+      <button class="login-close" onclick="hideLoginOverlay()">✕</button>
     </div>
+
+    <div class="login-body">
+      <div class="login-tagline">Sign in to continue</div>
+      <div class="login-title">WELCOME <span class="accent">BACK.</span></div>
+
+      <div class="login-error" id="login-error">Incorrect username or password. Try again.</div>
+
+      <div class="login-field">
+        <label class="login-label" for="login-user">Username</label>
+        <input class="login-input" id="login-user" type="text" placeholder="your username" autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label class="login-label" for="login-pass">Password</label>
+        <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button class="btn-login" onclick="attemptLogin()">LOG IN →</button>
+
+      <div class="login-divider"><span>or</span></div>
+
+      <button class="btn-google-login" onclick="alert('Google login coming soon!')">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="login-footer">
+        Don't have an account? <button onclick="hideLoginOverlay(); showWaitlistOverlay();" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:700;">Join the waitlist →</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
