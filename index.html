@@ -116,6 +116,9 @@
   .nav-questions .q-dot.locked:hover { background: transparent; color: #CCC; border-color: #CCC; }
   .nav-questions .q-dot.time-locked { border-style: dashed; border-color: rgba(242,194,0,0.4); color: rgba(242,194,0,0.5); background: rgba(242,194,0,0.06); }
   .nav-questions .q-dot.time-locked:hover { border-color: var(--yellow); color: var(--yellow); }
+  .nav-unlock-divider { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 700; font-family: 'Outfit', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(242,194,0,0.8); padding: 2px 0; }
+  .nav-unlock-divider::before, .nav-unlock-divider::after { content: ''; flex: 1; height: 1px; background: rgba(242,194,0,0.25); }
+  .nav-unlock-divider::before { display: none; }
   .nav-legend { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px; border-top: var(--border); flex-shrink: 0; background: var(--bg); }
   .nav-legend .legend-item { font-size: 8px; gap: 4px; color: #999; }
   .nav-legend .legend-dot { width: 8px; height: 8px; border-radius: 28%; }
@@ -2753,6 +2756,7 @@ function renderDrawer() {
   const realTotal = isLoggedIn ? questions.length : fullPool.length;
   const displayTotal = currentRole === 'pm' ? 200 : fullPool.length;
 
+  let dividerInserted = false;
   for (let i = 0; i < displayTotal; i++) {
     const isShell = i >= fullPool.length;
     const q = isShell ? null : (i < questions.length ? questions[i] : fullPool[i]);
@@ -2760,6 +2764,16 @@ function renderDrawer() {
     const isTimeLocked  = isLoggedIn && i >= unlockedCount;
     const isLocked = isShell || isGuestLocked || isTimeLocked;
     const hidden = !isShell && drawerFilter !== 'all' && q?.category !== drawerFilter;
+
+    // Insert "Unlocks in X days" divider before first time-locked dot
+    if (isTimeLocked && !dividerInserted) {
+      dividerInserted = true;
+      const daysLeft = getDaysUntilNextUnlock();
+      const divider = document.createElement('div');
+      divider.className = 'nav-unlock-divider';
+      divider.textContent = daysLeft > 0 ? `Unlocks in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}` : 'Unlocking soon';
+      grid.appendChild(divider);
+    }
 
     const dot = document.createElement('div');
     dot.className = 'q-dot';
