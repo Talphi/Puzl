@@ -2780,7 +2780,11 @@ function renderDrawer() {
     }
 
     if (hidden) dot.classList.add('hidden');
-    dot.textContent = i + 1;
+    // Only show number on unlocked dots; hide on locked/time-locked to avoid overflow
+    if (!isLocked) {
+      dot.textContent = i + 1;
+      if (i + 1 >= 100) dot.style.fontSize = '7px';
+    }
     dot.onclick = () => jumpToQuestion(i);
     grid.appendChild(dot);
   }
