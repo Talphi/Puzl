@@ -2756,7 +2756,7 @@ function renderDrawer() {
   const realTotal = isLoggedIn ? questions.length : fullPool.length;
   const displayTotal = currentRole === 'pm' ? 200 : fullPool.length;
 
-  let dividerInserted = false;
+  const baseDaysLeft = getDaysUntilNextUnlock();
   for (let i = 0; i < displayTotal; i++) {
     const isShell = i >= fullPool.length;
     const q = isShell ? null : (i < questions.length ? questions[i] : fullPool[i]);
@@ -2765,10 +2765,10 @@ function renderDrawer() {
     const isLocked = isShell || isGuestLocked || isTimeLocked;
     const hidden = !isShell && drawerFilter !== 'all' && q?.category !== drawerFilter;
 
-    // Insert "Unlocks in X days" divider before first time-locked dot
-    if (isTimeLocked && !dividerInserted) {
-      dividerInserted = true;
-      const daysLeft = getDaysUntilNextUnlock();
+    // Insert a divider before each unlock batch
+    if (isTimeLocked && (i - unlockedCount) % UNLOCK_BATCH === 0) {
+      const batchIndex = Math.floor((i - unlockedCount) / UNLOCK_BATCH);
+      const daysLeft = baseDaysLeft + batchIndex * UNLOCK_DAYS;
       const divider = document.createElement('div');
       divider.className = 'nav-unlock-divider';
       divider.textContent = daysLeft > 0 ? `Unlocks in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}` : 'Unlocking soon';
@@ -2780,11 +2780,11 @@ function renderDrawer() {
 
     if (isLocked) {
       dot.classList.add(isTimeLocked ? 'time-locked' : 'locked');
-      const daysLeft = getDaysUntilNextUnlock();
+      const batchDays = isTimeLocked ? baseDaysLeft + Math.floor((i - unlockedCount) / UNLOCK_BATCH) * UNLOCK_DAYS : 0;
       dot.title = isShell
         ? `Q${i+1}: Coming soon`
         : isTimeLocked
-          ? `Q${i+1}: Unlocks in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}`
+          ? `Q${i+1}: Unlocks in ${batchDays} day${batchDays !== 1 ? 's' : ''}`
           : `Q${i+1}: Sign up to unlock`;
     } else {
       if (i === currentIndex) dot.classList.add('current');
