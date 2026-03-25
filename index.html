@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DePuzl — Designer &amp; PM Training</title>
+<title>De:Puzl — Designer &amp; PM Training</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -862,15 +862,20 @@
     .options-panel { padding: 16px; }
   }
 
-  /* ---- LOGIN SCREEN ---- */
-  #screen-login {
-    background: var(--bg);
+  /* ---- LOGIN OVERLAY ---- */
+  .login-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 5000;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
-    position: relative;
-    overflow: hidden;
+    padding: 20px;
   }
+  .login-overlay.show { display: flex; }
   .login-bg { display: none; }
   .login-box {
     position: relative;
@@ -954,6 +959,20 @@
     text-align: center;
     line-height: 1.6;
   }
+  .login-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #BBB;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 6px;
+    transition: color 0.15s;
+  }
+  .login-close:hover { color: var(--black); }
   .login-back {
     font-size: 11px;
     color: #AAA;
@@ -1535,11 +1554,11 @@
   </div>
 </div>
 
-<!-- LOGIN SCREEN -->
-<div id="screen-login" class="screen">
-  <div class="login-bg">HTL</div>
-  <div class="login-box">
-    <div class="login-eyebrow">DePuzl</div>
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay" class="login-overlay" onclick="if(event.target===this)hideLoginOverlay()">
+  <div class="login-box" style="position:relative;">
+    <button class="login-close" onclick="hideLoginOverlay()">✕</button>
+    <div class="login-eyebrow">De:Puzl</div>
     <div class="login-title">WELCOME<br><span>BACK.</span></div>
     <div class="login-error" id="login-error">Incorrect username or password. Try again.</div>
     <div class="login-field">
@@ -1552,16 +1571,16 @@
     </div>
     <button class="btn-login" onclick="attemptLogin()">LOG IN →</button>
     <div class="login-footer">
-      Don't have an account? <button onclick="showScreen('waitlist')" style="font-size:11px;color:#555;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Join the waitlist →</button>
+      Don't have an account? <button onclick="hideLoginOverlay(); showScreen('waitlist');" style="font-size:11px;color:#555;background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;">Join the waitlist →</button>
     </div>
-    <button class="login-back" onclick="showScreen('landing')">← Back to role selection</button>
+    <button class="login-back" onclick="hideLoginOverlay()">← Back</button>
   </div>
 </div>
 
 <!-- DASHBOARD SCREEN -->
 <div id="screen-dashboard" class="screen">
   <div class="dashboard-header">
-    <div class="dashboard-logo">DePuzl</div>
+    <div class="dashboard-logo">De:Puzl</div>
     <div class="dashboard-user">
       <div class="user-chip">
         <div class="user-avatar" id="dash-avatar">T</div>
@@ -1646,7 +1665,7 @@
         </div>
       </div>
       <div class="dash-card-body">
-        <p>Describe a real situation from your work. DePuzl will analyse it and suggest the best way forward — plus add it to the scenario library if it's a good one.</p>
+        <p>Describe a real situation from your work. De:Puzl will analyse it and suggest the best way forward — plus add it to the scenario library if it's a good one.</p>
         <div class="scenario-form">
           <textarea class="scenario-textarea" placeholder="e.g. My PM asked me to ship a feature without usability testing two days before launch..."></textarea>
           <button class="btn-dash primary">SUBMIT SCENARIO →</button>
@@ -1727,7 +1746,7 @@
       </div>
 
       <div class="lc-footer">
-        First 5 free · <button onclick="showScreen('login')">Log in</button> · <button onclick="showScreen('waitlist')">Join waitlist →</button>
+        First 5 free · <button onclick="showLoginOverlay()">Log in</button> · <button onclick="showScreen('waitlist')">Join waitlist →</button>
       </div>
     </div>
   </div>
@@ -2112,6 +2131,15 @@ let drawerOpen = false;
 // ---- WAITLIST ----
 // Handled entirely by Typeform embed — no JS needed
 
+function showLoginOverlay() {
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('login-overlay').classList.add('show');
+}
+
+function hideLoginOverlay() {
+  document.getElementById('login-overlay').classList.remove('show');
+}
+
 function attemptLogin() {
   const user = document.getElementById('login-user').value.trim();
   const pass = document.getElementById('login-pass').value.trim();
@@ -2121,6 +2149,7 @@ function attemptLogin() {
     err.classList.remove('show');
     document.getElementById('dash-username').textContent = user;
     document.getElementById('dash-avatar').textContent = user[0].toUpperCase();
+    hideLoginOverlay();
     showScreen('dashboard');
   } else {
     err.classList.add('show');
@@ -2137,7 +2166,7 @@ function logout() {
 
 function goToLogin() {
   document.getElementById('paywall-overlay').classList.remove('show');
-  showScreen('login');
+  showLoginOverlay();
 }
 
 function goToWaitlist() {
