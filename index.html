@@ -1475,8 +1475,16 @@
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
       <div>
-        <label class="admin-label">Category (include emoji)</label>
-        <input id="adm-category" class="admin-input" type="text" placeholder="e.g. ✂️ Cutting Time">
+        <label class="admin-label">Pathway</label>
+        <select id="adm-pathway" class="admin-input">
+          <option value="default">Default</option>
+          <option value="march_2026">March 2026 Drop</option>
+          <option value="0_to_1">0-to-1 Team</option>
+          <option value="enterprise">Enterprise</option>
+          <option value="scaling">Scaling Team</option>
+          <option value="custom">Custom (type below)</option>
+        </select>
+        <input id="adm-pathway-custom" class="admin-input" type="text" placeholder="e.g. april_2026" style="display:none;margin-top:8px;">
       </div>
       <div>
         <label class="admin-label">Access Level</label>
@@ -1484,6 +1492,13 @@
           <option value="free">Free</option>
           <option value="pro">Pro</option>
         </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div>
+        <label class="admin-label">Category (include emoji)</label>
+        <input id="adm-category" class="admin-input" type="text" placeholder="e.g. ✂️ Cutting Time">
       </div>
     </div>
 
@@ -2144,10 +2159,13 @@ function _applySession(session) {
 // ── ADMIN ────────────────────────────────────────────────────────────────────
 function openAdmin() {
   if (!currentProfile?.is_admin) return alert('Admin access required.');
-  // Update speaker label based on role select
   document.getElementById('adm-role').addEventListener('change', (e) => {
     document.getElementById('adm-speaker-label').textContent =
       e.target.value === 'designer' ? 'PM Says' : 'Designer Says';
+  });
+  document.getElementById('adm-pathway').addEventListener('change', (e) => {
+    document.getElementById('adm-pathway-custom').style.display =
+      e.target.value === 'custom' ? 'block' : 'none';
   });
   showScreen('admin');
 }
@@ -2159,8 +2177,13 @@ async function saveScenario() {
   sucEl.style.display = 'none';
 
   const correct = document.querySelector('input[name="correct_opt"]:checked')?.value;
+  const pathwaySel = document.getElementById('adm-pathway').value;
+  const pathwayVal = pathwaySel === 'custom'
+    ? document.getElementById('adm-pathway-custom').value.trim() || 'default'
+    : pathwaySel;
   const row = {
     role:         document.getElementById('adm-role').value,
+    pathway:      pathwayVal,
     category:     document.getElementById('adm-category').value.trim(),
     difficulty:   document.getElementById('adm-difficulty').value,
     context:      document.getElementById('adm-context').value.trim(),
