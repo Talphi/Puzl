@@ -1,0 +1,776 @@
+/* ============================================================
+   SEESAW — De:Puzl Design System
+   v0.1.0
+   ============================================================
+   Seesaw is the design system behind De:Puzl. It defines the
+   tokens, typography, and components shared across the product.
+   The name reflects the core thesis: great work happens when
+   designers and PMs balance each other — neither side wins
+   alone.
+   ============================================================ */
+
+
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+
+:root {
+  /* Colour */
+  --black:  #111111;
+  --white:  #FFFFFF;
+  --bg:     #FFFFFF;
+  --yellow: #F2C200;
+  --red:    #D62828;
+  --green:  #2B7A44;
+  --blue:   #1550A2;
+
+  /* Borders */
+  --border:       1px solid #E4E4E4;
+  --border-light: 1px solid #EFEFEF;
+
+  /* Shadows */
+  --shadow:    0 1px 3px rgba(0,0,0,0.07);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+
+  /* Typography */
+  --font-display: 'Outfit', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* Hover background (used across interactive rows, dropdowns) */
+  --hover-bg: #F5F4EF;
+}
+
+
+/* ============================================================
+   2. RESET & BASE
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  font-family: var(--font-body);
+  color: var(--black);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+
+/* ============================================================
+   3. WORDMARK
+   Canonical De:Puzl logotype. Used in headers, overlays, etc.
+   ============================================================ */
+
+.ss-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.ss-wordmark .wm-de   { color: var(--black); }
+.ss-wordmark .wm-sep  { color: var(--black); opacity: 0.3; font-size: 0.82em; }
+.ss-wordmark .wm-puzl { color: var(--red); }
+
+/* On dark backgrounds */
+.ss-wordmark--on-dark .wm-de   { color: var(--white); }
+.ss-wordmark--on-dark .wm-sep  { color: var(--white); opacity: 0.3; }
+.ss-wordmark--on-dark .wm-puzl { color: var(--yellow); }
+
+/* PM mode: Puzl shifts to blue */
+body.pm-mode .ss-wordmark .wm-puzl { color: var(--blue); }
+
+
+/* ============================================================
+   4. TYPOGRAPHY PATTERNS
+   ============================================================ */
+
+/* Eyebrow — small uppercase label above headings or sections */
+.ss-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #AAA;
+  line-height: 1;
+}
+
+/* Display heading — main hero-level type */
+.ss-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.95;
+  color: var(--black);
+}
+.ss-display .accent { color: var(--red); }
+body.pm-mode .ss-display .accent { color: var(--blue); }
+
+/* Section heading */
+.ss-heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--black);
+}
+
+/* Muted body copy */
+.ss-body-muted {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   5. BUTTONS
+   ============================================================ */
+
+/* Primary — black fill, white text, red on hover */
+.ss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 15px 32px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 0;
+  width: auto;
+}
+.ss-btn:hover { background: var(--red); }
+.ss-btn--full  { width: 100%; }
+
+/* Outline — white fill, dark border, hover bg tint */
+.ss-btn--outline {
+  background: var(--white);
+  color: var(--black);
+  border: var(--border);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.ss-btn--outline:hover { background: var(--hover-bg); border-color: #AAA; }
+
+/* Ghost — no border, underlined, muted text */
+.ss-btn--ghost {
+  background: none;
+  color: #AAA;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  text-decoration: underline;
+  padding: 0;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.ss-btn--ghost:hover { color: var(--black); background: none; }
+
+
+/* ============================================================
+   6. FORM ELEMENTS
+   ============================================================ */
+
+.ss-field {
+  margin-bottom: 16px;
+}
+
+/* Label — same eyebrow style applied to inputs */
+.ss-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  display: block;
+  margin-bottom: 7px;
+}
+
+/* Input */
+.ss-input {
+  width: 100%;
+  border: var(--border);
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  background: var(--white);
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.15s;
+  border-radius: 0;
+  appearance: none;
+}
+.ss-input:focus {
+  border-color: var(--black);
+  outline: 2px solid rgba(17,17,17,0.08);
+  outline-offset: 0;
+}
+
+/* Select */
+.ss-select {
+  width: 100%;
+  border: var(--border);
+  padding: 12px 36px 12px 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  background: var(--white);
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.15s;
+  border-radius: 0;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231A1A1A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+}
+.ss-select:focus {
+  border-color: var(--black);
+  outline: 2px solid rgba(17,17,17,0.08);
+  outline-offset: 0;
+}
+
+/* Inline error message */
+.ss-error {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--red);
+  display: none;
+  padding: 10px 12px;
+  border-left: 3px solid var(--red);
+  background: rgba(214,40,40,0.05);
+  margin-bottom: 14px;
+}
+.ss-error.show { display: block; }
+
+/* "— or —" divider between form sections */
+.ss-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 20px 0;
+  color: #CCC;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.ss-divider::before,
+.ss-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #E4E4E4;
+}
+
+
+/* ============================================================
+   7. TAGS & BADGES
+   ============================================================ */
+
+/* Badge — small inline label (e.g. role, feature flag) */
+.ss-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+.ss-badge--blue   { background: var(--blue);   color: var(--white); }
+.ss-badge--yellow { background: var(--yellow); color: var(--black); }
+.ss-badge--black  { background: var(--black);  color: var(--white); }
+
+/* Category tag — yellow, square */
+.ss-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  background: var(--yellow);
+  color: var(--black);
+  border-radius: 0;
+}
+
+/* Difficulty tags */
+.ss-tag--easy   { background: #D4F0DC; color: var(--green); }
+.ss-tag--medium { background: #FEF3CC; color: #8A6500; }
+.ss-tag--hard   { background: #FCDCDC; color: var(--red); }
+
+/* Stat box — bordered number + label pair */
+.ss-stat {
+  border: var(--border);
+  padding: 16px 20px;
+  background: var(--white);
+}
+.ss-stat__num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+}
+.ss-stat__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 4px;
+  color: #888;
+  font-weight: 600;
+}
+
+
+/* ============================================================
+   8. OVERLAY SHELL
+   Shared backdrop + centred box. Used by login & waitlist.
+   ============================================================ */
+
+.ss-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 5000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+.ss-overlay.show { display: flex; }
+
+/* Inner box */
+.ss-overlay__box {
+  background: var(--white);
+  border: var(--border);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Black header strip — used inside overlays */
+.ss-overlay__header {
+  background: var(--black);
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+}
+
+/* Close button inside header */
+.ss-overlay__close {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 6px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.ss-overlay__close:hover { color: #AAA; }
+
+/* Body padding inside overlay box */
+.ss-overlay__body {
+  padding: 32px 28px 28px;
+}
+
+/* Footer row — e.g. "Don't have an account?" */
+.ss-overlay__footer {
+  font-size: 11px;
+  color: #AAA;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: var(--border-light);
+  text-align: center;
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   9. LOGIN OVERLAY
+   ============================================================ */
+
+.login-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 5000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.login-overlay.show { display: flex; }
+
+.login-box {
+  background: var(--white);
+  border: var(--border);
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-header {
+  background: var(--black);
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+}
+
+.login-header-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.login-header-wordmark .lh-de   { color: var(--white); }
+.login-header-wordmark .lh-sep  { color: var(--white); opacity: 0.3; font-size: 0.82em; }
+.login-header-wordmark .lh-puzl { color: var(--yellow); }
+
+.login-close {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 6px;
+  transition: color 0.15s;
+}
+.login-close:hover { color: #AAA; }
+
+.login-body {
+  padding: 32px 28px 28px;
+}
+
+.login-tagline {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #AAA;
+  margin-bottom: 6px;
+}
+
+.login-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 1.0;
+  margin-bottom: 28px;
+  color: var(--black);
+}
+.login-title .accent { color: var(--red); }
+
+.login-field { margin-bottom: 16px; }
+
+.login-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 600;
+}
+
+.login-input {
+  width: 100%;
+  border: var(--border);
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  background: var(--white);
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.15s;
+  border-radius: 0;
+  appearance: none;
+}
+.login-input:focus {
+  border-color: var(--black);
+  outline: 2px solid rgba(17,17,17,0.08);
+  outline-offset: 0;
+}
+
+.login-error {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--red);
+  margin-bottom: 14px;
+  display: none;
+  padding: 10px 12px;
+  border-left: 3px solid var(--red);
+  background: rgba(214,40,40,0.05);
+}
+.login-error.show { display: block; }
+
+.btn-login {
+  width: 100%;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 15px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 6px;
+  border-radius: 0;
+}
+.btn-login:hover { background: var(--red); }
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 20px 0;
+  color: #CCC;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #E4E4E4;
+}
+
+.btn-google-login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--white);
+  color: var(--black);
+  border: var(--border);
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  border-radius: 0;
+  letter-spacing: 0.01em;
+}
+.btn-google-login:hover { background: var(--hover-bg); border-color: #AAA; }
+
+.login-footer {
+  font-size: 11px;
+  color: #AAA;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: var(--border-light);
+  text-align: center;
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   10. WAITLIST OVERLAY
+   ============================================================ */
+
+.waitlist-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 5000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+.waitlist-overlay.show { display: flex; }
+
+.waitlist-bg { display: none; }
+
+.waitlist-box {
+  position: relative;
+  z-index: 1;
+  background: var(--white);
+  border: var(--border);
+  padding: 48px 48px 40px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.waitlist-eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #AAA;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.waitlist-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 0.95;
+  margin-bottom: 12px;
+  color: var(--black);
+}
+.waitlist-title span { color: var(--red); }
+
+.waitlist-desc {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.waitlist-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.waitlist-field { margin-bottom: 16px; }
+
+.waitlist-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.waitlist-input,
+.waitlist-select {
+  width: 100%;
+  border: var(--border);
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  background: var(--white);
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;
+  border-radius: 0;
+}
+.waitlist-input:focus,
+.waitlist-select:focus { border-color: var(--black); }
+
+.waitlist-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231A1A1A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.waitlist-error {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--red);
+  margin-bottom: 16px;
+  display: none;
+  padding: 10px 12px;
+  border-left: 3px solid var(--red);
+  background: rgba(214,40,40,0.05);
+}
+.waitlist-error.show { display: block; }
+
+.btn-waitlist {
+  width: 100%;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 16px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 8px;
+  border-radius: 0;
+}
+.btn-waitlist:hover { background: var(--red); }
+
+.waitlist-success {
+  display: none;
+  text-align: center;
+  padding: 8px 0 16px;
+}
+.waitlist-success.show { display: block; }
+.waitlist-success-icon  { font-size: 48px; margin-bottom: 12px; }
+.waitlist-success-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--green);
+}
+.waitlist-success-msg {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.waitlist-back {
+  font-size: 11px;
+  color: #AAA;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 16px;
+  display: block;
+  text-align: center;
+  transition: color 0.15s;
+}
+.waitlist-back:hover { color: var(--black); }
+
+.waitlist-count {
+  display: inline-block;
+  background: var(--yellow);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  margin-bottom: 20px;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 600px) {
+  .waitlist-row { grid-template-columns: 1fr; gap: 0; }
+  .waitlist-box { padding: 32px 24px; }
+}
