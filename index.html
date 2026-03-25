@@ -2780,9 +2780,9 @@ function renderDrawer() {
     dot.setAttribute('role', 'button');
     dot.setAttribute('tabindex', isLocked ? '-1' : '0');
 
+    const batchDays = isTimeLocked ? baseDaysLeft + Math.floor((i - unlockedCount) / UNLOCK_BATCH) * UNLOCK_DAYS : 0;
     if (isLocked) {
       dot.classList.add(isTimeLocked ? 'time-locked' : 'locked');
-      const batchDays = isTimeLocked ? baseDaysLeft + Math.floor((i - unlockedCount) / UNLOCK_BATCH) * UNLOCK_DAYS : 0;
       dot.title = isShell
         ? `Q${i+1}: Coming soon`
         : isTimeLocked
