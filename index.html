@@ -6,6 +6,7 @@
 <title>De:Puzl — Designer &amp; PM Training</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="seesaw.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   /* ---- App-specific styles. Design tokens & components live in seesaw.css ---- */
   .screen {
@@ -851,6 +852,20 @@
 
   /* Login & Waitlist overlay styles → seesaw.css */
 
+  /* ---- ADMIN PANEL ---- */
+  .admin-label {
+    display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #777; margin-bottom: 6px;
+  }
+  .admin-input {
+    width: 100%; border: var(--border); border-radius: 10px;
+    padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+    background: var(--white); color: var(--black); outline: none;
+    transition: border-color 0.15s; resize: vertical;
+    margin-bottom: 0; box-sizing: border-box;
+  }
+  .admin-input:focus { border-color: var(--blue); }
+
   /* ---- DASHBOARD SCREEN ---- */
   #screen-dashboard { background: var(--bg); }
   .dashboard-header {
@@ -1304,29 +1319,16 @@
       <div class="login-tagline">Sign in to continue</div>
       <div class="login-title">WELCOME <span class="accent">BACK.</span></div>
 
-      <div class="login-error" id="login-error">Incorrect username or password. Try again.</div>
+      <div class="login-error" id="login-error">Something went wrong. Please try again.</div>
 
-      <div class="login-field">
-        <label class="login-label" for="login-user">Username</label>
-        <input class="login-input" id="login-user" type="text" placeholder="your username" autocomplete="username">
-      </div>
-      <div class="login-field">
-        <label class="login-label" for="login-pass">Password</label>
-        <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password">
-      </div>
-
-      <button class="btn-login" onclick="attemptLogin()">LOG IN →</button>
-
-      <div class="login-divider"><span>or</span></div>
-
-      <button class="btn-google-login" onclick="alert('Google login coming soon!')">
+      <button class="btn-google-login" id="btn-google-login" onclick="signInWithGoogle()">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
           <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
           <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
           <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
           <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
         </svg>
-        Continue with Google
+        <span id="google-btn-text">Continue with Google</span>
       </button>
 
       <div class="login-footer">
@@ -1347,6 +1349,7 @@
         <span id="dash-username">test</span>
         <span style="color:#555;">· PRO</span>
       </div>
+      <button id="btn-admin-link" onclick="openAdmin()" style="display:none;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:none;border:var(--border-light);color:#AAA;padding:6px 12px;cursor:pointer;border-radius:8px;transition:border-color 0.12s,color 0.12s;" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='';this.style.color='#AAA'">ADMIN</button>
       <button class="btn-logout" onclick="logout()">LOG OUT</button>
     </div>
   </div>
@@ -1433,6 +1436,108 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ADMIN SCREEN -->
+<div id="screen-admin" class="screen" style="background:#F5F4EF;">
+  <div style="background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:var(--border);position:sticky;top:30px;z-index:10;">
+    <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;">
+      <span style="color:var(--black)">De</span><span style="opacity:0.3">:</span><span style="color:var(--red)">Puzl</span>
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#AAA;margin-left:12px;">Admin</span>
+    </div>
+    <button onclick="goHome()" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:none;border:var(--border-light);color:#AAA;padding:6px 12px;cursor:pointer;border-radius:8px;">← Back</button>
+  </div>
+  <div style="padding:48px;max-width:800px;margin:0 auto;width:100%;">
+    <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:36px;line-height:1;margin-bottom:8px;">ADD SCENARIO</div>
+    <p style="font-size:14px;color:#777;margin-bottom:40px;">Fill in the fields below to add a scenario to the database.</p>
+
+    <div id="admin-success" style="display:none;background:#EAF5EC;border:1px solid var(--green);color:var(--green);padding:12px 16px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:24px;">✓ Scenario saved successfully!</div>
+    <div id="admin-error" style="display:none;background:#FEE;border:1px solid var(--red);color:var(--red);padding:12px 16px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:24px;"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div>
+        <label class="admin-label">Role</label>
+        <select id="adm-role" class="admin-input">
+          <option value="designer">Designer</option>
+          <option value="pm">PM</option>
+        </select>
+      </div>
+      <div>
+        <label class="admin-label">Difficulty</label>
+        <select id="adm-difficulty" class="admin-input">
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div>
+        <label class="admin-label">Category (include emoji)</label>
+        <input id="adm-category" class="admin-input" type="text" placeholder="e.g. ✂️ Cutting Time">
+      </div>
+      <div>
+        <label class="admin-label">Access Level</label>
+        <select id="adm-access" class="admin-input">
+          <option value="free">Free</option>
+          <option value="pro">Pro</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label class="admin-label">Context (the situation)</label>
+      <textarea id="adm-context" class="admin-input" rows="3" placeholder="Describe the scenario situation..."></textarea>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <label class="admin-label" id="adm-speaker-label">PM Says</label>
+      <textarea id="adm-speaker" class="admin-input" rows="2" placeholder="What the PM/Designer says..."></textarea>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:10px;align-items:center;">
+      <label class="admin-label" style="margin:0;">Options</label>
+      <label class="admin-label" style="margin:0;text-align:center;">Correct?</label>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
+        <input id="adm-opt-a" class="admin-input" style="margin:0;" type="text" placeholder="Option A">
+        <input type="radio" name="correct_opt" value="a" style="width:18px;height:18px;cursor:pointer;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
+        <input id="adm-opt-b" class="admin-input" style="margin:0;" type="text" placeholder="Option B">
+        <input type="radio" name="correct_opt" value="b" style="width:18px;height:18px;cursor:pointer;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
+        <input id="adm-opt-c" class="admin-input" style="margin:0;" type="text" placeholder="Option C">
+        <input type="radio" name="correct_opt" value="c" style="width:18px;height:18px;cursor:pointer;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
+        <input id="adm-opt-d" class="admin-input" style="margin:0;" type="text" placeholder="Option D">
+        <input type="radio" name="correct_opt" value="d" style="width:18px;height:18px;cursor:pointer;">
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label class="admin-label">Feedback (shown after answering)</label>
+      <textarea id="adm-feedback" class="admin-input" rows="3" placeholder="Explain why the correct answer is best..."></textarea>
+    </div>
+
+    <div style="margin-bottom:32px;">
+      <label class="admin-label">Tactic (optional)</label>
+      <input id="adm-tip" class="admin-input" type="text" placeholder="e.g. 🔑 Tactic: Prioritise & phase">
+    </div>
+
+    <button onclick="saveScenario()" style="background:var(--black);color:var(--white);border:none;padding:16px 32px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border-radius:10px;width:100%;transition:background 0.15s;" onmouseover="this.style.background='var(--red)'" onmouseout="this.style.background='var(--black)'">SAVE SCENARIO →</button>
+
+    <div style="margin-top:48px;border-top:var(--border);padding-top:32px;">
+      <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:24px;margin-bottom:20px;">SEED DATABASE</div>
+      <p style="font-size:13px;color:#777;margin-bottom:16px;">Run this once to import all existing hardcoded scenarios into the database. Safe to run again — it skips duplicates.</p>
+      <button onclick="seedDatabase()" style="background:var(--blue);color:var(--white);border:none;padding:12px 24px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#0D3A8A'" onmouseout="this.style.background='var(--blue)'">SEED ALL SCENARIOS →</button>
+      <div id="seed-status" style="margin-top:12px;font-size:13px;color:#777;"></div>
+    </div>
   </div>
 </div>
 
@@ -1752,8 +1857,12 @@
 </div>
 
 <script>
-// ---- SCENARIOS ARRAY (populated below) ----
-const SCENARIOS = [
+// ---- SCENARIOS ARRAYS (hardcoded fallback + seed source) ----
+// SCENARIOS / PM_SCENARIOS are reassigned by loadScenarios() if DB is available.
+// SCENARIOS_RAW / PM_SCENARIOS_RAW are always the hardcoded originals, used for seeding.
+let SCENARIOS = [];
+let PM_SCENARIOS = [];
+const SCENARIOS_RAW = [
   {category:"✂️ Cutting Time",difficulty:"Medium",context:"Sprint planning. The PM has just cut your design time from 2 weeks to 3 days for a complex checkout redesign.",pmSays:"We need to ship fast. Just use the existing components — good enough is good enough here. We can polish it later.",question:"How do you respond?",options:[{text:"Agree and do your best with the time given, silently noting the risk.",correct:false},{text:"Ask for a meeting to walk through which design decisions carry the most risk if rushed, and propose a phased approach.",correct:true},{text:"Tell the PM this is impossible and refuse to commit to the timeline.",correct:false},{text:"Do the work in 3 days but document every shortcut you took.",correct:false}],feedback:"Proposing a phased approach acknowledges the constraint while protecting the most critical design decisions. It reframes the conversation from 'yes/no' to 'how.'",tip:"🔑 Tactic: Prioritise & phase"},
   {category:"✂️ Cutting Time",difficulty:"Hard",context:"You've just finished 3 weeks of design work on a new onboarding flow. The PM says leadership wants to launch in 2 days.",pmSays:"Leadership moved up the deadline. We just need to launch something — we'll iterate based on real data.",question:"What's your best move?",options:[{text:"Push back with data: share the known friction points in the current flow and the cost of fixing them post-launch.",correct:true},{text:"Agree — real data is always better than assumptions anyway.",correct:false},{text:"Escalate immediately to your design manager to block the launch.",correct:false},{text:"Ask the PM to put the request in writing so you're not accountable.",correct:false}],feedback:"Using data to illustrate post-launch cost makes the risk tangible. Fixing a broken onboarding flow post-launch costs 4x more than getting it right now.",tip:"🔑 Tactic: Make risk visible"},
   {category:"✂️ Cutting Time",difficulty:"Easy",context:"The PM wants to ship a new feature without any design review, saying engineers can 'figure out the UI'.",pmSays:"The engineers know the product really well. Let's let them make the UI calls on this one to save time.",question:"How do you respond?",options:[{text:"Offer to do a 30-minute async design review that gives engineers clear direction without delaying them.",correct:true},{text:"Agree — engineers have good instincts and this isn't a complex feature.",correct:false},{text:"Tell the PM that design must review everything before it ships.",correct:false},{text:"Ask the PM which specific parts you're allowed to review.",correct:false}],feedback:"A 30-minute async review is low-effort, high-value. It respects the timeline while ensuring design has a voice — and it's hard to say no to 'just 30 minutes.'",tip:"🔑 Tactic: Offer a minimum viable review"},
@@ -1845,7 +1954,7 @@ const SCENARIOS = [
 ];
 
 // ---- PM SCENARIOS ----
-const PM_SCENARIOS = [
+const PM_SCENARIOS_RAW = [
   {category:"📋 Writing Briefs",difficulty:"Medium",context:"You have a strong conviction about how a new onboarding flow should work. You've already sketched it out in your head and just need the designer to execute it.",designerSays:"I'd love to understand the problem we're solving before we jump to a solution — can you share the brief?",question:"How do you write the brief?",options:[{text:"Detail your solution clearly so the designer can implement it efficiently — you've already done the thinking.",correct:false},{text:"Describe the user problem, the business goal, and the constraints — but leave the solution space open for the designer to explore.",correct:true},{text:"Share your sketch and ask the designer to improve the visual design.",correct:false},{text:"Write a brief that mentions the problem but steers toward your preferred solution 'as a starting point.'",correct:false}],feedback:"A brief that embeds a solution stops design thinking before it starts. Your job is to define the problem clearly and the success criteria precisely — the designer's job is to find the best solution. The best outcomes come from PMs who brief the 'what and why' and let designers own the 'how.'",tip:"🔑 Tactic: Problem brief, not solution brief"},
 
   {category:"📋 Writing Briefs",difficulty:"Hard",context:"Leadership wants a new feature shipped in 3 weeks. You write a brief but leave out context about technical constraints, existing user research, and competing initiatives because you assume the designer will figure it out.",designerSays:"I have a lot of questions before I can start — I'm missing context about constraints and what we already know.",question:"What should your brief have included?",options:[{text:"Just the feature requirements — designers shouldn't need business context to design.",correct:false},{text:"The problem statement, success metrics, known constraints, relevant existing research, timeline, and who the key stakeholders are.",correct:true},{text:"A rough wireframe to show the designer what you're imagining.",correct:false},{text:"The feature requirements and a deadline — designers can ask questions as they go.",correct:false}],feedback:"A designer can only work with what you give them. Missing context forces them to make assumptions that lead to rework. A complete brief — problem, metrics, constraints, existing knowledge, stakeholders, timeline — is not overhead. It's the foundation that makes fast, accurate design possible.",tip:"🔑 Tactic: Complete context upfront"},
@@ -1867,6 +1976,10 @@ const PM_SCENARIOS = [
   {category:"📢 Advocating for Design",difficulty:"Hard",context:"In a leadership meeting, an exec dismisses a design recommendation as 'just aesthetics' and overrules it without discussion. Your designer isn't in the room.",designerSays:"(You're the only one representing design in this meeting)",question:"What do you do?",options:[{text:"Accept the exec's decision — you don't have enough design expertise to push back.",correct:false},{text:"Speak up and reframe the design recommendation in business terms — explain what user problem it solves, what the expected impact is, and ask for a brief pause before the decision is final so the designer can present the rationale directly.",correct:true},{text:"Note the decision and tell the designer about it after the meeting.",correct:false},{text:"Ask the exec to attend a future design review where the designer can present their work.",correct:false}],feedback:"'Just aesthetics' is one of the most damaging framings in product development — it signals that design decisions are decorative rather than functional. As the PM in the room, you're the designer's advocate. Reframing in business terms ('this isn't about how it looks — it's about whether users understand what to do next, which affects our conversion rate') is a skill every PM needs. Saying nothing is a choice too, and the designer will notice.",tip:"🔑 Tactic: Reframe design as function, not decoration"}
 ];
 
+// Populate live arrays from raw fallback (overwritten by loadScenarios if DB is available)
+SCENARIOS    = SCENARIOS_RAW.map(s => Object.assign({}, s));
+PM_SCENARIOS = PM_SCENARIOS_RAW.map(s => Object.assign({}, s));
+
 // ---- QUIZ ENGINE ----
 const FREE_LIMIT = 5;
 let currentRole = 'designer';
@@ -1881,54 +1994,94 @@ function lcSelectRole(role) {
   const interviews = document.getElementById('lc-prop-interviews');
   if (interviews) interviews.textContent = role === 'pm' ? 'Ace product interviews' : 'Ace design interviews';
 }
+// ── SUPABASE ────────────────────────────────────────────────────────────────
+const _supa = supabase.createClient(
+  'https://cgoywnjsalkjbdjqwphy.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb3l3bmpzYWxramJkanF3cGh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjY2NjksImV4cCI6MjA5MDA0MjY2OX0.SD3_w9rjUtK-L1I3T7uV88r9t7PCXfzaAv1XAQG9oo4'
+);
+
 let isLoggedIn = false;
+let currentUser = null;
+let currentProfile = null;
 let questions = [], currentIndex = 0, score = 0, answered = false, categoryScores = {};
 let questionResults = {};
 let activeFilter = 'all';
 let drawerFilter = 'all';
 let drawerOpen = false;
 
-// ---- WAITLIST ----
-// Handled entirely by Typeform embed — no JS needed
+// Transform a DB row into the format the quiz engine expects
+function _dbToScenario(row) {
+  return {
+    id: row.id,
+    category: row.category,
+    difficulty: row.difficulty,
+    context: row.context,
+    [row.role === 'designer' ? 'pmSays' : 'designerSays']: row.speaker,
+    question: 'How do you respond?',
+    options: [
+      { text: row.opt_a, correct: row.correct_opt === 'a' },
+      { text: row.opt_b, correct: row.correct_opt === 'b' },
+      { text: row.opt_c, correct: row.correct_opt === 'c' },
+      { text: row.opt_d, correct: row.correct_opt === 'd' },
+    ],
+    feedback: row.feedback,
+    tip: row.tip || ''
+  };
+}
 
+// Load scenarios from Supabase; fall back to hardcoded arrays on error
+async function loadScenarios() {
+  try {
+    const { data, error } = await _supa
+      .from('scenarios')
+      .select('*')
+      .eq('is_active', true)
+      .order('order_num', { ascending: true, nullsFirst: false });
+    if (error || !data || data.length === 0) return false;
+    SCENARIOS    = data.filter(r => r.role === 'designer').map(_dbToScenario);
+    PM_SCENARIOS = data.filter(r => r.role === 'pm').map(_dbToScenario);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// ── AUTH ────────────────────────────────────────────────────────────────────
 function showWaitlistOverlay() {
   document.getElementById('waitlist-overlay').classList.add('show');
 }
-
 function hideWaitlistOverlay() {
   document.getElementById('waitlist-overlay').classList.remove('show');
 }
-
 function showLoginOverlay() {
   document.getElementById('login-error').classList.remove('show');
   document.getElementById('login-overlay').classList.add('show');
 }
-
 function hideLoginOverlay() {
   document.getElementById('login-overlay').classList.remove('show');
 }
 
-function attemptLogin() {
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value.trim();
-  const err = document.getElementById('login-error');
-  if (user === 'test' && pass === 'test') {
-    isLoggedIn = true;
-    err.classList.remove('show');
-    document.getElementById('dash-username').textContent = user;
-    document.getElementById('dash-avatar').textContent = user[0].toUpperCase();
-    hideLoginOverlay();
-    showScreen('dashboard');
-  } else {
-    err.classList.add('show');
-    document.getElementById('login-pass').value = '';
+async function signInWithGoogle() {
+  const btn = document.getElementById('btn-google-login');
+  const txt = document.getElementById('google-btn-text');
+  btn.disabled = true;
+  txt.textContent = 'Redirecting…';
+  const { error } = await _supa.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + window.location.pathname }
+  });
+  if (error) {
+    document.getElementById('login-error').classList.add('show');
+    btn.disabled = false;
+    txt.textContent = 'Continue with Google';
   }
 }
 
-function logout() {
+async function logout() {
+  await _supa.auth.signOut();
   isLoggedIn = false;
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
+  currentUser = null;
+  currentProfile = null;
   showScreen('landing');
 }
 
@@ -1936,10 +2089,145 @@ function goToLogin() {
   document.getElementById('paywall-overlay').classList.remove('show');
   showLoginOverlay();
 }
-
 function goToWaitlist() {
   document.getElementById('paywall-overlay').classList.remove('show');
   showWaitlistOverlay();
+}
+
+function _applySession(session) {
+  if (!session) return;
+  isLoggedIn = true;
+  currentUser = session.user;
+  const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'You';
+  const initial = name[0].toUpperCase();
+  document.getElementById('dash-username').textContent = name;
+  document.getElementById('dash-avatar').textContent = initial;
+  hideLoginOverlay();
+}
+
+// On page load — check if user is already signed in (handles OAuth redirect too)
+(async () => {
+  await loadScenarios();
+  const { data: { session } } = await _supa.auth.getSession();
+  if (session) {
+    _applySession(session);
+    // Fetch profile to check admin
+    const { data: profile } = await _supa
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single();
+    currentProfile = profile;
+    if (profile?.is_admin) document.getElementById('btn-admin-link').style.display = '';
+    showScreen('dashboard');
+  }
+  // Listen for future auth changes (sign in / sign out)
+  _supa.auth.onAuthStateChange(async (_event, session) => {
+    if (session) {
+      _applySession(session);
+      const { data: profile } = await _supa
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+      currentProfile = profile;
+      if (profile?.is_admin) document.getElementById('btn-admin-link').style.display = '';
+      showScreen('dashboard');
+    } else {
+      isLoggedIn = false;
+      currentUser = null;
+      currentProfile = null;
+    }
+  });
+})();
+
+// ── ADMIN ────────────────────────────────────────────────────────────────────
+function openAdmin() {
+  if (!currentProfile?.is_admin) return alert('Admin access required.');
+  // Update speaker label based on role select
+  document.getElementById('adm-role').addEventListener('change', (e) => {
+    document.getElementById('adm-speaker-label').textContent =
+      e.target.value === 'designer' ? 'PM Says' : 'Designer Says';
+  });
+  showScreen('admin');
+}
+
+async function saveScenario() {
+  const errEl = document.getElementById('admin-error');
+  const sucEl = document.getElementById('admin-success');
+  errEl.style.display = 'none';
+  sucEl.style.display = 'none';
+
+  const correct = document.querySelector('input[name="correct_opt"]:checked')?.value;
+  const row = {
+    role:         document.getElementById('adm-role').value,
+    category:     document.getElementById('adm-category').value.trim(),
+    difficulty:   document.getElementById('adm-difficulty').value,
+    context:      document.getElementById('adm-context').value.trim(),
+    speaker:      document.getElementById('adm-speaker').value.trim(),
+    opt_a:        document.getElementById('adm-opt-a').value.trim(),
+    opt_b:        document.getElementById('adm-opt-b').value.trim(),
+    opt_c:        document.getElementById('adm-opt-c').value.trim(),
+    opt_d:        document.getElementById('adm-opt-d').value.trim(),
+    correct_opt:  correct,
+    feedback:     document.getElementById('adm-feedback').value.trim(),
+    tip:          document.getElementById('adm-tip').value.trim(),
+    access_level: document.getElementById('adm-access').value,
+  };
+
+  const missing = Object.entries(row).filter(([k, v]) => k !== 'tip' && !v);
+  if (missing.length) {
+    errEl.textContent = 'Please fill in all required fields (mark a correct option too).';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const { error } = await _supa.from('scenarios').insert(row);
+  if (error) {
+    errEl.textContent = 'Error: ' + error.message;
+    errEl.style.display = 'block';
+  } else {
+    sucEl.style.display = 'block';
+    // Clear form
+    ['adm-category','adm-context','adm-speaker','adm-opt-a','adm-opt-b','adm-opt-c','adm-opt-d','adm-feedback','adm-tip']
+      .forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('input[name="correct_opt"]').forEach(r => r.checked = false);
+    await loadScenarios();
+  }
+}
+
+async function seedDatabase() {
+  const statusEl = document.getElementById('seed-status');
+  statusEl.textContent = 'Seeding…';
+  const rows = [
+    ...SCENARIOS_RAW.map((s, i) => ({
+      role: 'designer', pathway: 'default',
+      category: s.category, difficulty: s.difficulty,
+      context: s.context, speaker: s.pmSays,
+      opt_a: s.options[0].text, opt_b: s.options[1].text,
+      opt_c: s.options[2].text, opt_d: s.options[3].text,
+      correct_opt: ['a','b','c','d'][s.options.findIndex(o => o.correct)],
+      feedback: s.feedback, tip: s.tip || '', order_num: i + 1,
+      access_level: 'free', is_active: true
+    })),
+    ...PM_SCENARIOS_RAW.map((s, i) => ({
+      role: 'pm', pathway: 'default',
+      category: s.category, difficulty: s.difficulty,
+      context: s.context, speaker: s.designerSays,
+      opt_a: s.options[0].text, opt_b: s.options[1].text,
+      opt_c: s.options[2].text, opt_d: s.options[3].text,
+      correct_opt: ['a','b','c','d'][s.options.findIndex(o => o.correct)],
+      feedback: s.feedback, tip: s.tip || '', order_num: i + 1,
+      access_level: 'free', is_active: true
+    }))
+  ];
+  const { error, data } = await _supa.from('scenarios').upsert(rows, { ignoreDuplicates: true });
+  if (error) {
+    statusEl.textContent = '✗ Error: ' + error.message;
+  } else {
+    await loadScenarios();
+    statusEl.textContent = `✓ Done — ${rows.length} scenarios imported.`;
+  }
 }
 
 function dismissPaywall() {
@@ -2270,6 +2558,18 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
   document.getElementById('feedback-box').classList.add('show');
   document.getElementById('btn-next').classList.add('show');
   renderDrawer();
+
+  // Save progress to Supabase (fire-and-forget, no UI blocking)
+  if (isLoggedIn && currentUser && q.id) {
+    const optMap = ['a','b','c','d'];
+    const selectedOpt = optMap[Array.from(document.querySelectorAll('.option-btn')).indexOf(clickedBtn)];
+    _supa.from('progress').upsert({
+      user_id: currentUser.id,
+      scenario_id: q.id,
+      selected_opt: selectedOpt,
+      is_correct: isCorrect
+    }, { onConflict: 'user_id,scenario_id' });
+  }
 }
 
 function nextQuestion() {
