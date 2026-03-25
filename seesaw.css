@@ -629,6 +629,8 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
   padding: 48px 48px 40px;
   width: 100%;
   max-width: 480px;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .waitlist-eyebrow {
