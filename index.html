@@ -59,7 +59,7 @@
   .quiz-role-selector { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; position: relative; }
   .quiz-role-label { font-size: 11px; font-weight: 600; color: #999; white-space: nowrap; transition: color 0.12s; }
   .quiz-role-selector:hover .quiz-role-label { color: var(--black); }
-  .quiz-role-arrow { font-size: 7px; color: #CCC; transition: transform 0.15s, color 0.12s; line-height: 1; margin-top: 1px; }
+  .quiz-role-arrow { font-size: 7px; color: #888; transition: transform 0.15s, color 0.12s; line-height: 1; margin-top: 1px; }
   .quiz-role-selector:hover .quiz-role-arrow { color: #888; }
   .quiz-role-selector.open .quiz-role-arrow { transform: rotate(180deg); color: var(--black); }
   .quiz-role-dropdown { position: absolute; top: calc(100% + 10px); left: 0; background: var(--white); border: var(--border); z-index: 100; display: none; flex-direction: column; min-width: 180px; }
@@ -78,7 +78,7 @@
   .scenario-panel { padding: 40px 48px 40px; border-bottom: var(--border); display: flex; flex-direction: column; gap: 20px; position: relative; background: var(--bg); flex-shrink: 0; }
   .scenario-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: var(--border-light); padding-bottom: 14px; margin-bottom: 4px; }
   .scenario-q-counter { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 20px; line-height: 1; color: var(--black); margin-right: 4px; }
-  .scenario-q-sep { color: #CCC; font-size: 14px; margin-right: 4px; }
+  .scenario-q-sep { color: #888; font-size: 14px; margin-right: 4px; }
   .category-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 9px; background: var(--yellow); color: var(--black); }
   .difficulty-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 9px; font-weight: 600; }
   .diff-easy { background: #D4F0DC; color: var(--green); }
@@ -96,10 +96,10 @@
   /* ---- RIGHT NAV PANEL ---- */
   .quiz-nav-panel { display: flex; flex-direction: column; overflow: hidden; border-left: var(--border); background: var(--white); flex-shrink: 0; }
   .nav-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: var(--border); flex-shrink: 0; background: var(--bg); }
-  .nav-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #AAA; }
+  .nav-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #666; }
   .nav-count { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 13px; color: var(--black); }
   .nav-filters { display: flex; flex-direction: column; gap: 0; border-bottom: var(--border); flex-shrink: 0; }
-  .nav-filter-btn { background: transparent; border: none; border-bottom: var(--border-light); padding: 9px 14px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; color: #AAA; text-align: left; cursor: pointer; transition: background 0.1s, color 0.1s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-filter-btn { background: transparent; border: none; border-bottom: var(--border-light); padding: 9px 14px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; color: #555; text-align: left; cursor: pointer; transition: background 0.1s, color 0.1s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .nav-filter-btn:last-child { border-bottom: none; }
   .nav-filter-btn:hover { background: #F5F4EF; color: var(--black); }
   .nav-filter-btn.active { background: var(--yellow); color: var(--black); font-weight: 700; border-bottom-color: transparent; }
@@ -107,17 +107,17 @@
   .nav-questions::-webkit-scrollbar { width: 3px; }
   .nav-questions::-webkit-scrollbar-track { background: transparent; }
   .nav-questions::-webkit-scrollbar-thumb { background: #D4D0C4; }
-  .nav-questions .q-dot { aspect-ratio: 1 / 1; width: 100%; min-height: 0; flex-shrink: 0; border-radius: 6px; border: 1.5px solid #D4D0C4; color: #CCC; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; overflow: hidden; letter-spacing: -0.02em; }
+  .nav-questions .q-dot { aspect-ratio: 1 / 1; width: 100%; min-height: 0; flex-shrink: 0; border-radius: 6px; border: 1.5px solid #D4D0C4; color: #666; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; overflow: hidden; letter-spacing: -0.02em; }
   .nav-questions .q-dot:hover:not(.locked) { border-color: var(--black); color: var(--black); background: #F5F4EF; }
   .nav-questions .q-dot.current { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
   .nav-questions .q-dot.answered-correct { background: var(--green); border-color: var(--green); color: var(--white); }
   .nav-questions .q-dot.answered-wrong { background: var(--red); border-color: var(--red); color: var(--white); }
-  .nav-questions .q-dot.locked { border-style: dashed; border-color: #E0DDD4; color: #DDD; }
-  .nav-questions .q-dot.locked:hover { background: transparent; color: #CCC; border-color: #CCC; }
-  .nav-questions .q-dot.time-locked { border-style: dashed; border-color: rgba(242,194,0,0.4); color: rgba(242,194,0,0.5); background: rgba(242,194,0,0.06); }
+  .nav-questions .q-dot.locked { border-style: dashed; border-color: #C8C4BC; color: #888; }
+  .nav-questions .q-dot.locked:hover { background: transparent; color: #666; border-color: #999; }
+  .nav-questions .q-dot.time-locked { border-style: dashed; border-color: rgba(242,194,0,0.6); color: #8A6500; background: rgba(242,194,0,0.06); }
   .nav-questions .q-dot.time-locked:hover { border-color: var(--yellow); color: var(--yellow); }
-  .nav-unlock-divider { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 700; font-family: 'Outfit', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(242,194,0,0.8); padding: 2px 0; }
-  .nav-unlock-divider::before, .nav-unlock-divider::after { content: ''; flex: 1; height: 1px; background: rgba(242,194,0,0.25); }
+  .nav-unlock-divider { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 700; font-family: 'Outfit', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: #8A6500; padding: 2px 0; }
+  .nav-unlock-divider::before, .nav-unlock-divider::after { content: ''; flex: 1; height: 1px; background: #C9A800; opacity: 0.35; }
   .nav-unlock-divider::before { display: none; }
   .nav-legend { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px; border-top: var(--border); flex-shrink: 0; background: var(--bg); }
   .nav-legend .legend-item { font-size: 8px; gap: 4px; color: #999; }
@@ -126,7 +126,7 @@
   .nav-legend .legend-dot.correct { background: var(--green); border-color: var(--green); }
   .nav-legend .legend-dot.wrong { background: var(--red); border-color: var(--red); }
   .nav-legend .legend-dot.unanswered { background: transparent; border: 1.5px solid #D4D0C4; }
-  .options-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA; margin-bottom: 20px; padding-bottom: 12px; border-bottom: var(--border-light); }
+  .options-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #666; margin-bottom: 20px; padding-bottom: 12px; border-bottom: var(--border-light); }
   .option-btn { border: none; border-bottom: 1px solid #EEEAE0; padding: 16px 0; background: transparent; cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.5; transition: background 0.12s; display: flex; gap: 16px; align-items: flex-start; animation: slideUp 0.3s ease both; margin: 0 -40px; padding-left: 40px; padding-right: 40px; }
   .option-btn:last-of-type { border-bottom: none; }
   @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -138,7 +138,7 @@
   .option-letter {
     font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 12px;
     flex-shrink: 0; width: 26px; height: 26px;
-    background: #F0EEE8; color: #AAA;
+    background: #E8E5DC; color: #555;
     display: flex; align-items: center; justify-content: center;
     border-radius: 8px;
     transition: background 0.12s, color 0.12s;
@@ -1535,19 +1535,19 @@
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
       <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
         <input id="adm-opt-a" class="admin-input" style="margin:0;" type="text" placeholder="Option A">
-        <input type="radio" name="correct_opt" value="a" style="width:18px;height:18px;cursor:pointer;">
+        <input type="radio" id="adm-correct-a" name="correct_opt" value="a" aria-label="Option A is correct" style="width:18px;height:18px;cursor:pointer;">
       </div>
       <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
         <input id="adm-opt-b" class="admin-input" style="margin:0;" type="text" placeholder="Option B">
-        <input type="radio" name="correct_opt" value="b" style="width:18px;height:18px;cursor:pointer;">
+        <input type="radio" id="adm-correct-b" name="correct_opt" value="b" aria-label="Option B is correct" style="width:18px;height:18px;cursor:pointer;">
       </div>
       <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
         <input id="adm-opt-c" class="admin-input" style="margin:0;" type="text" placeholder="Option C">
-        <input type="radio" name="correct_opt" value="c" style="width:18px;height:18px;cursor:pointer;">
+        <input type="radio" id="adm-correct-c" name="correct_opt" value="c" aria-label="Option C is correct" style="width:18px;height:18px;cursor:pointer;">
       </div>
       <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;">
         <input id="adm-opt-d" class="admin-input" style="margin:0;" type="text" placeholder="Option D">
-        <input type="radio" name="correct_opt" value="d" style="width:18px;height:18px;cursor:pointer;">
+        <input type="radio" id="adm-correct-d" name="correct_opt" value="d" aria-label="Option D is correct" style="width:18px;height:18px;cursor:pointer;">
       </div>
     </div>
 
@@ -2777,6 +2777,8 @@ function renderDrawer() {
 
     const dot = document.createElement('div');
     dot.className = 'q-dot';
+    dot.setAttribute('role', 'button');
+    dot.setAttribute('tabindex', isLocked ? '-1' : '0');
 
     if (isLocked) {
       dot.classList.add(isTimeLocked ? 'time-locked' : 'locked');
@@ -2793,14 +2795,19 @@ function renderDrawer() {
       dot.title = `Q${i+1}: ${q.category}`;
     }
 
+    // Accessible label
+    const stateLabel = isShell ? 'coming soon' : isTimeLocked ? `unlocks in ${batchDays} day${batchDays !== 1 ? 's' : ''}` : isGuestLocked ? 'locked — sign up to unlock' : questionResults[i] === 'correct' ? 'correct' : questionResults[i] === 'wrong' ? 'wrong' : i === currentIndex ? 'current' : 'unanswered';
+    dot.setAttribute('aria-label', `Question ${i+1}${q ? ', ' + q.category : ''} — ${stateLabel}`);
+
     if (hidden) dot.classList.add('hidden');
     if (isGuestLocked) {
-      dot.innerHTML = '<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="5" width="8" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 5V3.5a2 2 0 1 1 4 0V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+      dot.innerHTML = '<svg aria-hidden="true" focusable="false" width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="5" width="8" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 5V3.5a2 2 0 1 1 4 0V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
     } else {
       dot.textContent = i + 1;
       if (i + 1 >= 100) dot.style.fontSize = '8px';
     }
     dot.onclick = () => jumpToQuestion(i);
+    dot.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jumpToQuestion(i); } };
     grid.appendChild(dot);
   }
   // scroll current dot into view
