@@ -1010,14 +1010,20 @@
 
 
   /* ---- WAITLIST SCREEN ---- */
-  #screen-waitlist {
-    background: var(--bg);
+  .waitlist-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 5000;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
-    position: relative;
-    overflow: hidden;
+    padding: 20px;
+    overflow-y: auto;
   }
+  .waitlist-overlay.show { display: flex; }
   .waitlist-bg { display: none; }
   .waitlist-box {
     position: relative;
@@ -1561,13 +1567,15 @@
 </div>
 
 <!-- WAITLIST SCREEN -->
-<div id="screen-waitlist" class="screen">
-  <div class="waitlist-bg">WAIT</div>
-  <div class="waitlist-box" style="max-width:580px;padding:0;overflow:hidden;">
-    <div style="background:var(--black);padding:20px 28px;border-bottom:var(--border);">
-      <button onclick="showScreen('landing')" style="font-size:12px;font-weight:600;color:#555;background:none;border:none;cursor:pointer;padding:0;letter-spacing:0.04em;font-family:'DM Sans',sans-serif;margin-bottom:12px;display:block;transition:color 0.12s;" onmouseover="this.style.color='#AAA'" onmouseout="this.style.color='#555'">← Back</button>
-      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#555;margin-bottom:4px;">De:Puzl</div>
-      <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:28px;color:var(--white);line-height:1;">JOIN THE WAITLIST</div>
+<!-- WAITLIST OVERLAY -->
+<div id="waitlist-overlay" class="waitlist-overlay" onclick="if(event.target===this)hideWaitlistOverlay()">
+  <div class="waitlist-box" style="max-width:580px;padding:0;overflow:hidden;position:relative;">
+    <div style="background:var(--black);padding:20px 28px;border-bottom:var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#555;margin-bottom:4px;">De:Puzl</div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:28px;color:var(--white);line-height:1;">JOIN THE WAITLIST</div>
+      </div>
+      <button onclick="hideWaitlistOverlay()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;line-height:1;padding:4px 6px;transition:color 0.15s;" onmouseover="this.style.color='#AAA'" onmouseout="this.style.color='#555'">✕</button>
     </div>
     <iframe
       src="https://form.typeform.com/to/J3v4NgIW"
@@ -1607,7 +1615,7 @@
     </button>
 
     <div class="login-footer">
-      Don't have an account? <button onclick="hideLoginOverlay(); showScreen('waitlist');" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:600;">Join the waitlist →</button>
+      Don't have an account? <button onclick="hideLoginOverlay(); showWaitlistOverlay();" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:600;">Join the waitlist →</button>
     </div>
   </div>
 </div>
@@ -1689,7 +1697,7 @@
         <div class="premium-overlay-icon">⭐</div>
         <div class="premium-overlay-title">PREMIUM FEATURE</div>
         <p class="premium-overlay-sub">Submit real situations you've faced.<br>Get the best way to handle them — coming soon.</p>
-        <button class="btn-premium-tease" onclick="showScreen('waitlist')">JOIN WAITLIST FOR EARLY ACCESS →</button>
+        <button class="btn-premium-tease" onclick="showWaitlistOverlay()">JOIN WAITLIST FOR EARLY ACCESS →</button>
       </div>
       <!-- CARD CONTENT (blurred behind overlay) -->
       <div class="dash-card-header">
@@ -1781,7 +1789,7 @@
       </div>
 
       <div class="lc-footer">
-        First 5 free · <button onclick="showLoginOverlay()">Log in</button> · <button onclick="showScreen('waitlist')">Join waitlist →</button>
+        First 5 free · <button onclick="showLoginOverlay()">Log in</button> · <button onclick="showWaitlistOverlay()">Join waitlist →</button>
       </div>
     </div>
   </div>
@@ -2166,6 +2174,14 @@ let drawerOpen = false;
 // ---- WAITLIST ----
 // Handled entirely by Typeform embed — no JS needed
 
+function showWaitlistOverlay() {
+  document.getElementById('waitlist-overlay').classList.add('show');
+}
+
+function hideWaitlistOverlay() {
+  document.getElementById('waitlist-overlay').classList.remove('show');
+}
+
 function showLoginOverlay() {
   document.getElementById('login-error').classList.remove('show');
   document.getElementById('login-overlay').classList.add('show');
@@ -2206,7 +2222,7 @@ function goToLogin() {
 
 function goToWaitlist() {
   document.getElementById('paywall-overlay').classList.remove('show');
-  showScreen('waitlist');
+  showWaitlistOverlay();
 }
 
 function dismissPaywall() {
