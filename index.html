@@ -1616,6 +1616,28 @@
   </div>
 </div>
 
+<!-- TIME-LOCKED OVERLAY (logged-in, drip not ready) -->
+<div class="paywall-overlay" id="timelocked-overlay" role="dialog" aria-modal="true" aria-labelledby="timelocked-title">
+  <div class="paywall-box" style="text-align:center;">
+    <div style="font-size:40px;margin-bottom:12px;">⏳</div>
+    <div class="paywall-title" id="timelocked-title">NOT QUITE<br><span>YET.</span></div>
+    <div class="paywall-sub">This scenario unlocks <strong id="timelocked-days"></strong></div>
+    <p class="paywall-desc">You're getting a new batch of 6 scenarios every 3 days — it keeps the practice feeling fresh. Come back soon, or go Pro to unlock everything now.</p>
+    <div style="background:var(--bg);border:var(--border);border-radius:10px;padding:16px;margin-bottom:20px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#666;margin-bottom:8px;">Your unlock progress</div>
+      <div style="background:#E4E1D6;border-radius:999px;height:6px;overflow:hidden;">
+        <div id="timelocked-progress-bar" style="background:var(--yellow);height:100%;border-radius:999px;transition:width 0.4s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;font-weight:600;color:#666;">
+        <span id="timelocked-unlocked-count"></span>
+        <span id="timelocked-total-count"></span>
+      </div>
+    </div>
+    <button class="btn-paywall-login" style="background:var(--black);color:var(--white);" onclick="document.getElementById('timelocked-overlay').classList.remove('show')">UPGRADE TO PRO — UNLOCK ALL →</button>
+    <button class="btn-paywall-dismiss" onclick="document.getElementById('timelocked-overlay').classList.remove('show')">Got it — I'll come back</button>
+  </div>
+</div>
+
 <div class="ticker-wrap">
   <div class="ticker-inner">De:Puzl <span class="ticker-sep">◆</span> KNOW YOUR WORTH <span class="ticker-sep">◆</span> DATA BEATS OPINIONS <span class="ticker-sep">◆</span> DESIGN IS NOT DECORATION <span class="ticker-sep">◆</span> RESEARCH IS NOT OPTIONAL <span class="ticker-sep">◆</span> YOUR INSTINCTS MATTER <span class="ticker-sep">◆</span> PUSH BACK WITH PRECISION <span class="ticker-sep">◆</span> TRUST THE PROCESS <span class="ticker-sep">◆</span> De:Puzl <span class="ticker-sep">◆</span> KNOW YOUR WORTH <span class="ticker-sep">◆</span> DATA BEATS OPINIONS <span class="ticker-sep">◆</span> DESIGN IS NOT DECORATION <span class="ticker-sep">◆</span> RESEARCH IS NOT OPTIONAL <span class="ticker-sep">◆</span> YOUR INSTINCTS MATTER <span class="ticker-sep">◆</span> PUSH BACK WITH PRECISION <span class="ticker-sep">◆</span> TRUST THE PROCESS <span class="ticker-sep">◆</span></div>
 </div>
@@ -2712,6 +2734,18 @@ function jumpToQuestion(idx) {
   if (!isLoggedIn && idx >= FREE_LIMIT) {
     closeDrawer();
     document.getElementById('paywall-overlay').classList.add('show');
+    return;
+  }
+  if (isLoggedIn && idx >= getUnlockedCount()) {
+    closeDrawer();
+    const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+    const unlocked = getUnlockedCount();
+    const batchDays = getDaysUntilNextUnlock() + Math.floor((idx - unlocked) / UNLOCK_BATCH) * UNLOCK_DAYS;
+    document.getElementById('timelocked-days').textContent = batchDays === 1 ? 'tomorrow' : `in ${batchDays} days`;
+    document.getElementById('timelocked-unlocked-count').textContent = `${unlocked} unlocked`;
+    document.getElementById('timelocked-total-count').textContent = `${pool.length} total`;
+    document.getElementById('timelocked-progress-bar').style.width = Math.round((unlocked / pool.length) * 100) + '%';
+    document.getElementById('timelocked-overlay').classList.add('show');
     return;
   }
   currentIndex = idx;
