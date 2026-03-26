@@ -59,6 +59,11 @@
   .quiz-pack-name { font-size: 11px; font-weight: 600; color: #999; white-space: nowrap; line-height: 1; }
   .quiz-upgrade-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; background: var(--black); color: var(--white); border: none; border-radius: 6px; padding: 7px 14px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; letter-spacing: 0.02em; }
   .quiz-upgrade-btn:hover { opacity: 0.8; }
+  .quiz-auth-btns { display: flex; align-items: center; gap: 8px; }
+  .quiz-login-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; background: transparent; color: var(--black); border: var(--border); border-radius: 6px; padding: 6px 14px; cursor: pointer; transition: background 0.12s; }
+  .quiz-login-btn:hover { background: #F5F4EF; }
+  .quiz-signup-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; background: var(--black); color: var(--white); border: none; border-radius: 6px; padding: 7px 14px; cursor: pointer; transition: opacity 0.15s; }
+  .quiz-signup-btn:hover { opacity: 0.8; }
   .progress-wrap { flex: 1; }
   .progress-track { height: 3px; background: #EBEBEB; border-radius: 999px; }
   .progress-fill { height: 100%; background: var(--black); border-radius: 999px; transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -1883,7 +1888,11 @@
     </div>
     <div class="quiz-header-right">
       <span id="score-display" style="display:none">0</span>
-      <button class="quiz-upgrade-btn" id="quiz-upgrade-btn" onclick="showUpgradePrompt(currentCollectionId)">Upgrade to Pro ↗</button>
+      <div class="quiz-auth-btns" id="quiz-auth-btns" style="display:none">
+        <button class="quiz-login-btn" onclick="showLoginOverlay()">Log in</button>
+        <button class="quiz-signup-btn" onclick="showWaitlistOverlay()">Sign up</button>
+      </div>
+      <button class="quiz-upgrade-btn" id="quiz-upgrade-btn" onclick="showUpgradePrompt(currentCollectionId)" style="display:none">Upgrade to Pro ↗</button>
     </div>
   </div>
 
@@ -2626,7 +2635,17 @@ function startQuiz(filterCat) {
   const packNameEl = document.getElementById('quiz-pack-name');
   if (packNameEl && _coll) packNameEl.textContent = _coll.name;
   const upgradeBtn = document.getElementById('quiz-upgrade-btn');
-  if (upgradeBtn) upgradeBtn.style.display = currentProfile?.plan === 'pro' ? 'none' : '';
+  const quizAuthBtns = document.getElementById('quiz-auth-btns');
+  if (currentProfile?.plan === 'pro') {
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
+    if (quizAuthBtns) quizAuthBtns.style.display = 'none';
+  } else if (isLoggedIn) {
+    if (upgradeBtn) upgradeBtn.style.display = '';
+    if (quizAuthBtns) quizAuthBtns.style.display = 'none';
+  } else {
+    if (upgradeBtn) upgradeBtn.style.display = 'none';
+    if (quizAuthBtns) quizAuthBtns.style.display = '';
+  }
   renderQuestion();
   renderDrawer();
 }
