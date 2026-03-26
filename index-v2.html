@@ -53,7 +53,7 @@
   .cat-name { font-weight: 700; font-size: 14px; }
   .cat-count { font-size: 11px; color: #AAA; margin-top: 2px; font-weight: 500; }
   .bottom-bar { border-top: var(--border); padding: 20px 48px; background: var(--black); color: var(--white); font-size: 12px; display: flex; gap: 32px; font-weight: 500; }
-  .quiz-header { border-bottom: var(--border); padding: 0 40px; height: 60px; display: flex; align-items: center; gap: 32px; background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 10; }
+  .quiz-header { border-bottom: var(--border); padding: 0 40px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 32px; background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 10; }
   .quiz-header-left { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex-shrink: 0; position: relative; }
   .quiz-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--black); letter-spacing: 0.01em; line-height: 1; }
   .quiz-pack-name { font-size: 11px; font-weight: 600; color: #999; white-space: nowrap; line-height: 1; }
@@ -1889,15 +1889,15 @@
     <div class="quiz-header-right">
       <span id="score-display" style="display:none">0</span>
       <div class="quiz-auth-btns" id="quiz-auth-btns" style="display:none">
-        <button class="quiz-login-btn" onclick="showLoginOverlay()">Log in</button>
-        <button class="quiz-signup-btn" onclick="showWaitlistOverlay()">Sign up</button>
+        <button class="lv2-btn-login" onclick="showLoginOverlay()">Log in</button>
+        <button class="lv2-btn-signup" onclick="showWaitlistOverlay()">Sign up</button>
       </div>
       <button class="quiz-upgrade-btn" id="quiz-upgrade-btn" onclick="showUpgradePrompt(currentCollectionId)" style="display:none">Upgrade to Pro ↗</button>
     </div>
   </div>
 
   <!-- FILTER BAR (desktop) -->
-  <div class="filter-bar" id="filter-bar">
+  <div class="filter-bar" id="filter-bar" style="display:none">
     <span class="filter-label">Filter:</span>
     <button class="filter-trigger" id="filter-trigger" onclick="toggleFilterDropdown()">
       <span id="filter-trigger-label">All Categories</span>
@@ -1915,7 +1915,7 @@
   </div>
 
   <!-- FILTER SELECT (mobile) -->
-  <div class="filter-select-wrap" id="filter-select-wrap">
+  <div class="filter-select-wrap" id="filter-select-wrap" style="display:none">
     <span class="filter-select-label">Filter:</span>
     <select class="filter-select-mobile" id="filter-select-mobile" onchange="setFilterMobile(this.value)">
       <option value="all">All Categories</option>
