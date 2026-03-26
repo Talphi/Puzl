@@ -599,6 +599,57 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
   line-height: 1.6;
 }
 
+/* Auth tabs (login / sign up) */
+.auth-tabs {
+  display: flex;
+  border-bottom: var(--border);
+}
+.auth-tab {
+  flex: 1;
+  padding: 13px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #BBB;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.auth-tab.active { color: var(--black); border-bottom-color: var(--black); }
+.auth-tab:hover:not(.active) { color: #777; }
+
+/* Auth success message */
+.auth-success {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A7A35;
+  margin-bottom: 14px;
+  display: none;
+  padding: 10px 12px;
+  border-left: 3px solid #1A7A35;
+  background: rgba(26,122,53,0.06);
+  border-radius: 0 6px 6px 0;
+}
+.auth-success.show { display: block; }
+
+/* Tier badge in user chip */
+.dv2-tier-badge {
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--yellow);
+  color: var(--black);
+}
+
 
 /* ============================================================
    10. WAITLIST OVERLAY

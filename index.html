@@ -1449,42 +1449,28 @@
 
 <!-- WAITLIST SCREEN -->
 <!-- WAITLIST OVERLAY -->
-<div id="waitlist-overlay" class="waitlist-overlay" onclick="if(event.target===this)hideWaitlistOverlay()">
-  <div class="waitlist-box" style="max-width:580px;padding:0;overflow:hidden;position:relative;border-radius:16px;">
-    <div style="background:var(--black);padding:20px 28px;border-bottom:var(--border);display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#555;margin-bottom:4px;">De:Puzl</div>
-        <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:28px;color:var(--white);line-height:1;">JOIN THE WAITLIST</div>
-      </div>
-      <button onclick="hideWaitlistOverlay()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;line-height:1;padding:4px 6px;transition:color 0.15s;" onmouseover="this.style.color='#AAA'" onmouseout="this.style.color='#555'">✕</button>
-    </div>
-    <iframe
-      src="https://form.typeform.com/to/J3v4NgIW"
-      style="width:100%;height:520px;border:none;display:block;background:var(--white);"
-      allow="camera; microphone; autoplay; encrypted-media;"
-    ></iframe>
-  </div>
-</div>
-
-<!-- LOGIN OVERLAY -->
-<div id="login-overlay" class="login-overlay" onclick="if(event.target===this)hideLoginOverlay()">
+<!-- AUTH OVERLAY — unified login + sign up -->
+<div id="auth-overlay" class="login-overlay" onclick="if(event.target===this)hideAuthOverlay()">
   <div class="login-box">
 
     <div class="login-header">
       <div class="login-header-wordmark">
         <span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span>
       </div>
-      <button class="login-close" onclick="hideLoginOverlay()">✕</button>
+      <button class="login-close" onclick="hideAuthOverlay()">✕</button>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Log in</button>
+      <button class="auth-tab" id="auth-tab-signup" onclick="switchAuthTab('signup')">Sign up</button>
     </div>
 
     <div class="login-body">
-      <div class="login-tagline">Sign in to continue</div>
-      <div class="login-title">WELCOME <span class="accent">BACK.</span></div>
-
-      <div class="login-error" id="login-error">Something went wrong. Please try again.</div>
+      <div class="login-error" id="auth-error"></div>
+      <div class="auth-success" id="auth-success"></div>
 
       <button class="btn-google-login" id="btn-google-login" onclick="signInWithGoogle()">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;">
           <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
           <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
           <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
@@ -1493,11 +1479,25 @@
         <span id="google-btn-text">Continue with Google</span>
       </button>
 
-      <div class="login-footer">
-        Don't have an account? <button onclick="hideLoginOverlay(); showWaitlistOverlay();" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:700;">Join the waitlist →</button>
-      </div>
-    </div>
+      <div class="login-divider">or</div>
 
+      <form onsubmit="handleAuthSubmit(event)" autocomplete="on">
+        <div class="login-field">
+          <label class="login-label" for="auth-email">Email</label>
+          <input type="email" class="login-input" id="auth-email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div class="login-field">
+          <label class="login-label" for="auth-password">Password</label>
+          <input type="password" class="login-input" id="auth-password" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-login" id="auth-submit-btn">Log in</button>
+      </form>
+
+      <div class="login-footer" id="auth-footer">
+        Don't have an account? <button onclick="switchAuthTab('signup')" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:700;">Sign up →</button>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -1514,9 +1514,10 @@
       <div class="dv2-user" id="dv2-user" style="display:none">
         <div class="dv2-avatar" id="dv2-avatar">?</div>
         <span id="dv2-username"></span>
+        <span class="dv2-tier-badge" id="dv2-tier-badge" style="display:none"></span>
       </div>
       <button class="dv2-action-btn" id="dv2-action-btn" onclick="logout()">Log out</button>
-      <button class="lv2-btn-signup" id="dv2-signup-btn" onclick="showWaitlistOverlay()" style="display:none">Sign up</button>
+      <button class="lv2-btn-signup" id="dv2-signup-btn" onclick="showAuthOverlay('signup')" style="display:none">Sign up</button>
     </div>
   </div>
 
@@ -1732,8 +1733,8 @@
         <span class="de">De</span><span class="sep">:</span><span class="puzl">Puzl</span>
       </div>
       <div class="lv2-nav-actions">
-        <button class="lv2-btn-login" onclick="showLoginOverlay()">Log in</button>
-        <button class="lv2-btn-signup" onclick="showWaitlistOverlay()">Sign up</button>
+        <button class="lv2-btn-login" onclick="showAuthOverlay('login')">Log in</button>
+        <button class="lv2-btn-signup" onclick="showAuthOverlay('signup')">Sign up</button>
       </div>
     </nav>
 
@@ -1763,7 +1764,7 @@
           <div class="lv2-prop"><div class="lv2-prop-dot" style="background:var(--black)"></div><span>Reduce team friction for good</span></div>
         </div>
         <button class="lv2-cta" onclick="startGuest()">PICK YOUR PERSPECTIVE →</button>
-        <p class="lv2-subline">Already have an account? <button onclick="showLoginOverlay()" class="lv2-subline-link">Log in</button> for access to 200+ scenarios.</p>
+        <p class="lv2-subline">Already have an account? <button onclick="showAuthOverlay('login')" class="lv2-subline-link">Log in</button> for access to 200+ scenarios.</p>
       </div>
 
       <!-- Right: scenario preview card -->
@@ -1942,8 +1943,8 @@
     <div class="quiz-header-right">
       <span id="score-display" style="display:none">0</span>
       <div class="quiz-auth-btns" id="quiz-auth-btns" style="display:none">
-        <button class="lv2-btn-login" onclick="showLoginOverlay()">Log in</button>
-        <button class="lv2-btn-signup" onclick="showWaitlistOverlay()">Sign up</button>
+        <button class="lv2-btn-login" onclick="showAuthOverlay('login')">Log in</button>
+        <button class="lv2-btn-signup" onclick="showAuthOverlay('signup')">Sign up</button>
       </div>
       <button class="quiz-upgrade-btn" id="quiz-upgrade-btn" onclick="showUpgradePrompt(currentCollectionId)" style="display:none">Upgrade to Pro ↗</button>
     </div>
@@ -2284,18 +2285,81 @@ async function loadScenarios() {
 }
 
 // ── AUTH ────────────────────────────────────────────────────────────────────
-function showWaitlistOverlay() {
-  document.getElementById('waitlist-overlay').classList.add('show');
+let _authMode = 'login'; // 'login' | 'signup'
+
+function showAuthOverlay(mode) {
+  _authMode = mode || 'login';
+  document.getElementById('auth-error').classList.remove('show');
+  document.getElementById('auth-success').classList.remove('show');
+  document.getElementById('auth-overlay').classList.add('show');
+  switchAuthTab(_authMode);
 }
-function hideWaitlistOverlay() {
-  document.getElementById('waitlist-overlay').classList.remove('show');
+function hideAuthOverlay() {
+  document.getElementById('auth-overlay').classList.remove('show');
 }
-function showLoginOverlay() {
-  document.getElementById('login-error').classList.remove('show');
-  document.getElementById('login-overlay').classList.add('show');
+// Aliases kept for any remaining references
+function showLoginOverlay()    { showAuthOverlay('login');  }
+function hideLoginOverlay()    { hideAuthOverlay();         }
+function showWaitlistOverlay() { showAuthOverlay('signup'); }
+function hideWaitlistOverlay() { hideAuthOverlay();         }
+
+function switchAuthTab(mode) {
+  _authMode = mode;
+  const isLogin = mode === 'login';
+  document.getElementById('auth-tab-login').classList.toggle('active', isLogin);
+  document.getElementById('auth-tab-signup').classList.toggle('active', !isLogin);
+  document.getElementById('auth-submit-btn').textContent = isLogin ? 'Log in' : 'Create account';
+  document.getElementById('auth-footer').innerHTML = isLogin
+    ? `Don't have an account? <button onclick="switchAuthTab('signup')" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:700;">Sign up →</button>`
+    : `Already have an account? <button onclick="switchAuthTab('login')" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:700;">Log in →</button>`;
+  document.getElementById('auth-password').autocomplete = isLogin ? 'current-password' : 'new-password';
+  document.getElementById('auth-error').classList.remove('show');
+  document.getElementById('auth-success').classList.remove('show');
 }
-function hideLoginOverlay() {
-  document.getElementById('login-overlay').classList.remove('show');
+
+async function handleAuthSubmit(e) {
+  e.preventDefault();
+  const email     = document.getElementById('auth-email').value.trim();
+  const password  = document.getElementById('auth-password').value;
+  const btn       = document.getElementById('auth-submit-btn');
+  const errorEl   = document.getElementById('auth-error');
+  const successEl = document.getElementById('auth-success');
+
+  btn.disabled = true;
+  errorEl.classList.remove('show');
+  successEl.classList.remove('show');
+
+  if (_authMode === 'login') {
+    btn.textContent = 'Signing in…';
+    const { error } = await _supa.auth.signInWithPassword({ email, password });
+    if (error) {
+      errorEl.textContent = error.message === 'Invalid login credentials'
+        ? 'Wrong email or password.' : (error.message || 'Something went wrong.');
+      errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Log in';
+    }
+    // success: handled by onAuthStateChange listener
+  } else {
+    btn.textContent = 'Creating account…';
+    const { data, error } = await _supa.auth.signUp({ email, password });
+    if (error) {
+      errorEl.textContent = error.message || 'Could not create account.';
+      errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Create account';
+    } else if (data?.user?.identities?.length === 0) {
+      errorEl.textContent = 'An account with this email already exists — try logging in.';
+      errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Create account';
+    } else {
+      successEl.textContent = '✓ Account created! Check your email to confirm, then log in.';
+      successEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Create account';
+    }
+  }
 }
 
 async function signInWithGoogle() {
@@ -2308,7 +2372,8 @@ async function signInWithGoogle() {
     options: { redirectTo: window.location.origin + window.location.pathname }
   });
   if (error) {
-    document.getElementById('login-error').classList.add('show');
+    document.getElementById('auth-error').textContent = 'Google sign-in failed. Try again.';
+    document.getElementById('auth-error').classList.add('show');
     btn.disabled = false;
     txt.textContent = 'Continue with Google';
   }
@@ -2332,22 +2397,18 @@ function startGuest() {
 
 function goToLogin() {
   document.getElementById('paywall-overlay').classList.remove('show');
-  showLoginOverlay();
+  showAuthOverlay('login');
 }
 function goToWaitlist() {
   document.getElementById('paywall-overlay').classList.remove('show');
-  showWaitlistOverlay();
+  showAuthOverlay('signup');
 }
 
 function _applySession(session) {
   if (!session) return;
   isLoggedIn = true;
   currentUser = session.user;
-  const name = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'You';
-  const initial = name[0].toUpperCase();
-  document.getElementById('dash-username').textContent = name;
-  document.getElementById('dash-avatar').textContent = initial;
-  hideLoginOverlay();
+  hideAuthOverlay();
 }
 
 async function loadProgressMap(userId) {
@@ -3173,12 +3234,19 @@ function renderDashboardV2() {
   const userChip   = document.getElementById('dv2-user');
   const usernameEl = document.getElementById('dv2-username');
   const avatarEl   = document.getElementById('dv2-avatar');
+  const tierBadge  = document.getElementById('dv2-tier-badge');
   if (loggedIn) {
     if (actionBtn) { actionBtn.className = 'dv2-action-btn'; actionBtn.textContent = 'Log out'; actionBtn.onclick = logout; actionBtn.style.display = ''; }
     if (signupBtn) signupBtn.style.display = 'none';
     if (userChip)  { userChip.style.display = 'flex'; }
     if (usernameEl && currentUser) usernameEl.textContent = currentUser.email?.split('@')[0] || '';
     if (avatarEl   && currentUser) avatarEl.textContent   = (currentUser.email?.[0] || '?').toUpperCase();
+    if (tierBadge && currentProfile?.tier && currentProfile.tier !== 'pro') {
+      tierBadge.textContent = currentProfile.tier;
+      tierBadge.style.display = '';
+      tierBadge.style.background = currentProfile.tier === 'alpha' ? 'var(--yellow)' : currentProfile.tier === 'beta' ? '#EBF0FA' : '#EDEAE2';
+      tierBadge.style.color = currentProfile.tier === 'beta' ? '#1550A2' : 'var(--black)';
+    } else if (tierBadge) { tierBadge.style.display = 'none'; }
   } else {
     if (actionBtn) actionBtn.style.display = 'none';
     if (signupBtn) signupBtn.style.display = 'none';
@@ -3289,8 +3357,8 @@ function renderDashboardV2() {
       <div class="coll-gate-cta">
         <div class="coll-gate-msg">Sign up to unlock more packs</div>
         <div class="coll-gate-btns">
-          <button class="lv2-btn-login" onclick="showLoginOverlay()">Log in</button>
-          <button class="lv2-btn-signup" onclick="showWaitlistOverlay()">Sign up</button>
+          <button class="lv2-btn-login" onclick="showAuthOverlay('login')">Log in</button>
+          <button class="lv2-btn-signup" onclick="showAuthOverlay('signup')">Sign up</button>
         </div>
       </div>
     </div></div>`;
@@ -3470,9 +3538,9 @@ function openCollection(id) {
 function showUpgradePrompt(collId) {
   // Show waitlist/upgrade overlay for locked pro collections
   if (isLoggedIn) {
-    showWaitlistOverlay(); // repurpose for upgrade CTA for now
+    showAuthOverlay('signup'); // repurpose for upgrade CTA for now
   } else {
-    showLoginOverlay();
+    showAuthOverlay('login');
   }
 }
 

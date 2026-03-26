@@ -31,10 +31,17 @@ create table if not exists scenarios (
 );
 
 -- ── PROFILES ───────────────────────────────────────────────────────────────
+-- tier: tracks which cohort the user belongs to (managed by admin in Supabase dashboard)
+--   waitlist → signed up but not yet given access
+--   alpha    → first wave testers — same access as 'free' plan
+--   beta     → second wave testers — same access as 'free' plan (can be extended)
+--   pro      → paying/gifted full access
+-- plan: controls feature access ('free' | 'pro') — independent of tier label
 create table if not exists profiles (
   id         uuid references auth.users primary key,
   username   text,
   plan       text not null default 'free' check (plan in ('free', 'pro')),
+  tier       text not null default 'alpha' check (tier in ('waitlist', 'alpha', 'beta', 'pro')),
   is_admin   boolean not null default false,
   created_at timestamptz not null default now()
 );
@@ -126,3 +133,8 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- ── MIGRATION: add tier column to existing databases ───────────────────────
+-- Run this if the profiles table already exists without the tier column:
+-- alter table profiles add column if not exists tier text not null default 'alpha'
+--   check (tier in ('waitlist', 'alpha', 'beta', 'pro'));
