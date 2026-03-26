@@ -2,6 +2,13 @@
 -- Paste this entire file into the Supabase SQL Editor and click Run
 
 -- ── SCENARIOS ──────────────────────────────────────────────────────────────
+-- pathway values map to collection IDs:
+--   'default'      → PD Essentials (designer) / PM Essentials (pm)
+--   '0to1'         → 0-to-1 Designer (designer) / 0-to-1 Builder (pm)
+--   'multiplehats' → Managing Multiple Hats
+--   'enterprise'   → Enterprise Dynamics
+--   'scaling'      → Scaling Teams
+--   'march2026'    → March 2026 Drop
 create table if not exists scenarios (
   id           uuid default gen_random_uuid() primary key,
   role         text not null check (role in ('designer', 'pm')),
