@@ -435,7 +435,7 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
 }
 
 .login-header {
-  background: var(--black);
+  background: var(--white);
   padding: 20px 28px;
   display: flex;
   align-items: center;
@@ -450,9 +450,9 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
   letter-spacing: -0.01em;
   line-height: 1;
 }
-.login-header-wordmark .lh-de   { color: var(--white); }
-.login-header-wordmark .lh-sep  { color: var(--white); opacity: 0.5; font-size: 0.82em; }
-.login-header-wordmark .lh-puzl { color: var(--yellow); }
+.login-header-wordmark .lh-de   { color: var(--black); }
+.login-header-wordmark .lh-sep  { color: var(--black); opacity: 0.3; font-size: 0.82em; }
+.login-header-wordmark .lh-puzl { color: var(--red); }
 
 .login-close {
   background: none;
