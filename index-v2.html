@@ -2607,6 +2607,7 @@ function startQuiz(filterCat) {
   activeFilter = filterCat || 'all';
   // Sort by order_num so drip slicing is deterministic
   const ordered = [...sourcePool].sort((a, b) => (a.order_num ?? 999) - (b.order_num ?? 999));
+  // Guests: pool is already pre-limited by openCollection; logged-in: apply drip unlock slice
   const unlockedPool = isLoggedIn ? ordered.slice(0, getUnlockedCount()) : ordered;
   const filtered = activeFilter === 'all' ? unlockedPool : unlockedPool.filter(s => s.category === activeFilter);
   questions = shuffle(filtered);
