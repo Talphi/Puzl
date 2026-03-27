@@ -150,10 +150,8 @@
   .option-btn.wrong .option-letter { background: var(--red); color: var(--white); }
   .option-btn.reveal-best { background: #EAF0FC; }
   .option-btn.reveal-best .option-letter { background: var(--blue); color: var(--white); }
-  .feedback-box { display: none; border-radius: 16px; padding: 20px 24px; margin-top: 4px; background: #F5F4EF; border-left: 3px solid transparent; }
+  .feedback-box { display: none; border-radius: 16px; padding: 20px 24px; margin-top: 4px; background: #F5F4EF; }
   .feedback-box.show { display: block; }
-  .feedback-box.win { border-left-color: var(--green); }
-  .feedback-box.lose { border-left-color: var(--red); }
   .feedback-verdict { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
   .feedback-verdict.win { color: var(--green); }
   .feedback-verdict.lose { color: var(--red); }
@@ -3080,7 +3078,7 @@ function restoreAnsweredState(q, opts) {
   verdict.textContent = wasCorrect ? '\u2713 GOOD CALL' : '\u2717 NOT THE BEST MOVE';
   verdict.className = 'feedback-verdict ' + (wasCorrect ? 'win' : 'lose');
   document.getElementById('feedback-text').textContent = q.feedback;
-  document.getElementById('feedback-tip').textContent = q.tip;
+  document.getElementById('feedback-tip').textContent = (q.tip || '').replace(/^\p{Emoji}\s*/u, '');
   const fb = document.getElementById('feedback-box');
   fb.className = 'feedback-box show ' + (wasCorrect ? 'win' : 'lose');
   document.getElementById('btn-next').classList.add('show');
@@ -3110,7 +3108,7 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
   verdict.textContent = isCorrect ? '\u2713 GOOD CALL' : '\u2717 NOT THE BEST MOVE';
   verdict.className = 'feedback-verdict ' + (isCorrect ? 'win' : 'lose');
   document.getElementById('feedback-text').textContent = q.feedback;
-  document.getElementById('feedback-tip').textContent = q.tip;
+  document.getElementById('feedback-tip').textContent = (q.tip || '').replace(/^\p{Emoji}\s*/u, '');
   const fb2 = document.getElementById('feedback-box');
   fb2.className = 'feedback-box show ' + (isCorrect ? 'win' : 'lose');
   document.getElementById('btn-next').classList.add('show');
