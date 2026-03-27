@@ -904,7 +904,7 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
   cursor: pointer;
   transition: background 0.15s;
   margin-top: 8px;
-  border-radius: 0;
+  border-radius: 999px;
 }
 .btn-waitlist:hover { background: var(--red); }
 
@@ -939,6 +939,7 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
   text-decoration: underline;
   margin-top: 16px;
   display: block;
+  width: 100%;
   text-align: center;
   transition: color 0.15s;
 }

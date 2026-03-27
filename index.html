@@ -60,12 +60,12 @@
   .quiz-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 17px; color: var(--black); letter-spacing: 0.01em; line-height: 1; }
   .quiz-header-sep { color: #D4D0C4; font-size: 14px; font-weight: 400; line-height: 1; user-select: none; }
   .quiz-pack-name { font-size: 13px; font-weight: 600; color: #888; white-space: nowrap; line-height: 1; }
-  .quiz-upgrade-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; background: var(--black); color: var(--white); border: none; border-radius: 6px; padding: 7px 14px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; letter-spacing: 0.02em; }
+  .quiz-upgrade-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 7px 14px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; letter-spacing: 0.02em; }
   .quiz-upgrade-btn:hover { opacity: 0.8; }
   .quiz-auth-btns { display: flex; align-items: center; gap: 8px; }
-  .quiz-login-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; background: transparent; color: var(--black); border: var(--border); border-radius: 6px; padding: 6px 14px; cursor: pointer; transition: background 0.12s; }
+  .quiz-login-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; background: transparent; color: var(--black); border: var(--border); border-radius: 8px; padding: 6px 14px; cursor: pointer; transition: background 0.12s; }
   .quiz-login-btn:hover { background: #F5F4EF; }
-  .quiz-signup-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; background: var(--black); color: var(--white); border: none; border-radius: 6px; padding: 7px 14px; cursor: pointer; transition: opacity 0.15s; }
+  .quiz-signup-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 7px 14px; cursor: pointer; transition: opacity 0.15s; }
   .quiz-signup-btn:hover { opacity: 0.8; }
   .progress-wrap { flex: 1; }
   .progress-track { height: 3px; background: #EBEBEB; border-radius: 999px; }
@@ -176,11 +176,11 @@
   .cat-score-pct { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 28px; color: var(--black); }
   .cat-score-name { font-size: 9px; text-transform: uppercase; color: #AAA; margin-top: 4px; line-height: 1.4; font-weight: 600; letter-spacing: 0.04em; }
   .results-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .btn-retry { background: var(--black); color: var(--white); border: none; border-radius: 10px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background 0.15s; }
+  .btn-retry { background: var(--black); color: var(--white); border: none; border-radius: 999px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background 0.15s; }
   .btn-retry:hover { background: #333; }
-  .btn-home { background: transparent; color: var(--black); border: var(--border); border-radius: 10px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background 0.15s; }
+  .btn-home { background: transparent; color: var(--black); border: var(--border); border-radius: 999px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background 0.15s; }
   .btn-home:hover { background: #F5F5F5; }
-  .btn-switch { background: transparent; color: var(--black); border: var(--border); border-radius: 10px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background 0.15s; }
+  .btn-switch { background: transparent; color: var(--black); border: var(--border); border-radius: 999px; padding: 15px 32px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: background 0.15s; }
   .btn-switch:hover { background: #F5F5F5; }
 
   /* ---- FILTER BAR ---- */
@@ -1136,7 +1136,7 @@
     display: block;
     width: 100%;
     text-align: center;
-    border-radius: 10px;
+    border-radius: 8px;
   }
   .btn-dash.primary { background: var(--black); color: var(--white); }
   .btn-dash.primary:hover { background: var(--red); }
@@ -1233,7 +1233,7 @@
     text-transform: uppercase;
     cursor: pointer;
     transition: background 0.15s;
-    border-radius: 10px;
+    border-radius: 999px;
   }
   .btn-premium-tease:hover { background: var(--red); }
   .scenario-form { display: flex; flex-direction: column; gap: 10px; }
@@ -1328,6 +1328,7 @@
     cursor: pointer;
     transition: background 0.15s;
     margin-bottom: 10px;
+    border-radius: 999px;
   }
   .btn-paywall-login:hover { background: var(--red); }
   .btn-paywall-dismiss {
@@ -1389,7 +1390,7 @@
   /* Footer */
   .ob-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 32px; border-top: var(--border-light); }
   .ob-footer-right { display: flex; align-items: center; gap: 20px; }
-  .ob-begin-btn { background: var(--black); color: var(--white); border: none; border-radius: 12px; padding: 16px 40px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s, transform 0.15s; }
+  .ob-begin-btn { background: var(--black); color: var(--white); border: none; border-radius: 999px; padding: 16px 40px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s, transform 0.15s; }
   .ob-begin-btn:hover { background: #222; transform: translateY(-1px); }
   .ob-meta { font-size: 13px; color: #AAA; font-weight: 500; }
   .ob-back { font-size: 13px; color: #BBB; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: color 0.12s; }
@@ -1770,6 +1771,25 @@
     <p class="paywall-desc" style="margin-top:12px;">This one opens in a few days — new scenarios drip through regularly to keep the practice fresh.</p>
     <button class="btn-paywall-login" style="background:var(--black);color:var(--white);margin-top:4px;" onclick="document.getElementById('pace-overlay').classList.remove('show')">Got it ✓</button>
     <button class="btn-paywall-dismiss" onclick="document.getElementById('pace-overlay').classList.remove('show');goHome()">← Back to dashboard</button>
+  </div>
+</div>
+
+<!-- PRO COMING SOON OVERLAY -->
+<div class="paywall-overlay" id="pro-soon-overlay">
+  <div class="waitlist-box" style="max-width:480px;text-align:center;">
+    <div id="pro-soon-default">
+      <div class="waitlist-success-icon">🚀</div>
+      <div class="waitlist-title">PRO MODE<br><span>COMING SOON.</span></div>
+      <p class="waitlist-desc">We're putting the finishing touches on Pro. Join the waitlist and we'll let you know the moment it's ready.</p>
+      <button class="btn-waitlist" onclick="joinProWaitlist()">JOIN THE WAITLIST →</button>
+      <button class="waitlist-back" onclick="document.getElementById('pro-soon-overlay').classList.remove('show')">Maybe later</button>
+    </div>
+    <div id="pro-soon-confirm" style="display:none;">
+      <div class="waitlist-success-icon">✅</div>
+      <div class="waitlist-success-title">YOU'RE ON<br>THE LIST.</div>
+      <p class="waitlist-success-msg">We'll reach out the moment Pro is ready. Stay sharp in the meantime.</p>
+      <button class="btn-waitlist" onclick="document.getElementById('pro-soon-overlay').classList.remove('show');document.getElementById('pro-soon-confirm').style.display='none';document.getElementById('pro-soon-default').style.display=''">BACK TO PRACTICE →</button>
+    </div>
   </div>
 </div>
 
@@ -3794,12 +3814,19 @@ function openCollection(id) {
 }
 
 function showUpgradePrompt(collId) {
-  // Show waitlist/upgrade overlay for locked pro collections
-  if (isLoggedIn) {
-    showAuthOverlay('signup'); // repurpose for upgrade CTA for now
-  } else {
-    showAuthOverlay('login');
+  const isPro = currentProfile?.plan === 'pro' || currentProfile?.is_admin;
+  if (isLoggedIn && !isPro) {
+    document.getElementById('pro-soon-default').style.display = '';
+    document.getElementById('pro-soon-confirm').style.display = 'none';
+    document.getElementById('pro-soon-overlay').classList.add('show');
+  } else if (!isLoggedIn) {
+    showAuthOverlay('signup');
   }
+}
+
+function joinProWaitlist() {
+  document.getElementById('pro-soon-default').style.display = 'none';
+  document.getElementById('pro-soon-confirm').style.display = '';
 }
 
 // ---- LANDING PARALLAX + GRANULE SYSTEM ----
