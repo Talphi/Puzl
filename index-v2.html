@@ -1482,7 +1482,7 @@
     </button>
 
     <div class="auth-footer-row" id="auth-footer-row">
-      <button class="auth-link-btn" onclick="handleResetPassword()">Reset password</button>
+      <button class="auth-link-btn" onclick="handleResetPassword()">Forgot password?</button>
       <span>New user? <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('signup')">Sign up</button></span>
     </div>
 
@@ -2301,7 +2301,7 @@ function switchAuthTab(mode) {
   if (heading)   heading.innerHTML     = isLogin ? `Log in to ${brand}` : `Sign up to ${brand}`;
   if (submitBtn) submitBtn.textContent = isLogin ? 'Log in' : 'Create account';
   if (footerRow) footerRow.innerHTML   = isLogin
-    ? `<button class="auth-link-btn" onclick="handleResetPassword()">Reset password</button>
+    ? `<button class="auth-link-btn" onclick="handleResetPassword()">Forgot password?</button>
        <span>New user? <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('signup')">Sign up</button></span>`
     : `<span style="color:#888;font-size:13px;">Already registered?</span>
        <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('login')">Log in</button>`;
