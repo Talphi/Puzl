@@ -578,6 +578,149 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
 .auth-link-bold { font-weight: 700; color: var(--black); }
 .auth-link-bold:hover { color: var(--red); }
 
+/* ── ONBOARDING MODAL ───────────────────────────────────────────────────── */
+.onboarding-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 6000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.onboarding-overlay.show { display: flex; }
+
+.onboarding-box {
+  background: var(--white);
+  width: 100%;
+  max-width: 420px;
+  border-radius: 24px;
+  padding: 40px 36px 32px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+  text-align: center;
+}
+
+/* Progress dots */
+.onb-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 32px;
+}
+.onb-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: #DDD;
+  transition: background 0.2s, width 0.2s;
+}
+.onb-dot.active {
+  background: var(--black);
+  width: 20px;
+}
+
+/* Step headings */
+.onb-heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+.onb-sub {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+/* Role tiles */
+.onb-tiles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.onb-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1.5px solid #E0DDD4;
+  border-radius: 14px;
+  background: var(--white);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--black);
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+.onb-tile:hover { border-color: #BBB; }
+.onb-tile.selected {
+  border-color: var(--black);
+  background: #F7F6F2;
+}
+.onb-tile-icon { font-size: 20px; line-height: 1; }
+.onb-tile-label { font-size: 15px; font-weight: 600; }
+
+/* Chips */
+.onb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+.onb-chip {
+  padding: 8px 16px;
+  border: 1.5px solid #E0DDD4;
+  border-radius: 999px;
+  background: var(--white);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--black);
+  transition: border-color 0.15s, background 0.15s;
+}
+.onb-chip:hover { border-color: #BBB; }
+.onb-chip.selected {
+  border-color: var(--black);
+  background: #F7F6F2;
+  font-weight: 700;
+}
+
+/* Buttons */
+.onb-next-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 999px;
+  border: none;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-bottom: 12px;
+}
+.onb-next-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.onb-skip-btn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #AAA;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.onb-skip-btn:hover { color: #666; }
+
 /* Unused legacy — kept for compat */
 .login-header { display: none; }
 .login-header-wordmark { display: none; }

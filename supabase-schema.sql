@@ -42,8 +42,11 @@ create table if not exists profiles (
   username   text,
   plan       text not null default 'free' check (plan in ('free', 'pro')),
   tier       text not null default 'alpha' check (tier in ('waitlist', 'alpha', 'beta', 'pro')),
-  is_admin   boolean not null default false,
-  created_at timestamptz not null default now()
+  is_admin     boolean not null default false,
+  onb_role     text check (onb_role in ('designer', 'pm', 'both')),
+  onb_reasons  text,
+  onb_struggle text,
+  created_at   timestamptz not null default now()
 );
 
 -- ── PROGRESS ───────────────────────────────────────────────────────────────
@@ -138,3 +141,7 @@ create trigger on_auth_user_created
 -- Run this if the profiles table already exists without the tier column:
 -- alter table profiles add column if not exists tier text not null default 'alpha'
 --   check (tier in ('waitlist', 'alpha', 'beta', 'pro'));
+
+-- alter table profiles add column if not exists onb_role text check (onb_role in ('designer', 'pm', 'both'));
+-- alter table profiles add column if not exists onb_reasons text;
+-- alter table profiles add column if not exists onb_struggle text;

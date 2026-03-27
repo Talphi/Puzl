@@ -1490,6 +1490,68 @@
   </div>
 </div>
 
+<!-- ONBOARDING MODAL -->
+<div id="onboarding-overlay" class="onboarding-overlay">
+  <div class="onboarding-box">
+
+    <div class="onb-dots">
+      <div class="onb-dot active" id="onb-dot-1"></div>
+      <div class="onb-dot" id="onb-dot-2"></div>
+      <div class="onb-dot" id="onb-dot-3"></div>
+    </div>
+
+    <!-- Step 1: Role -->
+    <div class="onb-step" id="onb-step-1">
+      <div class="onb-heading">What's your role?</div>
+      <div class="onb-sub">Helps us put the right scenarios in front of you.</div>
+      <div class="onb-tiles">
+        <button class="onb-tile" data-value="designer" onclick="selectOnbTile(this)">
+          <span class="onb-tile-icon">✏️</span>
+          <span class="onb-tile-label">Designer</span>
+        </button>
+        <button class="onb-tile" data-value="pm" onclick="selectOnbTile(this)">
+          <span class="onb-tile-icon">📋</span>
+          <span class="onb-tile-label">Product Manager</span>
+        </button>
+        <button class="onb-tile" data-value="both" onclick="selectOnbTile(this)">
+          <span class="onb-tile-icon">🎭</span>
+          <span class="onb-tile-label">I wear both hats</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Reason for joining -->
+    <div class="onb-step" id="onb-step-2" style="display:none">
+      <div class="onb-heading">What brings you here?</div>
+      <div class="onb-sub">Pick all that apply.</div>
+      <div class="onb-chips">
+        <button class="onb-chip" data-value="pushback" onclick="toggleOnbChip(this)">Get better at pushing back</button>
+        <button class="onb-chip" data-value="understand" onclick="toggleOnbChip(this)">Understand the other side</button>
+        <button class="onb-chip" data-value="newrole" onclick="toggleOnbChip(this)">Prep for a new role</button>
+        <button class="onb-chip" data-value="dynamics" onclick="toggleOnbChip(this)">Improve team dynamics</button>
+        <button class="onb-chip" data-value="confidence" onclick="toggleOnbChip(this)">Build confidence in meetings</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Struggles -->
+    <div class="onb-step" id="onb-step-3" style="display:none">
+      <div class="onb-heading">What do you struggle with most?</div>
+      <div class="onb-sub">Pick all that apply.</div>
+      <div class="onb-chips">
+        <button class="onb-chip" data-value="buyin" onclick="toggleOnbChip(this)">Getting buy-in for my decisions</button>
+        <button class="onb-chip" data-value="scope" onclick="toggleOnbChip(this)">Scope creep and shifting priorities</button>
+        <button class="onb-chip" data-value="heard" onclick="toggleOnbChip(this)">Being heard in meetings</button>
+        <button class="onb-chip" data-value="alignment" onclick="toggleOnbChip(this)">Misaligned goals across teams</button>
+        <button class="onb-chip" data-value="difficult" onclick="toggleOnbChip(this)">Navigating difficult conversations</button>
+      </div>
+    </div>
+
+    <button class="onb-next-btn" id="onb-next-btn" onclick="onbNext()" disabled>Next →</button>
+    <button class="onb-skip-btn" onclick="skipOnboarding()">Skip for now</button>
+
+  </div>
+</div>
+
 <!-- DASHBOARD SCREEN -->
 <div id="screen-dashboard" class="screen">
   <!-- Nav -->
@@ -2292,6 +2354,79 @@ function hideLoginOverlay()    { hideAuthOverlay();         }
 function showWaitlistOverlay() { showAuthOverlay('signup'); }
 function hideWaitlistOverlay() { hideAuthOverlay();         }
 
+// ── ONBOARDING ───────────────────────────────────────────────────────────────
+let _onbStep = 1;
+let _onbData = { role: null, reasons: [], struggles: [] };
+
+function showOnboardingModal() {
+  _onbStep = 1;
+  _onbData = { role: null, reasons: [], struggles: [] };
+  // Reset UI
+  document.querySelectorAll('.onb-tile').forEach(t => t.classList.remove('selected'));
+  document.querySelectorAll('.onb-chip').forEach(c => c.classList.remove('selected'));
+  _onbShowStep(1);
+  document.getElementById('onboarding-overlay').classList.add('show');
+}
+
+function hideOnboardingModal() {
+  document.getElementById('onboarding-overlay').classList.remove('show');
+}
+
+function skipOnboarding() {
+  hideOnboardingModal();
+}
+
+function _onbShowStep(step) {
+  [1,2,3].forEach(n => {
+    document.getElementById(`onb-step-${n}`).style.display = n === step ? '' : 'none';
+    const dot = document.getElementById(`onb-dot-${n}`);
+    dot.classList.toggle('active', n === step);
+  });
+  const btn = document.getElementById('onb-next-btn');
+  btn.textContent = step === 3 ? 'Done ✓' : 'Next →';
+  btn.disabled = step === 1 ? !_onbData.role : false;
+}
+
+function selectOnbTile(el) {
+  document.querySelectorAll('.onb-tile').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  _onbData.role = el.dataset.value;
+  document.getElementById('onb-next-btn').disabled = false;
+}
+
+function toggleOnbChip(el) {
+  el.classList.toggle('selected');
+}
+
+async function onbNext() {
+  if (_onbStep === 1) {
+    _onbStep = 2;
+    _onbShowStep(2);
+  } else if (_onbStep === 2) {
+    _onbData.reasons = Array.from(document.querySelectorAll('#onb-step-2 .onb-chip.selected')).map(c => c.dataset.value);
+    _onbStep = 3;
+    _onbShowStep(3);
+  } else {
+    _onbData.struggles = Array.from(document.querySelectorAll('#onb-step-3 .onb-chip.selected')).map(c => c.dataset.value);
+    await _saveOnboarding();
+    hideOnboardingModal();
+  }
+}
+
+async function _saveOnboarding() {
+  if (!currentUser) return;
+  await _supa.from('profiles').update({
+    onb_role:     _onbData.role,
+    onb_reasons:  _onbData.reasons.join(','),
+    onb_struggle: _onbData.struggles.join(','),
+  }).eq('id', currentUser.id);
+  if (currentProfile) {
+    currentProfile.onb_role     = _onbData.role;
+    currentProfile.onb_reasons  = _onbData.reasons.join(',');
+    currentProfile.onb_struggle = _onbData.struggles.join(',');
+  }
+}
+
 function switchAuthTab(mode) {
   _authMode = mode;
   const isLogin = mode === 'login';
@@ -2453,6 +2588,7 @@ async function loadProgressMap(userId) {
     if (profile?.is_admin) document.getElementById('btn-admin-link').style.display = '';
     await loadProgressMap(session.user.id);
     showScreen('dashboard');
+    if (!profile?.onb_role) showOnboardingModal();
   }
   // Listen for future auth changes (sign in / sign out)
   _supa.auth.onAuthStateChange(async (_event, session) => {
@@ -2467,6 +2603,7 @@ async function loadProgressMap(userId) {
       if (profile?.is_admin) document.getElementById('btn-admin-link').style.display = '';
       await loadProgressMap(session.user.id);
       showScreen('dashboard');
+      if (!profile?.onb_role) showOnboardingModal();
     } else {
       isLoggedIn = false;
       currentUser = null;
