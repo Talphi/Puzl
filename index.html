@@ -2585,7 +2585,7 @@ async function loadProgressMap(userId) {
       .eq('id', session.user.id)
       .single();
     currentProfile = profile;
-    if (profile?.is_admin) document.getElementById('btn-admin-link').style.display = '';
+    if (profile?.is_admin) document.getElementById('dv2-admin-btn').style.display = '';
     await loadProgressMap(session.user.id);
     showScreen('dashboard');
     if (!profile?.onb_role) showOnboardingModal();
@@ -2600,7 +2600,7 @@ async function loadProgressMap(userId) {
         .eq('id', session.user.id)
         .single();
       currentProfile = profile;
-      if (profile?.is_admin) document.getElementById('btn-admin-link').style.display = '';
+      if (profile?.is_admin) document.getElementById('dv2-admin-btn').style.display = '';
       await loadProgressMap(session.user.id);
       showScreen('dashboard');
       if (!profile?.onb_role) showOnboardingModal();
@@ -3394,7 +3394,7 @@ function renderDashboardV2() {
     if (userChip)  { userChip.style.display = 'flex'; }
     if (usernameEl && currentUser) usernameEl.textContent = currentUser.email?.split('@')[0] || '';
     if (avatarEl   && currentUser) avatarEl.textContent   = (currentUser.email?.[0] || '?').toUpperCase();
-    if (tierBadge && currentProfile?.tier && currentProfile.tier !== 'pro') {
+    if (tierBadge && currentProfile?.tier && currentProfile.tier !== 'pro' && !currentProfile?.is_admin) {
       tierBadge.textContent = currentProfile.tier;
       tierBadge.style.display = '';
       tierBadge.style.background = currentProfile.tier === 'alpha' ? 'var(--yellow)' : currentProfile.tier === 'beta' ? '#EBF0FA' : '#EDEAE2';
