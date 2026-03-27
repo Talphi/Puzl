@@ -2570,8 +2570,8 @@ async function signInWithGoogle() {
   }
 }
 
-async function logout() {
-  try { await _supa.auth.signOut(); } catch(e) { console.warn('signOut error:', e); }
+function logout() {
+  _supa.auth.signOut().catch(e => console.warn('signOut error:', e));
   isLoggedIn = false;
   currentUser = null;
   currentProfile = null;
@@ -3018,6 +3018,7 @@ function showScreen(id) {
     const dashEl = document.getElementById('screen-dashboard');
     if (dashEl) dashEl.scrollTop = 0;
     renderDashboardV2();
+    if (dashEl) dashEl.scrollTop = 0;
     if (isLoggedIn) {
       // Legacy unlock strip (kept for JS refs)
       const pool = SCENARIOS.length ? SCENARIOS : SCENARIOS_RAW;
