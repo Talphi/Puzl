@@ -2604,12 +2604,16 @@ function _applySession(session) {
 
 async function loadProgressMap(userId) {
   try {
-    const { data } = await _supa
+    const { data, error } = await _supa
       .from('progress')
       .select('scenario_id, is_correct')
       .eq('user_id', userId);
-    if (data) data.forEach(r => { window.progressMap[r.scenario_id] = r.is_correct ? 'correct' : 'wrong'; });
-  } catch (e) { /* non-critical */ }
+    if (error) { console.warn('loadProgressMap error:', error.message); return; }
+    if (data) {
+      data.forEach(r => { window.progressMap[r.scenario_id] = r.is_correct ? 'correct' : 'wrong'; });
+      console.log('loadProgressMap: loaded', data.length, 'entries');
+    }
+  } catch (e) { console.warn('loadProgressMap exception:', e); }
 }
 
 // On page load — check if user is already signed in (handles OAuth redirect too)
@@ -3135,16 +3139,18 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
   const _pkey = q.id || q._key;
   if (_pkey) window.progressMap[_pkey] = isCorrect ? 'correct' : 'wrong';
 
-  // Save progress to Supabase (fire-and-forget, no UI blocking)
-  if (isLoggedIn && currentUser && _pkey) {
+  // Save progress to Supabase — only for DB-backed scenarios (q.id = UUID)
+  if (isLoggedIn && currentUser && q.id) {
     const optMap = ['a','b','c','d'];
     const selectedOpt = optMap[Array.from(document.querySelectorAll('.option-btn')).indexOf(clickedBtn)];
     _supa.from('progress').upsert({
       user_id: currentUser.id,
-      scenario_id: _pkey,
+      scenario_id: q.id,
       selected_opt: selectedOpt,
       is_correct: isCorrect
-    }, { onConflict: 'user_id,scenario_id' });
+    }, { onConflict: 'user_id,scenario_id' }).then(({ error }) => {
+      if (error) console.warn('Progress save failed:', error.message);
+    });
   }
 }
 
