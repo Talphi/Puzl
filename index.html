@@ -2571,10 +2571,11 @@ async function signInWithGoogle() {
 }
 
 async function logout() {
-  await _supa.auth.signOut();
+  try { await _supa.auth.signOut(); } catch(e) { console.warn('signOut error:', e); }
   isLoggedIn = false;
   currentUser = null;
   currentProfile = null;
+  window.progressMap = {};
   showScreen('landing');
 }
 
@@ -3014,6 +3015,8 @@ function showScreen(id) {
     }
   }
   if (id === 'dashboard') {
+    const dashEl = document.getElementById('screen-dashboard');
+    if (dashEl) dashEl.scrollTop = 0;
     renderDashboardV2();
     if (isLoggedIn) {
       // Legacy unlock strip (kept for JS refs)
@@ -3142,7 +3145,7 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
   // Save progress to Supabase — only for DB-backed scenarios (q.id = UUID)
   if (isLoggedIn && currentUser && q.id) {
     const optMap = ['a','b','c','d'];
-    const selectedOpt = optMap[Array.from(document.querySelectorAll('.option-btn')).indexOf(clickedBtn)];
+    const selectedOpt = optMap[Array.from(document.querySelectorAll('.option-btn')).indexOf(clickedBtn)] ?? 'a';
     _supa.from('progress').upsert({
       user_id: currentUser.id,
       scenario_id: q.id,
