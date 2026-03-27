@@ -118,6 +118,8 @@
   .nav-unlock-divider { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 700; font-family: 'Outfit', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; color: #8A6500; padding: 2px 0; }
   .nav-unlock-divider::before, .nav-unlock-divider::after { content: ''; flex: 1; height: 1px; background: #C9A800; opacity: 0.35; }
   .nav-unlock-divider::before { display: none; }
+  .nav-unlock-divider.nav-newly-unlocked { color: var(--green); }
+  .nav-unlock-divider.nav-newly-unlocked::after { background: var(--green); }
   .nav-legend { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px; border-top: var(--border); flex-shrink: 0; background: var(--bg); }
   .nav-legend .legend-item { font-size: 8px; gap: 4px; color: #999; }
   .nav-legend .legend-dot { width: 8px; height: 8px; border-radius: 28%; }
@@ -2284,6 +2286,20 @@ function getUnlockedCount() {
   return Math.min(UNLOCK_START + batches * UNLOCK_BATCH, pool.length);
 }
 
+function getNewlyUnlockedRange() {
+  if (!isLoggedIn || !currentUser) return null;
+  if (currentProfile?.plan === 'pro' || currentProfile?.is_admin) return null;
+  const signedUpAt = new Date(currentProfile?.created_at || currentUser.created_at);
+  const daysSince = (Date.now() - signedUpAt) / 86400000;
+  const batches = Math.floor(daysSince / UNLOCK_DAYS);
+  if (batches === 0) return null;
+  if ((daysSince % UNLOCK_DAYS) >= 1) return null; // past the first day of this batch
+  return {
+    start: UNLOCK_START + (batches - 1) * UNLOCK_BATCH,
+    end:   UNLOCK_START + batches * UNLOCK_BATCH
+  };
+}
+
 function getDaysUntilNextUnlock() {
   const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
   if (!isLoggedIn || getUnlockedCount() >= pool.length) return 0;
@@ -3263,6 +3279,7 @@ function renderDrawer() {
   const displayTotal = currentRole === 'pm' ? 200 : fullPool.length;
 
   const baseDaysLeft = getDaysUntilNextUnlock();
+  const newlyUnlocked = getNewlyUnlockedRange();
   for (let i = 0; i < displayTotal; i++) {
     const isShell = i >= fullPool.length;
     const q = isShell ? null : (i < questions.length ? questions[i] : fullPool[i]);
@@ -3270,6 +3287,14 @@ function renderDrawer() {
     const isTimeLocked  = isLoggedIn && i >= unlockedCount;
     const isLocked = isShell || isGuestLocked || isTimeLocked;
     const hidden = !isShell && drawerFilter !== 'all' && q?.category !== drawerFilter;
+
+    // Insert "Newly unlocked!" divider for fresh batch
+    if (newlyUnlocked && i === newlyUnlocked.start) {
+      const div = document.createElement('div');
+      div.className = 'nav-unlock-divider nav-newly-unlocked';
+      div.textContent = 'Newly unlocked!';
+      grid.appendChild(div);
+    }
 
     // Insert a divider before each unlock batch
     if (isTimeLocked && (i - unlockedCount) % UNLOCK_BATCH === 0) {
