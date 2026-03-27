@@ -2277,6 +2277,7 @@ const UNLOCK_DAYS   = 3;    // days between batches
 function getUnlockedCount() {
   const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
   if (!isLoggedIn || !currentUser) return FREE_LIMIT;
+  if (currentProfile?.plan === 'pro' || currentProfile?.is_admin) return pool.length;
   const signedUpAt = new Date(currentProfile?.created_at || currentUser.created_at);
   const daysSince = Math.floor((Date.now() - signedUpAt) / 86400000);
   const batches = Math.floor(daysSince / UNLOCK_DAYS);
