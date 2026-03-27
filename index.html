@@ -1747,6 +1747,17 @@
   </div>
 </div>
 
+<!-- PACE OVERLAY (logged-in, next scenario is time-locked) -->
+<div class="paywall-overlay" id="pace-overlay">
+  <div class="paywall-box" style="text-align:center;">
+    <div style="font-size:40px;margin-bottom:16px;">🐢</div>
+    <div class="paywall-title" style="font-size:26px;">LET'S PACE<br><span>OURSELVES.</span></div>
+    <p class="paywall-desc" style="margin-top:12px;">This one opens in a few days — new scenarios drip through regularly to keep the practice fresh.</p>
+    <button class="btn-paywall-login" style="background:var(--black);color:var(--white);margin-top:4px;" onclick="document.getElementById('pace-overlay').classList.remove('show')">Got it ✓</button>
+    <button class="btn-paywall-dismiss" onclick="document.getElementById('pace-overlay').classList.remove('show');goHome()">← Back to dashboard</button>
+  </div>
+</div>
+
 <!-- TIME-LOCKED OVERLAY (logged-in, drip not ready) -->
 <div class="paywall-overlay" id="timelocked-overlay" role="dialog" aria-modal="true" aria-labelledby="timelocked-title">
   <div class="paywall-box" style="text-align:center;">
@@ -2886,7 +2897,7 @@ function startQuiz(filterCat) {
   activeFilter = filterCat || 'all';
   // Sort by order_num so drip slicing is deterministic
   const ordered = [...sourcePool].sort((a, b) => (a.order_num ?? 999) - (b.order_num ?? 999));
-  const unlockedPool = isLoggedIn ? ordered.slice(0, getUnlockedCount()) : ordered;
+  const unlockedPool = isLoggedIn ? ordered.slice(0, getUnlockedCount()) : ordered.slice(0, FREE_LIMIT);
   const filtered = activeFilter === 'all' ? unlockedPool : unlockedPool.filter(s => s.category === activeFilter);
   questions = shuffle(filtered);
   currentIndex = 0; score = 0; answered = false; categoryScores = {}; questionResults = {};
@@ -3103,15 +3114,30 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
 }
 
 function nextQuestion() {
+  const nextIdx = currentIndex + 1;
+
+  // Guest hit their free limit
+  if (!isLoggedIn && nextIdx >= FREE_LIMIT) {
+    document.getElementById('paywall-overlay').classList.add('show');
+    return;
+  }
+
+  // Logged-in user hit their drip limit mid-deck
+  if (isLoggedIn && nextIdx >= getUnlockedCount()) {
+    const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+    if (getUnlockedCount() < pool.length) {
+      document.getElementById('pace-overlay').classList.add('show');
+      return;
+    }
+  }
+
   currentIndex++;
   if (currentIndex >= questions.length) {
     if (!isLoggedIn) {
       document.getElementById('paywall-overlay').classList.add('show');
     } else {
       const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
-      const unlocked = getUnlockedCount();
-      if (unlocked < pool.length) {
-        // Time-locked: show "come back" overlay
+      if (getUnlockedCount() < pool.length) {
         showDripOverlay();
       } else {
         showResults();
