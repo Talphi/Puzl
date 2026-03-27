@@ -2011,7 +2011,7 @@
       <button class="quiz-back-btn" onclick="showScreen('dashboard')" aria-label="Back to dashboard">&#8592;</button>
       <div class="quiz-logo" id="quiz-logo"><span style="color:var(--black)">De</span><span style="color:var(--black);opacity:0.3">:</span><span style="color:var(--red)">Puzl</span></div>
       <span class="quiz-header-sep">|</span>
-      <div class="quiz-pack-name" id="quiz-pack-name">PD Essentials</div>
+      <div class="quiz-pack-name" id="quiz-pack-name">PD Essential Conversations</div>
     </div>
     <div class="progress-wrap" style="display:none">
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -3442,9 +3442,9 @@ function lv2SwitchRole(role) {
 
 // ---- COLLECTIONS DATA + DASHBOARD V2 ----
 const COLLECTIONS = [
-  { id: 'designer', name: 'PD Essentials', description: 'Real conversations from the design side of the table — pushback, tradeoffs, and tough calls.', count: 54, access: 'free', color: 'var(--red)',
+  { id: 'designer', name: 'PD Essential Conversations', description: 'Real conversations from the design side of the table — pushback, tradeoffs, and tough calls.', count: 54, access: 'free', color: 'var(--red)',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="4" y="3" width="26" height="32" rx="3" fill="#FEE2E2"/><rect x="4" y="3" width="26" height="32" rx="3" stroke="#D62828" stroke-width="1.5"/><path d="M10 13h14" stroke="#D62828" stroke-width="2" stroke-linecap="round" opacity="0.8"/><path d="M10 19h9" stroke="#D62828" stroke-width="1.5" stroke-linecap="round" opacity="0.45"/><path d="M10 25h11" stroke="#D62828" stroke-width="1.5" stroke-linecap="round" opacity="0.45"/><path d="M33 25l-7 7-2.5 1 1-2.5 7-7 1.5 1.5z" fill="#D62828"/><path d="M31.5 23.5l1.5 1.5" stroke="#D62828" stroke-width="1.5" stroke-linecap="round"/></svg>` },
-  { id: 'pm', name: 'PM Essentials', description: 'Navigate the messy reality of product decisions — timelines, stakeholders, and scope.', count: 21, access: 'free', color: 'var(--blue)',
+  { id: 'pm', name: 'PM Essential Conversations', description: 'Navigate the messy reality of product decisions — timelines, stakeholders, and scope.', count: 21, access: 'free', color: 'var(--blue)',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="4" y="6" width="36" height="30" rx="3" fill="#EBF0FA"/><rect x="4" y="6" width="36" height="30" rx="3" stroke="#1550A2" stroke-width="1.5"/><rect x="9" y="14" width="9" height="6" rx="2" fill="#1550A2"/><rect x="21" y="14" width="13" height="6" rx="2" fill="#1550A2" opacity="0.4"/><rect x="9" y="24" width="15" height="5" rx="2" fill="#1550A2" opacity="0.25"/><rect x="27" y="24" width="8" height="5" rx="2" fill="#1550A2" opacity="0.6"/></svg>` },
   { id: '0to1', name: '0-to-1 Builder', description: 'For PMs building from scratch — ambiguity, first principles, and founder dynamics.', count: 20, access: 'pro', color: 'var(--yellow)',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><path d="M22 3c0 0-9 11-9 22 0 6 3.5 10 9 11 5.5-1 9-5 9-11 0-11-9-22-9-22z" fill="#FEF3C7" stroke="#F2C200" stroke-width="1.5"/><circle cx="22" cy="24" r="4" fill="#F2C200"/><circle cx="22" cy="24" r="2" fill="white"/><rect x="18" y="37" width="8" height="4" rx="1" fill="#F2C200" opacity="0.55"/><path d="M16 39l-4 3" stroke="#F2C200" stroke-width="2" stroke-linecap="round"/><path d="M28 39l4 3" stroke="#F2C200" stroke-width="2" stroke-linecap="round"/></svg>` },
@@ -3475,10 +3475,11 @@ function renderDashboardV2() {
 
   // Update welcome text
   if (heading) {
-    heading.textContent = (loggedIn && isPro) ? 'Welcome back.' : 'Choose a conversation deck.';
+    heading.innerHTML = (loggedIn && isPro) ? 'Welcome back.' : 'Navigate your perspective —<br>or try a new one.';
   }
   if (subtext) {
-    subtext.textContent = 'Navigate your perspective — or try a new one.';
+    subtext.textContent = !loggedIn ? '' : 'Navigate your perspective — or try a new one.';
+    subtext.style.display = !loggedIn ? 'none' : '';
   }
 
   // Unlock strip for free logged-in users
@@ -3596,7 +3597,7 @@ function renderDashboardV2() {
   let html = '';
 
   if (!loggedIn) {
-    // Guest: PD Essentials + PM Essentials side by side, gate peek in same row
+    // Guest: PD Essential Conversations + PM Essential Conversations side by side, gate peek in same row
     const designerC = COLLECTIONS.find(c => c.id === 'designer');
     const pmC       = COLLECTIONS.find(c => c.id === 'pm');
     const peekIds   = ['0to1designer', '0to1', 'multiplehats', 'enterprise'];
