@@ -963,8 +963,8 @@
   /* Collection carousels */
   .coll-grid { display: flex; flex-direction: column; gap: 28px; }
   .coll-section-label { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #C4C0B8; margin-bottom: 14px; }
-  .coll-row { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-  .coll-row::-webkit-scrollbar { display: none; }
+  .coll-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .coll-card { flex: none; }
   .coll-card { border: var(--border); border-radius: 12px; background: var(--white); padding: 24px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; display: flex; flex-direction: column; flex: 0 0 290px; min-width: 0; }
   .coll-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: #C0BCB4; }
   .coll-card.locked { cursor: default; }
