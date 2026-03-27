@@ -3320,14 +3320,18 @@ function renderDrawer() {
           ? `Q${i+1}: Unlocks in ${batchDays} day${batchDays !== 1 ? 's' : ''}`
           : `Q${i+1}: Sign up to unlock`;
     } else {
+      const pkey = q?.id || q?._key;
+      const qResult = questionResults[i] || (pkey && window.progressMap[pkey]);
       if (i === currentIndex) dot.classList.add('current');
-      else if (questionResults[i] === 'correct') dot.classList.add('answered-correct');
-      else if (questionResults[i] === 'wrong') dot.classList.add('answered-wrong');
+      else if (qResult === 'correct') dot.classList.add('answered-correct');
+      else if (qResult === 'wrong') dot.classList.add('answered-wrong');
       dot.title = `Q${i+1}: ${q.category}`;
     }
 
     // Accessible label
-    const stateLabel = isShell ? 'coming soon' : isTimeLocked ? `unlocks in ${batchDays} day${batchDays !== 1 ? 's' : ''}` : isGuestLocked ? 'locked — sign up to unlock' : questionResults[i] === 'correct' ? 'correct' : questionResults[i] === 'wrong' ? 'wrong' : i === currentIndex ? 'current' : 'unanswered';
+    const pkey2 = q?.id || q?._key;
+    const qResult2 = questionResults[i] || (pkey2 && window.progressMap[pkey2]);
+    const stateLabel = isShell ? 'coming soon' : isTimeLocked ? `unlocks in ${batchDays} day${batchDays !== 1 ? 's' : ''}` : isGuestLocked ? 'locked — sign up to unlock' : qResult2 === 'correct' ? 'correct' : qResult2 === 'wrong' ? 'wrong' : i === currentIndex ? 'current' : 'unanswered';
     dot.setAttribute('aria-label', `Question ${i+1}${q ? ', ' + q.category : ''} — ${stateLabel}`);
 
     if (hidden) dot.classList.add('hidden');
