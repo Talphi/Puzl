@@ -938,8 +938,8 @@
   .admin-input:focus { border-color: var(--blue); }
 
   /* ---- DASHBOARD V2 ---- */
-  #screen-dashboard { background-color: #F0EFEB; background-image: radial-gradient(circle, #D8D4CC 1px, transparent 1px); background-size: 24px 24px; display: flex; flex-direction: column; }
-  .dv2-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 64px; border-bottom: var(--border); background: rgba(242,241,236,0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); flex-shrink: 0; position: sticky; top: 30px; z-index: 100; }
+  #screen-dashboard { background-color: #F0EFEB; background-image: radial-gradient(circle, #D8D4CC 1px, transparent 1px); background-size: 24px 24px; display: flex; flex-direction: column; padding-top: 0; }
+  .dv2-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 64px; border-bottom: var(--border); background: rgba(242,241,236,0.72); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); flex-shrink: 0; position: sticky; top: 27px; z-index: 100; }
   .dv2-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.01em; }
   .dv2-nav-right { display: flex; align-items: center; gap: 12px; }
   .dv2-user { display: flex; align-items: center; gap: 8px; }
@@ -949,7 +949,7 @@
   .dv2-admin-btn:hover { border-color: var(--blue); color: var(--blue); }
   .dv2-action-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; background: none; border: var(--border); color: #666; padding: 8px 16px; cursor: pointer; border-radius: 8px; transition: background 0.12s; }
   .dv2-action-btn:hover { background: #F0EEE8; }
-  .dv2-body { flex: 1; padding: 32px 48px 48px; max-width: 1100px; width: 100%; margin: 0 auto; }
+  .dv2-body { flex: 1; padding: 64px 48px 48px; max-width: 1100px; width: 100%; margin: 0 auto; }
   .dv2-welcome-row { margin-bottom: 44px; text-align: center; }
   .dv2-heading { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 28px; margin: 0 0 8px; }
   .dv2-subtext { font-size: 13px; color: #AAA; margin: 0; }
@@ -3475,14 +3475,10 @@ function renderDashboardV2() {
 
   // Update welcome text
   if (heading) {
-    heading.textContent = loggedIn
-      ? (isPro ? 'Welcome back.' : 'Choose a conversation deck.')
-      : 'Choose a conversation deck.';
+    heading.textContent = (loggedIn && isPro) ? 'Welcome back.' : 'Choose a conversation deck.';
   }
   if (subtext) {
-    subtext.textContent = loggedIn
-      ? (isPro ? 'Full access to all collections.' : 'New scenarios unlock every few days.')
-      : 'Or sign in to try a different perspective.';
+    subtext.textContent = 'Navigate your perspective — or try a new one.';
   }
 
   // Unlock strip for free logged-in users
@@ -3617,10 +3613,9 @@ function renderDashboardV2() {
         <div class="coll-gate-fade"></div>
       </div>
       <div class="coll-gate-cta">
-        <div class="coll-gate-msg">Sign up to unlock more packs</div>
+        <div class="coll-gate-msg">Sign up to unlock more scenarios</div>
         <div class="coll-gate-btns">
-          <button class="lv2-btn-login" onclick="showAuthOverlay('login')">Log in</button>
-          <button class="lv2-btn-signup" onclick="showAuthOverlay('signup')">Sign up</button>
+          <button class="lv2-btn-login" onclick="showAuthOverlay('signup')">Sign up</button>
         </div>
       </div>
     </div></div>`;
