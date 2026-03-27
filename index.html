@@ -3038,7 +3038,10 @@ function renderQuestion() {
   document.getElementById('feedback-box').classList.remove('show');
   const btnNext = document.getElementById('btn-next');
   btnNext.classList.remove('show');
-  btnNext.textContent = 'NEXT SCENARIO \u2192';
+  const isLastQ = currentIndex === questions.length - 1;
+  const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+  const allDone = isLoggedIn && getUnlockedCount() >= pool.length;
+  btnNext.textContent = (isLastQ && allDone) ? 'Finish!' : 'NEXT SCENARIO \u2192';
   const letters = ['A', 'B', 'C', 'D'];
   const opts = shuffle(q.options.map((o, i) => ({ ...o, origIndex: i })));
   const feedbackBox = document.getElementById('feedback-box');
