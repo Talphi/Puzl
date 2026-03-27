@@ -1775,7 +1775,7 @@
 </div>
 
 <!-- LANDING -->
-<div id="screen-landing" class="screen active">
+<div id="screen-landing" class="screen">
   <div class="lv2-screen">
 
     <!-- Nav bar -->
@@ -2574,21 +2574,24 @@ async function loadProgressMap(userId) {
 
 // On page load — check if user is already signed in (handles OAuth redirect too)
 (async () => {
-  await loadScenarios();
+  // Session check reads from localStorage — near-instant, no network needed
   const { data: { session } } = await _supa.auth.getSession();
   if (session) {
     _applySession(session);
-    // Fetch profile to check admin
-    const { data: profile } = await _supa
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single();
+    // Fetch profile + show dashboard immediately, load scenarios in background
+    const [{ data: profile }] = await Promise.all([
+      _supa.from('profiles').select('*').eq('id', session.user.id).single(),
+      loadScenarios(),
+    ]);
     currentProfile = profile;
     if (profile?.is_admin) document.getElementById('dv2-admin-btn').style.display = '';
     await loadProgressMap(session.user.id);
     showScreen('dashboard');
     if (!profile?.onb_role) showOnboardingModal();
+  } else {
+    // Not logged in — show landing, load scenarios in background
+    showScreen('landing');
+    loadScenarios();
   }
   // Listen for future auth changes (sign in / sign out)
   _supa.auth.onAuthStateChange(async (_event, session) => {
