@@ -3038,7 +3038,7 @@ function renderQuestion() {
   document.getElementById('feedback-box').classList.remove('show');
   const btnNext = document.getElementById('btn-next');
   btnNext.classList.remove('show');
-  btnNext.textContent = currentIndex === questions.length - 1 ? 'SEE RESULTS \u2192' : 'NEXT SCENARIO \u2192';
+  btnNext.textContent = 'NEXT SCENARIO \u2192';
   const letters = ['A', 'B', 'C', 'D'];
   const opts = shuffle(q.options.map((o, i) => ({ ...o, origIndex: i })));
   const feedbackBox = document.getElementById('feedback-box');
