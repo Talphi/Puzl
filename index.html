@@ -1747,6 +1747,19 @@
   </div>
 </div>
 
+<!-- COMPLETION OVERLAY (finished all unlocked scenarios) -->
+<div class="paywall-overlay" id="completion-overlay">
+  <div class="paywall-box" style="text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;">🏁</div>
+    <div class="paywall-title" style="font-size:28px;">DECK<br><span>COMPLETE.</span></div>
+    <div class="paywall-sub" id="completion-score" style="margin-bottom:12px;"></div>
+    <p class="paywall-desc">You've worked through every scenario in this deck. Want to go again with the cards reshuffled, or save your progress and come back later?</p>
+    <button class="btn-paywall-login" style="background:var(--black);color:var(--white);" onclick="shuffleAndRestart()">SHUFFLE & RESTART →</button>
+    <button class="btn-paywall-dismiss" onclick="completionSeeResults()">See my results</button>
+    <button class="btn-paywall-dismiss" style="margin-top:0;" onclick="document.getElementById('completion-overlay').classList.remove('show');goHome()">← Save & go home</button>
+  </div>
+</div>
+
 <!-- PACE OVERLAY (logged-in, next scenario is time-locked) -->
 <div class="paywall-overlay" id="pace-overlay">
   <div class="paywall-box" style="text-align:center;">
@@ -2899,7 +2912,7 @@ function startQuiz(filterCat) {
   const ordered = [...sourcePool].sort((a, b) => (a.order_num ?? 999) - (b.order_num ?? 999));
   const unlockedPool = isLoggedIn ? ordered.slice(0, getUnlockedCount()) : ordered.slice(0, FREE_LIMIT);
   const filtered = activeFilter === 'all' ? unlockedPool : unlockedPool.filter(s => s.category === activeFilter);
-  questions = shuffle(filtered);
+  questions = filtered; // ordered by order_num — no shuffle, preserves drip progression
   currentIndex = 0; score = 0; answered = false; categoryScores = {}; questionResults = {};
   sourcePool.forEach(s => { if (!categoryScores[s.category]) categoryScores[s.category] = { correct: 0, total: 0 }; });
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -3140,7 +3153,7 @@ function nextQuestion() {
       if (getUnlockedCount() < pool.length) {
         showDripOverlay();
       } else {
-        showResults();
+        showCompletionOverlay();
       }
     }
   } else {
@@ -3158,6 +3171,29 @@ function showDripOverlay() {
   document.getElementById('drip-days').textContent = daysLeft === 1 ? 'tomorrow' : `in ${daysLeft} days`;
   document.getElementById('drip-progress-bar').style.width = Math.round((unlocked / pool.length) * 100) + '%';
   document.getElementById('drip-overlay').classList.add('show');
+}
+
+function showCompletionOverlay() {
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  document.getElementById('completion-score').textContent = `${score} / ${total} correct — ${pct}%`;
+  document.getElementById('completion-overlay').classList.add('show');
+}
+
+function shuffleAndRestart() {
+  document.getElementById('completion-overlay').classList.remove('show');
+  questions = shuffle([...questions]);
+  currentIndex = 0;
+  score = 0;
+  answered = false;
+  Object.keys(categoryScores).forEach(k => { categoryScores[k] = { correct: 0, total: 0 }; });
+  renderQuestion();
+  document.getElementById('options-panel').scrollTop = 0;
+}
+
+function completionSeeResults() {
+  document.getElementById('completion-overlay').classList.remove('show');
+  showResults();
 }
 
 function jumpToQuestion(idx) {
