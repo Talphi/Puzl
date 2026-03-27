@@ -1453,47 +1453,40 @@
 <div id="auth-overlay" class="login-overlay" onclick="if(event.target===this)hideAuthOverlay()">
   <div class="login-box">
 
-    <div class="login-header">
-      <div class="login-header-wordmark">
-        <span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span>
+    <button class="login-close" onclick="hideAuthOverlay()">✕</button>
+
+    <div class="auth-heading" id="auth-heading">Sign in to <span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span></div>
+
+    <div class="login-error" id="auth-error"></div>
+    <div class="auth-success" id="auth-success"></div>
+
+    <form onsubmit="handleAuthSubmit(event)" autocomplete="on">
+      <div class="login-field">
+        <input type="email" class="login-input" id="auth-email" placeholder="Email" autocomplete="email" required>
       </div>
-      <button class="login-close" onclick="hideAuthOverlay()">✕</button>
+      <div class="login-field">
+        <input type="password" class="login-input" id="auth-password" placeholder="Password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-login" id="auth-submit-btn">Sign in</button>
+    </form>
+
+    <div class="login-divider">or</div>
+
+    <button class="btn-google-login" id="btn-google-login" onclick="signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      <span id="google-btn-text">Continue with Google</span>
+    </button>
+
+    <div class="auth-footer-row" id="auth-footer-row">
+      <button class="auth-link-btn" onclick="handleResetPassword()">Reset password</button>
+      <span>New user? <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('signup')">Sign up</button></span>
     </div>
 
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Log in</button>
-      <button class="auth-tab" id="auth-tab-signup" onclick="switchAuthTab('signup')">Sign up</button>
-    </div>
-
-    <div class="login-body">
-      <div class="login-error" id="auth-error"></div>
-      <div class="auth-success" id="auth-success"></div>
-
-      <form onsubmit="handleAuthSubmit(event)" autocomplete="on">
-        <div class="login-field">
-          <label class="login-label" for="auth-email">Email</label>
-          <input type="email" class="login-input" id="auth-email" placeholder="you@example.com" autocomplete="email" required>
-        </div>
-        <div class="login-field">
-          <label class="login-label" for="auth-password">Password</label>
-          <input type="password" class="login-input" id="auth-password" placeholder="••••••••" autocomplete="current-password" required>
-        </div>
-        <button type="submit" class="btn-login" id="auth-submit-btn">Log in</button>
-      </form>
-
-      <div class="login-divider">or</div>
-
-      <button class="btn-google-login" id="btn-google-login" onclick="signInWithGoogle()">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;">
-          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
-          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-        </svg>
-        <span id="google-btn-text">Continue with Google</span>
-      </button>
-
-    </div>
   </div>
 </div>
 
@@ -2302,15 +2295,42 @@ function hideWaitlistOverlay() { hideAuthOverlay();         }
 function switchAuthTab(mode) {
   _authMode = mode;
   const isLogin = mode === 'login';
-  document.getElementById('auth-tab-login').classList.toggle('active', isLogin);
-  document.getElementById('auth-tab-signup').classList.toggle('active', !isLogin);
-  document.getElementById('auth-submit-btn').textContent = isLogin ? 'Log in' : 'Create account';
-  document.getElementById('auth-footer').innerHTML = isLogin
-    ? `Don't have an account? <button onclick="switchAuthTab('signup')" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:700;">Sign up →</button>`
-    : `Already have an account? <button onclick="switchAuthTab('login')" style="font-size:11px;color:var(--black);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0;font-weight:700;">Log in →</button>`;
+  const heading  = document.getElementById('auth-heading');
+  const submitBtn = document.getElementById('auth-submit-btn');
+  const footerRow = document.getElementById('auth-footer-row');
+  const brand = `<span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span>`;
+  if (heading)   heading.innerHTML    = isLogin ? `Sign in to ${brand}` : `Sign up to ${brand}`;
+  if (submitBtn) submitBtn.textContent = isLogin ? 'Sign in' : 'Create account';
+  if (footerRow) footerRow.innerHTML  = isLogin
+    ? `<button class="auth-link-btn" onclick="handleResetPassword()">Reset password</button>
+       <span>New user? <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('signup')">Sign up</button></span>`
+    : `<span style="color:#888;font-size:13px;">Already registered?</span>
+       <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('login')">Sign in</button>`;
   document.getElementById('auth-password').autocomplete = isLogin ? 'current-password' : 'new-password';
   document.getElementById('auth-error').classList.remove('show');
   document.getElementById('auth-success').classList.remove('show');
+}
+
+async function handleResetPassword() {
+  const email = document.getElementById('auth-email').value.trim();
+  const errorEl   = document.getElementById('auth-error');
+  const successEl = document.getElementById('auth-success');
+  if (!email) {
+    errorEl.textContent = 'Enter your email above first.';
+    errorEl.classList.add('show');
+    return;
+  }
+  const { error } = await _supa.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + window.location.pathname
+  });
+  if (error) {
+    errorEl.textContent = error.message || 'Could not send reset email.';
+    errorEl.classList.add('show');
+  } else {
+    successEl.textContent = '✓ Reset link sent — check your inbox.';
+    successEl.classList.add('show');
+    errorEl.classList.remove('show');
+  }
 }
 
 async function handleAuthSubmit(e) {
