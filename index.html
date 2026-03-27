@@ -3136,12 +3136,12 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
   if (_pkey) window.progressMap[_pkey] = isCorrect ? 'correct' : 'wrong';
 
   // Save progress to Supabase (fire-and-forget, no UI blocking)
-  if (isLoggedIn && currentUser && q.id) {
+  if (isLoggedIn && currentUser && _pkey) {
     const optMap = ['a','b','c','d'];
     const selectedOpt = optMap[Array.from(document.querySelectorAll('.option-btn')).indexOf(clickedBtn)];
     _supa.from('progress').upsert({
       user_id: currentUser.id,
-      scenario_id: q.id,
+      scenario_id: _pkey,
       selected_opt: selectedOpt,
       is_correct: isCorrect
     }, { onConflict: 'user_id,scenario_id' });
