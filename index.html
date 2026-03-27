@@ -42,7 +42,7 @@
   .stat-box { border: var(--border); padding: 16px 20px; background: var(--white); }
   .stat-num { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 40px; line-height: 1; }
   .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 4px; color: #888; font-weight: 600; }
-  .btn-start { background: var(--black); color: var(--white); border: none; padding: 18px 40px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; display: inline-block; }
+  .btn-start { background: var(--black); color: var(--white); border: none; padding: 18px 40px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; display: inline-block; border-radius: 8px; }
   .btn-start:hover { background: var(--red); }
   .landing-right { display: flex; flex-direction: column; }
   .category-list { padding: 48px; flex: 1; }
@@ -555,6 +555,7 @@
     text-align: center;
     display: block;
     width: 100%;
+    border-radius: 8px;
   }
   .btn-role:hover { background: var(--red); }
 
@@ -963,7 +964,7 @@
   /* Collection carousels */
   .coll-grid { display: flex; flex-direction: column; gap: 28px; }
   .coll-section-label { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #C4C0B8; margin-bottom: 14px; }
-  .coll-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .coll-row { display: flex; gap: 16px; align-items: stretch; }
   .coll-card { flex: none; }
   .coll-card { border: var(--border); border-radius: 12px; background: var(--white); padding: 24px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; display: flex; flex-direction: column; flex: 0 0 290px; min-width: 0; }
   .coll-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: #C0BCB4; }

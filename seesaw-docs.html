@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seesaw — Design System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #111111;
+      --white: #FFFFFF;
+      --bg: #F7F6F2;
+      --yellow: #F2C200;
+      --red: #D62828;
+      --green: #2B7A44;
+      --blue: #1550A2;
+      --border: 1px solid #E4E4E4;
+      --border-light: 1px solid #EFEFEF;
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    html, body { height: 100%; overflow: hidden; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--black); }
+
+    /* ── DOCS SHELL ── */
+    .docs-layout { display: flex; height: 100vh; overflow: hidden; }
+
+    .docs-sidebar {
+      width: 224px;
+      flex-shrink: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--white);
+      border-right: var(--border);
+      padding: 0 0 40px;
+      scrollbar-width: none;
+    }
+    .docs-sidebar::-webkit-scrollbar { display: none; }
+
+    .docs-sidebar-top {
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      border-bottom: var(--border);
+      padding: 24px 24px 16px;
+      z-index: 1;
+    }
+    .docs-sidebar-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 17px;
+      margin-bottom: 12px;
+    }
+    .docs-sidebar-logo .sep { opacity: 0.3; }
+    .docs-sidebar-logo .puzl { color: var(--red); }
+    .docs-sidebar-version {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #BBB;
+      margin-bottom: 12px;
+    }
+
+    /* PM mode toggle in sidebar */
+    .sidebar-mode {
+      display: flex;
+      gap: 4px;
+      background: #F0EEE8;
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .sidebar-mode-btn {
+      flex: 1;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: none;
+      color: #AAA;
+      transition: all 0.15s;
+      font-family: var(--font-body);
+    }
+    .sidebar-mode-btn.active { background: var(--white); color: var(--black); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+    .docs-nav-section {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #CCC;
+      padding: 20px 24px 6px;
+    }
+    .docs-nav-link {
+      display: block;
+      padding: 7px 24px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #777;
+      text-decoration: none;
+      transition: color 0.12s, background 0.12s;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+    }
+    .docs-nav-link:hover { color: var(--black); background: #F5F4EF; }
+    .docs-nav-link.active { color: var(--black); font-weight: 700; border-left-color: var(--black); background: #F5F4EF; }
+
+    .docs-main {
+      flex: 1;
+      min-width: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 60px 72px 100px;
+      scroll-behavior: smooth;
+    }
+    .docs-main-inner { max-width: 860px; }
+
+    /* ── SECTION ── */
+    .ds-section { margin-bottom: 88px; }
+    .ds-section-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 26px;
+      margin-bottom: 6px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--black);
+    }
+    .ds-section-sub {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 36px;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+    .ds-subsection { margin-bottom: 36px; }
+    .ds-subsection-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #BBB;
+      margin-bottom: 14px;
+    }
+
+    /* ── PREVIEW CARD ── */
+    .ds-preview {
+      background: var(--white);
+      border: var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .ds-preview-canvas {
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      min-height: 100px;
+    }
+    .ds-preview-canvas.dark { background: var(--black); }
+    .ds-preview-canvas.offwhite { background: #F0EFEB; }
+    .ds-preview-canvas.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .ds-preview-canvas.stack { flex-direction: column; align-items: flex-start; }
+    .ds-preview-canvas.center { justify-content: center; }
+
+    /* ── CODE BLOCK ── */
+    .ds-code-wrap { position: relative; border-top: var(--border); }
+    .ds-code {
+      background: #FAFAF8;
+      padding: 16px 20px;
+      padding-right: 80px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #555;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .ds-code .tag { color: #D62828; }
+    .ds-code .attr { color: #1550A2; }
+    .ds-code .val { color: #2B7A44; }
+
+    /* ── COPY BUTTON ── */
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: var(--white);
+      border: var(--border);
+      color: #AAA;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .copy-btn:hover { color: var(--black); border-color: #BBB; }
+    .copy-btn.copied { color: var(--green); border-color: var(--green); background: #F0F9F4; }
+
+    /* ── TOKEN TABLE ── */
+    .token-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .token-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      background: var(--white);
+      border: var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.12s;
+      position: relative;
+    }
+    .token-row:hover { border-color: #BBB; }
+    .token-swatch { width: 36px; height: 36px; border-radius: 6px; flex-shrink: 0; border: var(--border); }
+    .token-name { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--black); }
+    .token-value { font-size: 11px; color: #AAA; margin-top: 2px; }
+    .token-copy-hint {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #DDD;
+      transition: color 0.12s;
+    }
+    .token-row:hover .token-copy-hint { color: #BBB; }
+
+    /* ── TYPOGRAPHY DEMO ── */
+    .type-row { display: flex; align-items: baseline; gap: 24px; padding: 20px 0; border-bottom: var(--border-light); }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta { width: 160px; flex-shrink: 0; }
+    .type-label { font-family: var(--font-mono); font-size: 11px; color: var(--red); font-weight: 600; }
+    .type-spec { font-size: 11px; color: #AAA; margin-top: 3px; line-height: 1.5; }
+
+    /* ── SPACING ── */
+    .spacing-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .spacing-bar { background: var(--yellow); height: 20px; border-radius: 3px; flex-shrink: 0; }
+    .spacing-label { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--black); width: 40px; }
+    .spacing-px { font-size: 12px; color: #888; }
+
+    /* ── RADIUS GUIDE TABLE ── */
+    .radius-table { width: 100%; border-collapse: collapse; background: var(--white); border: var(--border); border-radius: 12px; overflow: hidden; }
+    .radius-table th { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA; padding: 12px 20px; text-align: left; border-bottom: var(--border); background: #FAFAF8; }
+    .radius-table td { padding: 14px 20px; border-bottom: var(--border-light); font-size: 13px; vertical-align: middle; }
+    .radius-table tr:last-child td { border-bottom: none; }
+    .radius-table tr:hover td { background: #FAFAF8; }
+    .radius-val { font-family: var(--font-mono); font-weight: 700; font-size: 13px; color: var(--black); }
+    .radius-demo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 28px;
+      background: var(--black);
+      color: transparent;
+      font-size: 0;
+    }
+    .radius-context { font-size: 13px; color: #555; }
+    .radius-classes { font-family: var(--font-mono); font-size: 11px; color: var(--blue); }
+
+    /* ── PM MODE ── */
+    .mode-toggle { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+    .mode-btn { padding: 6px 14px; font-size: 12px; font-weight: 600; border: var(--border); background: var(--white); border-radius: 6px; cursor: pointer; transition: all 0.12s; font-family: var(--font-body); }
+    .mode-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+    /* ── PAGE HEADER ── */
+    .docs-page-header {
+      margin-bottom: 72px;
+      padding-bottom: 36px;
+      border-bottom: 2px solid var(--black);
+    }
+    .docs-page-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #AAA;
+      margin-bottom: 12px;
+    }
+    .docs-page-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 56px;
+      line-height: 0.93;
+      margin-bottom: 18px;
+      letter-spacing: -0.01em;
+    }
+    .docs-page-title span { color: var(--red); }
+    .docs-page-desc {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.7;
+      max-width: 540px;
+    }
+    .docs-page-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .docs-page-meta-item { display: flex; flex-direction: column; gap: 3px; }
+    .docs-page-meta-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #BBB; }
+    .docs-page-meta-val { font-size: 13px; font-weight: 600; color: var(--black); }
+
+    /* ── WORDMARK ── */
+    .wm-de { color: var(--black); }
+    .wm-sep { color: var(--black); opacity: 0.55; font-size: 0.82em; }
+    .wm-puzl { color: var(--red); }
+
+    /* ── ALL SEESAW COMPONENTS (self-contained, no seesaw.css import) ── */
+    .ss-btn { display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--black);color:var(--white);border:none;padding:15px 32px;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:background 0.15s;border-radius:8px; }
+    .ss-btn:hover { background: var(--red); }
+    .ss-btn--full { width: 100%; }
+    .ss-btn--outline { background:var(--white);color:var(--black);border:var(--border);font-family:var(--font-body);font-size:14px;font-weight:600;letter-spacing:0.01em;text-transform:none; }
+    .ss-btn--outline:hover { background:#F5F4EF;border-color:#AAA; }
+    .ss-btn--ghost { background:none;color:#AAA;border:none;font-family:var(--font-body);font-size:11px;font-weight:500;text-decoration:underline;padding:0;letter-spacing:0;text-transform:none;cursor:pointer;transition:color 0.15s; }
+    .ss-btn--ghost:hover { color:var(--black); }
+    .ss-eyebrow { font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#AAA;line-height:1; }
+    .ss-display { font-family:var(--font-display);font-weight:800;line-height:0.95;color:var(--black); }
+    .ss-display .accent { color: var(--red); }
+    .ss-heading { font-family:var(--font-display);font-weight:800;line-height:1.05;color:var(--black); }
+    .ss-body-muted { font-size:14px;color:#555;line-height:1.6; }
+    .ss-badge { display:inline-block;font-size:11px;font-weight:600;padding:5px 12px;letter-spacing:0.07em;text-transform:uppercase;width:fit-content;border-radius:4px; }
+    .ss-badge--blue { background:var(--blue);color:var(--white); }
+    .ss-badge--yellow { background:var(--yellow);color:var(--black); }
+    .ss-badge--black { background:var(--black);color:var(--white); }
+    .ss-tag { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:3px 9px;background:var(--yellow);color:var(--black);border-radius:4px; }
+    .ss-tag--easy { background:#D4F0DC;color:var(--green); }
+    .ss-tag--medium { background:#FEF3CC;color:#8A6500; }
+    .ss-tag--hard { background:#FCDCDC;color:var(--red); }
+    .ss-stat { border:var(--border);padding:16px 20px;background:var(--white);border-radius:6px; }
+    .ss-stat__num { font-family:var(--font-display);font-weight:800;font-size:40px;line-height:1; }
+    .ss-stat__label { font-size:11px;text-transform:uppercase;letter-spacing:0.07em;margin-top:4px;color:#888;font-weight:600; }
+    .ss-input { width:100%;border:var(--border);padding:12px 14px;font-family:var(--font-body);font-size:15px;background:var(--white);color:var(--black);outline:none;transition:border-color 0.15s;border-radius:6px;appearance:none; }
+    .ss-input:focus { border-color:var(--black);outline:2px solid rgba(17,17,17,0.08);outline-offset:0; }
+    .ss-select { width:100%;border:var(--border);padding:12px 36px 12px 14px;font-family:var(--font-body);font-size:15px;background:var(--white);color:var(--black);outline:none;transition:border-color 0.15s;border-radius:6px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231A1A1A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer; }
+    .ss-select:focus { border-color:var(--black);outline:2px solid rgba(17,17,17,0.08);outline-offset:0; }
+    .ss-label { font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#888;display:block;margin-bottom:7px; }
+    .ss-error { font-size:12px;font-weight:600;color:var(--red);padding:10px 12px;border-left:3px solid var(--red);background:rgba(214,40,40,0.05);margin-bottom:14px; }
+    .ss-divider { display:flex;align-items:center;gap:14px;margin:20px 0;color:#CCC;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase; }
+    .ss-divider::before,.ss-divider::after { content:'';flex:1;height:1px;background:#E4E4E4; }
+    .ss-wordmark { font-family:var(--font-display);font-weight:800;letter-spacing:-0.01em;line-height:1; }
+    .ss-wordmark--on-dark .wm-de { color:var(--white); }
+    .ss-wordmark--on-dark .wm-sep { color:var(--white);opacity:0.55; }
+    .ss-wordmark--on-dark .wm-puzl { color:var(--white); }
+
+    /* Auth */
+    .login-box { background:var(--white);width:100%;max-width:400px;position:relative;border-radius:24px;padding:48px 36px 36px;box-shadow:0 24px 60px rgba(0,0,0,0.18); }
+    .auth-heading { font-family:var(--font-display);font-weight:800;font-size:26px;text-align:center;color:var(--black);margin-bottom:28px;line-height:1.2; }
+    .login-input { width:100%;border:1.5px solid #E0DDD4;padding:13px 16px;font-family:var(--font-body);font-size:15px;background:var(--white);color:var(--black);outline:none;transition:border-color 0.15s;border-radius:12px;appearance:none;box-sizing:border-box; }
+    .login-input:focus { border-color:var(--black);outline:2px solid rgba(17,17,17,0.07);outline-offset:0; }
+    .btn-login { width:100%;background:var(--black);color:var(--white);border:none;padding:15px;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:background 0.15s;margin-top:8px;border-radius:999px; }
+    .btn-login:hover { background:#333; }
+    .login-divider { display:flex;align-items:center;gap:14px;margin:18px 0;color:#CCC;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase; }
+    .login-divider::before,.login-divider::after { content:'';flex:1;height:1px;background:#EBEBEB; }
+    .btn-google-login { width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--white);color:var(--black);border:1.5px solid #E0DDD4;padding:12px 16px;font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s,border-color 0.15s;border-radius:999px;letter-spacing:0.01em; }
+    .btn-google-login:hover { background:#F8F7F4;border-color:#AAA; }
+
+    /* Waitlist */
+    .waitlist-box { position:relative;background:var(--white);border:var(--border);padding:40px;width:100%;max-width:380px;border-radius:16px;overflow:hidden; }
+    .waitlist-title { font-family:var(--font-display);font-weight:800;font-size:40px;line-height:0.95;margin-bottom:12px;color:var(--black); }
+    .waitlist-title span { color:var(--red); }
+    .waitlist-desc { font-size:15px;color:#555;line-height:1.6;margin-bottom:24px; }
+    .btn-waitlist { width:100%;background:var(--black);color:var(--white);border:none;padding:16px;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:background 0.15s;margin-top:8px;border-radius:999px; }
+    .btn-waitlist:hover { background:var(--red); }
+    .waitlist-back { font-size:11px;color:#AAA;background:none;border:none;cursor:pointer;text-decoration:underline;margin-top:16px;display:block;width:100%;text-align:center;transition:color 0.15s; }
+    .waitlist-back:hover { color:var(--black); }
+
+    /* Overlay shell */
+    .ss-overlay-demo { position:relative;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);border-radius:8px;padding:40px 32px;display:flex;align-items:center;justify-content:center;min-height:200px; }
+    .ss-overlay__box { background:var(--white);border:var(--border);width:100%;max-width:400px;position:relative;overflow:hidden;border-radius:12px; }
+    .ss-overlay__header { background:var(--black);padding:16px 20px;display:flex;align-items:center;justify-content:space-between; }
+    .ss-overlay__header-title { font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--white);letter-spacing:0.04em;text-transform:uppercase; }
+    .ss-overlay__close { background:none;border:none;color:#555;font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;transition:color 0.15s; }
+    .ss-overlay__close:hover { color:#AAA; }
+    .ss-overlay__body { padding:28px 24px 24px; }
+    .ss-overlay__footer { font-size:11px;color:#AAA;margin-top:16px;padding-top:16px;border-top:var(--border-light);text-align:center;line-height:1.6; }
+
+    /* Onboarding */
+    .onb-tile { display:flex;align-items:center;gap:12px;padding:14px 18px;border:1.5px solid #E0DDD4;border-radius:14px;background:var(--white);cursor:pointer;font-family:var(--font-body);font-size:15px;font-weight:600;color:var(--black);text-align:left;transition:border-color 0.15s,background 0.15s;margin-bottom:10px; }
+    .onb-tile:hover { border-color:#BBB; }
+    .onb-tile.selected { border-color:var(--black);background:#F7F6F2; }
+    .onb-chip { padding:8px 16px;border:1.5px solid #E0DDD4;border-radius:999px;background:var(--white);cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--black);transition:border-color 0.15s,background 0.15s;display:inline-block;margin:4px; }
+    .onb-chip:hover { border-color:#BBB; }
+    .onb-chip.selected { border-color:var(--black);background:#F7F6F2;font-weight:700; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── INLINE CODE ── */
+    code { font-family: var(--font-mono); font-size: 12px; background: #EEECEA; padding: 2px 6px; border-radius: 4px; color: var(--black); }
+
+    /* ── USAGE RULE BOX ── */
+    .rule-box {
+      background: #FFFBEA;
+      border: 1px solid #F2E07A;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #6B5000;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .rule-box strong { font-weight: 700; color: var(--black); }
+
+  </style>
+</head>
+<body>
+
+<div class="docs-layout">
+
+  <!-- Sidebar -->
+  <nav class="docs-sidebar">
+    <div class="docs-sidebar-top">
+      <div class="docs-sidebar-logo">
+        <span class="ss-wordmark">
+          <span class="wm-de">De</span><span class="wm-sep">:</span><span class="wm-puzl">Puzl</span>
+        </span>
+      </div>
+      <div class="docs-sidebar-version">Seesaw v0.1.0</div>
+      <div class="sidebar-mode">
+        <button class="sidebar-mode-btn active" onclick="setGlobalMode('design', this)">Design</button>
+        <button class="sidebar-mode-btn" onclick="setGlobalMode('pm', this)">PM</button>
+      </div>
+    </div>
+
+    <div class="docs-nav-section">Foundation</div>
+    <a class="docs-nav-link active" onclick="scrollTo('tokens')">Tokens</a>
+    <a class="docs-nav-link" onclick="scrollTo('typography')">Typography</a>
+    <a class="docs-nav-link" onclick="scrollTo('spacing')">Spacing</a>
+    <a class="docs-nav-link" onclick="scrollTo('radius')">Radius Rules</a>
+
+    <div class="docs-nav-section">Components</div>
+    <a class="docs-nav-link" onclick="scrollTo('wordmark')">Wordmark</a>
+    <a class="docs-nav-link" onclick="scrollTo('buttons')">Buttons</a>
+    <a class="docs-nav-link" onclick="scrollTo('tags')">Tags & Badges</a>
+    <a class="docs-nav-link" onclick="scrollTo('stats')">Stats</a>
+    <a class="docs-nav-link" onclick="scrollTo('forms')">Forms</a>
+    <a class="docs-nav-link" onclick="scrollTo('overlay')">Overlay Shell</a>
+
+    <div class="docs-nav-section">Patterns</div>
+    <a class="docs-nav-link" onclick="scrollTo('auth')">Auth Modal</a>
+    <a class="docs-nav-link" onclick="scrollTo('waitlist')">Waitlist</a>
+    <a class="docs-nav-link" onclick="scrollTo('onboarding')">Onboarding</a>
+  </nav>
+
+  <!-- Main -->
+  <main class="docs-main" id="docs-main">
+    <div class="docs-main-inner">
+
+    <!-- Page header -->
+    <div class="docs-page-header">
+      <div class="docs-page-eyebrow">Design System Documentation</div>
+      <div class="docs-page-title">SEE<span>SAW.</span></div>
+      <p class="docs-page-desc">The design system behind De:Puzl. Tokens, typography, and components — shared across the product. Named for the core thesis: great work happens when designers and PMs balance each other.</p>
+      <div class="docs-page-meta">
+        <div class="docs-page-meta-item">
+          <span class="docs-page-meta-label">Version</span>
+          <span class="docs-page-meta-val">0.1.0</span>
+        </div>
+        <div class="docs-page-meta-item">
+          <span class="docs-page-meta-label">Source</span>
+          <span class="docs-page-meta-val">seesaw.css</span>
+        </div>
+        <div class="docs-page-meta-item">
+          <span class="docs-page-meta-label">Fonts</span>
+          <span class="docs-page-meta-val">Outfit · DM Sans</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. TOKENS -->
+    <section class="ds-section" id="tokens">
+      <div class="ds-section-title">Tokens</div>
+      <p class="ds-section-sub">All visual decisions start here. Use CSS variables — never hardcode hex values. Click any token to copy the variable name.</p>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Colour</div>
+        <div class="token-grid">
+          <div class="token-row" onclick="copyText('--black', this)"><div class="token-swatch" style="background:#111111"></div><div><div class="token-name">--black</div><div class="token-value">#111111</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('--white', this)"><div class="token-swatch" style="background:#FFFFFF"></div><div><div class="token-name">--white</div><div class="token-value">#FFFFFF</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('--yellow', this)"><div class="token-swatch" style="background:#F2C200"></div><div><div class="token-name">--yellow</div><div class="token-value">#F2C200</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('--red', this)"><div class="token-swatch" style="background:#D62828"></div><div><div class="token-name">--red</div><div class="token-value">#D62828</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('--green', this)"><div class="token-swatch" style="background:#2B7A44"></div><div><div class="token-name">--green</div><div class="token-value">#2B7A44</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('--blue', this)"><div class="token-swatch" style="background:#1550A2"></div><div><div class="token-name">--blue</div><div class="token-value">#1550A2</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('--bg', this)"><div class="token-swatch" style="background:#F7F6F2;border:var(--border)"></div><div><div class="token-name">--bg</div><div class="token-value">#F7F6F2</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('--hover-bg', this)"><div class="token-swatch" style="background:#F5F4EF;border:var(--border)"></div><div><div class="token-name">--hover-bg</div><div class="token-value">#F5F4EF</div></div><span class="token-copy-hint">click to copy</span></div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Borders & Shadows</div>
+        <div class="token-grid">
+          <div class="token-row" onclick="copyText('var(--border)', this)"><div class="token-swatch" style="border:2px solid #E4E4E4;background:white"></div><div><div class="token-name">--border</div><div class="token-value">1px solid #E4E4E4</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('var(--border-light)', this)"><div class="token-swatch" style="border:2px solid #EFEFEF;background:white"></div><div><div class="token-name">--border-light</div><div class="token-value">1px solid #EFEFEF</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('var(--shadow)', this)"><div class="token-swatch" style="background:white;box-shadow:0 1px 3px rgba(0,0,0,0.07)"></div><div><div class="token-name">--shadow</div><div class="token-value">0 1px 3px rgba(0,0,0,0.07)</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('var(--shadow-lg)', this)"><div class="token-swatch" style="background:white;box-shadow:0 4px 16px rgba(0,0,0,0.08)"></div><div><div class="token-name">--shadow-lg</div><div class="token-value">0 4px 16px rgba(0,0,0,0.08)</div></div><span class="token-copy-hint">click to copy</span></div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Typography Tokens</div>
+        <div class="token-grid">
+          <div class="token-row" onclick="copyText('var(--font-display)', this)"><div class="token-swatch" style="background:#F5F4EF;border:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:16px">Aa</div><div><div class="token-name">--font-display</div><div class="token-value">Outfit 800</div></div><span class="token-copy-hint">click to copy</span></div>
+          <div class="token-row" onclick="copyText('var(--font-body)', this)"><div class="token-swatch" style="background:#F5F4EF;border:var(--border);display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-weight:500;font-size:16px">Aa</div><div><div class="token-name">--font-body</div><div class="token-value">DM Sans</div></div><span class="token-copy-hint">click to copy</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. TYPOGRAPHY -->
+    <section class="ds-section" id="typography">
+      <div class="ds-section-title">Typography</div>
+      <p class="ds-section-sub">Four semantic type patterns. Use class names — don't redefine font stacks inline. Toggle PM mode to see how accent colour shifts.</p>
+
+      <div class="ds-preview">
+        <div class="ds-preview-canvas stack" style="padding:40px 48px;gap:0">
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-label">.ss-eyebrow</div>
+              <div class="type-spec">10px / 600<br>Uppercase · +0.12em</div>
+            </div>
+            <span class="ss-eyebrow">Your instincts matter</span>
+          </div>
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-label">.ss-display</div>
+              <div class="type-spec">Outfit 800<br>line-height 0.95</div>
+            </div>
+            <span class="ss-display" id="display-demo" style="font-size:48px">PUSH BACK<br>WITH <span class="accent">PRECISION.</span></span>
+          </div>
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-label">.ss-heading</div>
+              <div class="type-spec">Outfit 800<br>line-height 1.05</div>
+            </div>
+            <span class="ss-heading" style="font-size:22px">Navigate your perspective</span>
+          </div>
+          <div class="type-row">
+            <div class="type-meta">
+              <div class="type-label">.ss-body-muted</div>
+              <div class="type-spec">DM Sans 14px<br>#555 · lh 1.6</div>
+            </div>
+            <span class="ss-body-muted">Real conversations from the design side of the table — pushback, tradeoffs, and tough calls.</span>
+          </div>
+        </div>
+        <div class="ds-code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="ds-code"><span class="tag">&lt;p</span> <span class="attr">class=</span><span class="val">"ss-eyebrow"</span><span class="tag">&gt;</span>Your instincts matter<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;h1</span> <span class="attr">class=</span><span class="val">"ss-display"</span><span class="tag">&gt;</span>PUSH BACK WITH <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"accent"</span><span class="tag">&gt;</span>PRECISION.<span class="tag">&lt;/span&gt;&lt;/h1&gt;</span>
+<span class="tag">&lt;h2</span> <span class="attr">class=</span><span class="val">"ss-heading"</span><span class="tag">&gt;</span>Navigate your perspective<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;p</span> <span class="attr">class=</span><span class="val">"ss-body-muted"</span><span class="tag">&gt;</span>Body copy…<span class="tag">&lt;/p&gt;</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:28px">
+        <div class="ds-subsection-title">PM Mode — accent shifts from red → blue</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" onclick="setMode('design',this)">Design Mode</button>
+          <button class="mode-btn" onclick="setMode('pm',this)">PM Mode</button>
+        </div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas center" style="background:#111">
+            <span class="ss-display" style="font-size:40px;color:white">DATA BEATS <span class="accent" id="mode-accent">OPINIONS.</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SPACING -->
+    <section class="ds-section" id="spacing">
+      <div class="ds-section-title">Spacing</div>
+      <p class="ds-section-sub">Consistent spacing scale used across padding, gap, and margin. Base unit is 4px.</p>
+      <div style="background:var(--white);border:var(--border);border-radius:12px;padding:32px">
+        <div class="spacing-row"><div class="spacing-label">4</div><div class="spacing-bar" style="width:4px"></div><div class="spacing-px">xs — icon gaps, tight rows</div></div>
+        <div class="spacing-row"><div class="spacing-label">8</div><div class="spacing-bar" style="width:8px"></div><div class="spacing-px">sm — button padding, small gaps</div></div>
+        <div class="spacing-row"><div class="spacing-label">12</div><div class="spacing-bar" style="width:12px"></div><div class="spacing-px">md — form field spacing</div></div>
+        <div class="spacing-row"><div class="spacing-label">16</div><div class="spacing-bar" style="width:16px"></div><div class="spacing-px">lg — card gaps, section padding</div></div>
+        <div class="spacing-row"><div class="spacing-label">24</div><div class="spacing-bar" style="width:24px"></div><div class="spacing-px">xl — card inner padding</div></div>
+        <div class="spacing-row"><div class="spacing-label">32</div><div class="spacing-bar" style="width:32px"></div><div class="spacing-px">2xl — overlay body padding</div></div>
+        <div class="spacing-row"><div class="spacing-label">48</div><div class="spacing-bar" style="width:48px"></div><div class="spacing-px">3xl — overlay/waitlist box padding</div></div>
+        <div class="spacing-row"><div class="spacing-label">64</div><div class="spacing-bar" style="width:64px"></div><div class="spacing-px">4xl — dashboard body padding</div></div>
+      </div>
+    </section>
+
+    <!-- 4. RADIUS RULES -->
+    <section class="ds-section" id="radius">
+      <div class="ds-section-title">Radius Rules</div>
+      <p class="ds-section-sub">Border radius is not decorative — it signals the type of element. Don't mix contexts. These rules are intentional.</p>
+
+      <div class="rule-box">
+        <strong>Rule:</strong> Primary CTA buttons in overlays, modals, and results always use <code>border-radius: 999px</code> (pill). All other buttons — nav, hero, quiz header, dashboard actions — use <code>border-radius: 8px</code>. No sharp corners anywhere in the system.
+      </div>
+
+      <table class="radius-table">
+        <thead>
+          <tr>
+            <th>Value</th>
+            <th>Demo</th>
+            <th>Context</th>
+            <th>Classes / Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="radius-val">4px</span></td>
+            <td><div class="radius-demo" style="border-radius:4px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">Tags, badges</td>
+            <td class="radius-classes">.ss-tag, .ss-badge</td>
+          </tr>
+          <tr>
+            <td><span class="radius-val">6px</span></td>
+            <td><div class="radius-demo" style="border-radius:6px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">Form inputs, selects, stat boxes, error messages</td>
+            <td class="radius-classes">.ss-input, .ss-select, .ss-stat, .ss-error</td>
+          </tr>
+          <tr>
+            <td><span class="radius-val">8px</span></td>
+            <td><div class="radius-demo" style="border-radius:8px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">All .ss-btn variants, nav buttons, quiz header, dashboard actions, dropdowns</td>
+            <td class="radius-classes">.ss-btn (default), applied inline for other contexts</td>
+          </tr>
+          <tr>
+            <td><span class="radius-val">12px</span></td>
+            <td><div class="radius-demo" style="border-radius:12px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">Preview cards, collection cards, scenario cards, dashboard panels</td>
+            <td class="radius-classes">.ds-preview, .coll-card, .login-box ancestor wrappers</td>
+          </tr>
+          <tr>
+            <td><span class="radius-val">14px</span></td>
+            <td><div class="radius-demo" style="border-radius:14px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">Onboarding role tiles</td>
+            <td class="radius-classes">.onb-tile</td>
+          </tr>
+          <tr>
+            <td><span class="radius-val">16px</span></td>
+            <td><div class="radius-demo" style="border-radius:16px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">Waitlist box, new overlay boxes (use over .paywall-box)</td>
+            <td class="radius-classes">.waitlist-box</td>
+          </tr>
+          <tr>
+            <td><span class="radius-val">24px</span></td>
+            <td><div class="radius-demo" style="border-radius:24px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">Auth login box, onboarding modal box</td>
+            <td class="radius-classes">.login-box, .onboarding-box</td>
+          </tr>
+          <tr>
+            <td><span class="radius-val">999px</span></td>
+            <td><div class="radius-demo" style="border-radius:999px;background:var(--black);width:72px;height:32px"></div></td>
+            <td class="radius-context">Primary CTA buttons in overlays, modals, results. Google sign-in. Onboarding chips.</td>
+            <td class="radius-classes">.btn-login, .btn-waitlist, .btn-google-login, .onb-chip</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 5. WORDMARK -->
+    <section class="ds-section" id="wordmark">
+      <div class="ds-section-title">Wordmark</div>
+      <p class="ds-section-sub">The canonical De:Puzl logotype. Always use the <code>.ss-wordmark</code> class — never recreate it with custom styles.</p>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">On light</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas center" style="gap:48px">
+            <span class="ss-wordmark" style="font-size:28px"><span class="wm-de">De</span><span class="wm-sep">:</span><span class="wm-puzl">Puzl</span></span>
+            <span class="ss-wordmark" style="font-size:20px"><span class="wm-de">De</span><span class="wm-sep">:</span><span class="wm-puzl">Puzl</span></span>
+            <span class="ss-wordmark" style="font-size:14px"><span class="wm-de">De</span><span class="wm-sep">:</span><span class="wm-puzl">Puzl</span></span>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-wordmark"</span> <span class="attr">style=</span><span class="val">"font-size:28px"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"wm-de"</span><span class="tag">&gt;</span>De<span class="tag">&lt;/span&gt;</span><span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"wm-sep"</span><span class="tag">&gt;</span>:<span class="tag">&lt;/span&gt;</span><span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"wm-puzl"</span><span class="tag">&gt;</span>Puzl<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/span&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">On dark — adds .ss-wordmark--on-dark</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas dark center" style="gap:48px">
+            <span class="ss-wordmark ss-wordmark--on-dark" style="font-size:28px"><span class="wm-de">De</span><span class="wm-sep">:</span><span class="wm-puzl">Puzl</span></span>
+            <span class="ss-wordmark ss-wordmark--on-dark" style="font-size:20px"><span class="wm-de">De</span><span class="wm-sep">:</span><span class="wm-puzl">Puzl</span></span>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-wordmark ss-wordmark--on-dark"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/span&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. BUTTONS -->
+    <section class="ds-section" id="buttons">
+      <div class="ds-section-title">Buttons</div>
+      <p class="ds-section-sub">Three base variants. Radius is applied per-context, not baked into the variant — see <a onclick="scrollTo('radius')" style="color:var(--black);font-weight:700;cursor:pointer;text-decoration:underline">Radius Rules</a>.</p>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Primary — .ss-btn</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas">
+            <button class="ss-btn">Primary action</button>
+            <button class="ss-btn" style="border-radius:999px">Pill variant</button>
+            <button class="ss-btn" style="opacity:0.4;cursor:default">Disabled</button>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"ss-btn"</span><span class="tag">&gt;</span>Primary action<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"ss-btn"</span> <span class="attr">style=</span><span class="val">"border-radius:999px"</span><span class="tag">&gt;</span>Pill variant<span class="tag">&lt;/button&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Outline — .ss-btn--outline</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas">
+            <button class="ss-btn ss-btn--outline" style="border-radius:8px">Secondary (8px)</button>
+            <button class="ss-btn ss-btn--outline" style="border-radius:999px">Secondary pill</button>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"ss-btn ss-btn--outline"</span> <span class="attr">style=</span><span class="val">"border-radius:8px"</span><span class="tag">&gt;</span>Secondary<span class="tag">&lt;/button&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Ghost — .ss-btn--ghost</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas">
+            <button class="ss-btn ss-btn--ghost">Maybe later</button>
+            <button class="ss-btn ss-btn--ghost">Skip this step</button>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"ss-btn ss-btn--ghost"</span><span class="tag">&gt;</span>Maybe later<span class="tag">&lt;/button&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Auth buttons — .btn-login / .btn-waitlist</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas stack" style="max-width:360px">
+            <button class="btn-login" style="margin-top:0">Log in</button>
+            <button class="btn-waitlist">JOIN THE WAITLIST →</button>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"btn-login"</span><span class="tag">&gt;</span>Log in<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"btn-waitlist"</span><span class="tag">&gt;</span>JOIN THE WAITLIST →<span class="tag">&lt;/button&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. TAGS & BADGES -->
+    <section class="ds-section" id="tags">
+      <div class="ds-section-title">Tags & Badges</div>
+      <p class="ds-section-sub">Use tags for category/difficulty labels. Use badges for role, tier, and feature flags.</p>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Difficulty Tags — .ss-tag</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas">
+            <span class="ss-tag">Design</span>
+            <span class="ss-tag">PM</span>
+            <span class="ss-tag ss-tag--easy">Easy</span>
+            <span class="ss-tag ss-tag--medium">Medium</span>
+            <span class="ss-tag ss-tag--hard">Hard</span>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-tag"</span><span class="tag">&gt;</span>Design<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-tag ss-tag--easy"</span><span class="tag">&gt;</span>Easy<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-tag ss-tag--medium"</span><span class="tag">&gt;</span>Medium<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-tag ss-tag--hard"</span><span class="tag">&gt;</span>Hard<span class="tag">&lt;/span&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Tier Badges — .ss-badge</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas">
+            <span class="ss-badge ss-badge--black">Pro</span>
+            <span class="ss-badge ss-badge--yellow">Alpha</span>
+            <span class="ss-badge ss-badge--blue">Beta</span>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-badge ss-badge--black"</span><span class="tag">&gt;</span>Pro<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-badge ss-badge--yellow"</span><span class="tag">&gt;</span>Alpha<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-badge ss-badge--blue"</span><span class="tag">&gt;</span>Beta<span class="tag">&lt;/span&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. STATS -->
+    <section class="ds-section" id="stats">
+      <div class="ds-section-title">Stats</div>
+      <p class="ds-section-sub">Bordered number + label pair. Used in results screens and dashboards.</p>
+      <div class="ds-preview">
+        <div class="ds-preview-canvas grid" style="padding:32px">
+          <div class="ss-stat"><div class="ss-stat__num">54</div><div class="ss-stat__label">Scenarios</div></div>
+          <div class="ss-stat"><div class="ss-stat__num">83<span style="font-size:24px">%</span></div><div class="ss-stat__label">Correct</div></div>
+          <div class="ss-stat"><div class="ss-stat__num">12</div><div class="ss-stat__label">Answered</div></div>
+          <div class="ss-stat"><div class="ss-stat__num">3</div><div class="ss-stat__label">Categories</div></div>
+        </div>
+        <div class="ds-code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="ds-code"><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-stat"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-stat__num"</span><span class="tag">&gt;</span>54<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-stat__label"</span><span class="tag">&gt;</span>Scenarios<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. FORMS -->
+    <section class="ds-section" id="forms">
+      <div class="ds-section-title">Forms</div>
+      <p class="ds-section-sub">Two input styles. System inputs (<code>.ss-input</code>, radius: 6px) — used in waitlist and admin contexts. Auth inputs (<code>.login-input</code>, radius: 12px) — used only in auth modals.</p>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">System input — .ss-input (radius: 6px)</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas stack" style="padding:32px;max-width:420px">
+            <div style="width:100%">
+              <label class="ss-label">Your name</label>
+              <input class="ss-input" type="text" placeholder="Paul Rhiddhit">
+            </div>
+            <div style="width:100%;margin-top:12px">
+              <label class="ss-label">Email</label>
+              <input class="ss-input" type="email" placeholder="you@company.com" style="border-color:#D62828">
+              <div class="ss-error" style="display:block;margin-top:8px;margin-bottom:0">This email is already registered.</div>
+            </div>
+            <div style="width:100%;margin-top:12px">
+              <label class="ss-label">Role</label>
+              <select class="ss-select">
+                <option>Product Designer</option>
+                <option>Product Manager</option>
+                <option>Both / Cross-functional</option>
+              </select>
+            </div>
+            <div class="ss-divider" style="width:100%;margin-top:4px">or</div>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;label</span> <span class="attr">class=</span><span class="val">"ss-label"</span><span class="tag">&gt;</span>Your name<span class="tag">&lt;/label&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">class=</span><span class="val">"ss-input"</span> <span class="attr">type=</span><span class="val">"text"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-error show"</span><span class="tag">&gt;</span>Error message<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;select</span> <span class="attr">class=</span><span class="val">"ss-select"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/select&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-divider"</span><span class="tag">&gt;</span>or<span class="tag">&lt;/div&gt;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Auth input — .login-input (radius: 12px)</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas stack" style="padding:32px;max-width:380px">
+            <input class="login-input" style="width:100%" type="email" placeholder="Email">
+            <input class="login-input" style="width:100%;margin-top:12px" type="password" placeholder="Password">
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;input</span> <span class="attr">class=</span><span class="val">"login-input"</span> <span class="attr">type=</span><span class="val">"email"</span> <span class="attr">placeholder=</span><span class="val">"Email"</span><span class="tag">&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. OVERLAY SHELL -->
+    <section class="ds-section" id="overlay">
+      <div class="ds-section-title">Overlay Shell</div>
+      <p class="ds-section-sub">The <code>.ss-overlay__box</code> is a shared content box (radius: 12px). Use it for non-auth overlays — feedback screens, confirmations, locked content. Separate from <code>.login-box</code> and <code>.waitlist-box</code>.</p>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Overlay box with header</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas offwhite center" style="padding:48px">
+            <div class="ss-overlay__box" style="max-width:400px">
+              <div class="ss-overlay__header">
+                <span class="ss-overlay__header-title">Results Summary</span>
+                <button class="ss-overlay__close">✕</button>
+              </div>
+              <div class="ss-overlay__body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+                  <div class="ss-stat"><div class="ss-stat__num">8</div><div class="ss-stat__label">Correct</div></div>
+                  <div class="ss-stat"><div class="ss-stat__num">4</div><div class="ss-stat__label">Missed</div></div>
+                </div>
+                <p class="ss-body-muted">You pushed back well on stakeholder pressure. Scope creep scenarios need more work.</p>
+                <div class="ss-overlay__footer">Session saved to your profile.</div>
+              </div>
+            </div>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-overlay__box"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-overlay__header"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"ss-overlay__header-title"</span><span class="tag">&gt;</span>Results Summary<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"ss-overlay__close"</span><span class="tag">&gt;</span>✕<span class="tag">&lt;/button&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"ss-overlay__body"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. AUTH MODAL -->
+    <section class="ds-section" id="auth">
+      <div class="ds-section-title">Auth Modal</div>
+      <p class="ds-section-sub">Login sheet. Uses <code>.login-box</code> (radius: 24px), <code>.login-input</code>, and <code>.btn-login</code> (pill). Distinct from overlay shell.</p>
+      <div class="ds-preview">
+        <div class="ds-preview-canvas offwhite center" style="padding:48px">
+          <div class="login-box">
+            <div class="auth-heading">Log in to <span class="wm-de">De</span><span class="wm-sep" style="opacity:0.55">:</span><span class="wm-puzl" style="color:var(--red)">Puzl</span></div>
+            <div style="margin-bottom:12px"><input class="login-input" type="email" placeholder="Email"></div>
+            <div style="margin-bottom:12px"><input class="login-input" type="password" placeholder="Password"></div>
+            <button class="btn-login">Log in</button>
+            <div class="login-divider">or</div>
+            <button class="btn-google-login">
+              <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+              Continue with Google
+            </button>
+            <div style="display:flex;justify-content:space-between;margin-top:18px;font-size:13px;color:#888">
+              <button class="ss-btn ss-btn--ghost">Forgot password?</button>
+              <span>New? <button class="ss-btn ss-btn--ghost" style="color:var(--black);font-weight:700">Sign up</button></span>
+            </div>
+          </div>
+        </div>
+        <div class="ds-code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="ds-code"><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"login-box"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"auth-heading"</span><span class="tag">&gt;</span>Log in to De:Puzl<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">class=</span><span class="val">"login-input"</span> <span class="attr">type=</span><span class="val">"email"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"btn-login"</span><span class="tag">&gt;</span>Log in<span class="tag">&lt;/button&gt;</span>
+  <span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"btn-google-login"</span><span class="tag">&gt;</span>Continue with Google<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/div&gt;</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. WAITLIST -->
+    <section class="ds-section" id="waitlist">
+      <div class="ds-section-title">Waitlist</div>
+      <p class="ds-section-sub">Gate for Pro features. Uses <code>.waitlist-box</code> (radius: 16px) with <code>.btn-waitlist</code> (pill). Two states: capture + success.</p>
+      <div class="ds-preview">
+        <div class="ds-preview-canvas offwhite center" style="padding:48px;gap:24px;flex-wrap:wrap">
+          <div class="waitlist-box">
+            <div style="font-size:48px;margin-bottom:12px;text-align:center">🚀</div>
+            <div class="waitlist-title" style="text-align:center">PRO MODE<br><span>COMING SOON.</span></div>
+            <p class="waitlist-desc" style="text-align:center;margin-top:12px">We're putting the finishing touches on Pro. Join the waitlist and we'll reach out the moment it's ready.</p>
+            <button class="btn-waitlist">JOIN THE WAITLIST →</button>
+            <button class="waitlist-back">Maybe later</button>
+          </div>
+          <div class="waitlist-box">
+            <div style="font-size:48px;margin-bottom:12px;text-align:center">✅</div>
+            <div style="font-family:var(--font-display);font-weight:800;font-size:36px;line-height:1;margin-bottom:8px;color:var(--green);text-align:center">YOU'RE ON<br>THE LIST.</div>
+            <p class="waitlist-desc" style="text-align:center">We'll reach out the moment Pro is ready. Stay sharp in the meantime.</p>
+            <button class="btn-waitlist">BACK TO PRACTICE →</button>
+          </div>
+        </div>
+        <div class="ds-code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="ds-code"><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"waitlist-box"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"waitlist-title"</span><span class="tag">&gt;</span>PRO MODE <span class="tag">&lt;span&gt;</span>COMING SOON.<span class="tag">&lt;/span&gt;&lt;/div&gt;</span>
+  <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="val">"waitlist-desc"</span><span class="tag">&gt;</span>…<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"btn-waitlist"</span><span class="tag">&gt;</span>JOIN THE WAITLIST →<span class="tag">&lt;/button&gt;</span>
+  <span class="tag">&lt;button</span> <span class="attr">class=</span><span class="val">"waitlist-back"</span><span class="tag">&gt;</span>Maybe later<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/div&gt;</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. ONBOARDING -->
+    <section class="ds-section" id="onboarding">
+      <div class="ds-section-title">Onboarding</div>
+      <p class="ds-section-sub">Multi-step modal with progress dots, role tiles, and selection chips. Tiles are interactive — try clicking.</p>
+      <div class="ds-preview">
+        <div class="ds-preview-canvas offwhite center" style="padding:48px">
+          <div style="background:var(--white);border-radius:24px;padding:40px 36px 32px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,0.18);text-align:center">
+            <div style="display:flex;justify-content:center;gap:6px;margin-bottom:28px">
+              <div style="width:20px;height:6px;border-radius:99px;background:var(--black)"></div>
+              <div style="width:6px;height:6px;border-radius:99px;background:#DDD"></div>
+              <div style="width:6px;height:6px;border-radius:99px;background:#DDD"></div>
+            </div>
+            <div style="font-family:var(--font-display);font-weight:800;font-size:22px;margin-bottom:8px">What's your role?</div>
+            <div style="font-size:14px;color:#888;margin-bottom:24px">So we can tailor your experience.</div>
+            <div>
+              <div class="onb-tile selected"><span style="font-size:20px">🎨</span><span>Product Designer</span></div>
+              <div class="onb-tile"><span style="font-size:20px">📋</span><span>Product Manager</span></div>
+              <div class="onb-tile"><span style="font-size:20px">🤝</span><span>Both / Cross-functional</span></div>
+            </div>
+            <button style="width:100%;padding:14px;border-radius:999px;border:none;background:var(--black);color:var(--white);font-family:var(--font-display);font-weight:800;font-size:15px;cursor:pointer;margin-top:8px">Continue →</button>
+            <button class="ss-btn ss-btn--ghost" style="margin-top:12px">Skip for now</button>
+          </div>
+        </div>
+        <div class="ds-code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="ds-code"><span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"onb-tile selected"</span><span class="tag">&gt;</span>🎨 Product Designer<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="val">"onb-tile"</span><span class="tag">&gt;</span>📋 Product Manager<span class="tag">&lt;/div&gt;</span></div>
+        </div>
+      </div>
+
+      <div class="ds-subsection" style="margin-top:24px">
+        <div class="ds-subsection-title">Selection chips — .onb-chip (toggle on click)</div>
+        <div class="ds-preview">
+          <div class="ds-preview-canvas" style="flex-wrap:wrap">
+            <span class="onb-chip selected">Stakeholder pushback</span>
+            <span class="onb-chip">Scope creep</span>
+            <span class="onb-chip selected">Tradeoff decisions</span>
+            <span class="onb-chip">Cross-team alignment</span>
+            <span class="onb-chip">Prioritisation</span>
+          </div>
+          <div class="ds-code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <div class="ds-code"><span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"onb-chip selected"</span><span class="tag">&gt;</span>Stakeholder pushback<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="val">"onb-chip"</span><span class="tag">&gt;</span>Scope creep<span class="tag">&lt;/span&gt;</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const main = document.getElementById('docs-main');
+  const sections = document.querySelectorAll('.ds-section');
+  const navLinks = document.querySelectorAll('.docs-nav-link');
+
+  // ── SCROLL TO ──
+  window.scrollTo = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // ── ACTIVE NAV ON SCROLL ──
+  main.addEventListener('scroll', () => {
+    let current = sections[0].id;
+    sections.forEach(s => {
+      if (s.offsetTop - 100 <= main.scrollTop) current = s.id;
+    });
+    navLinks.forEach(l => {
+      const fn = l.getAttribute('onclick') || '';
+      const match = fn.match(/'([^']+)'/);
+      l.classList.toggle('active', match && match[1] === current);
+    });
+  });
+
+  // ── TOAST ──
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  // ── COPY TOKEN ──
+  window.copyText = function(text, el) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Copied: ' + text);
+      const hint = el.querySelector('.token-copy-hint');
+      if (hint) {
+        const orig = hint.textContent;
+        hint.textContent = '✓ copied';
+        hint.style.color = 'var(--green)';
+        setTimeout(() => { hint.textContent = orig; hint.style.color = ''; }, 1500);
+      }
+    });
+  };
+
+  // ── COPY CODE BLOCK ──
+  window.copyCode = function(btn) {
+    const codeEl = btn.closest('.ds-code-wrap').querySelector('.ds-code');
+    const text = codeEl.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      showToast('Code copied to clipboard');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  };
+
+  // ── GLOBAL PM MODE ──
+  window.setGlobalMode = function(mode, btn) {
+    document.querySelectorAll('.sidebar-mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const accent = document.getElementById('mode-accent');
+    if (accent) accent.style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
+    const displayDemo = document.getElementById('display-demo');
+    if (displayDemo) {
+      displayDemo.querySelector('.accent').style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
+    }
+    // Update wordmark Puzl colour in sidebar
+    document.querySelectorAll('.wm-puzl').forEach(el => {
+      el.style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
+    });
+    showToast(mode === 'pm' ? 'PM Mode — accent: blue' : 'Design Mode — accent: red');
+  };
+
+  // ── LOCAL PM MODE (typography section) ──
+  window.setMode = function(mode, btn) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const accent = document.getElementById('mode-accent');
+    if (accent) accent.style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
+  };
+
+  // ── TILE SELECTION ──
+  document.querySelectorAll('.onb-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      tile.closest('div').querySelectorAll('.onb-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+    });
+  });
+
+  // ── CHIP TOGGLE ──
+  document.querySelectorAll('.onb-chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('selected'));
+  });
+</script>
+</body>
+</html>
