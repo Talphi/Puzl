@@ -1455,7 +1455,7 @@
 
     <button class="login-close" onclick="hideAuthOverlay()">✕</button>
 
-    <div class="auth-heading" id="auth-heading">Sign in to <span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span></div>
+    <div class="auth-heading" id="auth-heading">Log in to <span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span></div>
 
     <div class="login-error" id="auth-error"></div>
     <div class="auth-success" id="auth-success"></div>
@@ -1467,7 +1467,7 @@
       <div class="login-field">
         <input type="password" class="login-input" id="auth-password" placeholder="Password" autocomplete="current-password" required>
       </div>
-      <button type="submit" class="btn-login" id="auth-submit-btn">Sign in</button>
+      <button type="submit" class="btn-login" id="auth-submit-btn">Log in</button>
     </form>
 
     <div class="login-divider">or</div>
@@ -2299,13 +2299,13 @@ function switchAuthTab(mode) {
   const submitBtn = document.getElementById('auth-submit-btn');
   const footerRow = document.getElementById('auth-footer-row');
   const brand = `<span class="lh-de">De</span><span class="lh-sep">:</span><span class="lh-puzl">Puzl</span>`;
-  if (heading)   heading.innerHTML    = isLogin ? `Sign in to ${brand}` : `Sign up to ${brand}`;
-  if (submitBtn) submitBtn.textContent = isLogin ? 'Sign in' : 'Create account';
+  if (heading)   heading.innerHTML    = isLogin ? `Log in to ${brand}` : `Sign up to ${brand}`;
+  if (submitBtn) submitBtn.textContent = isLogin ? 'Log in' : 'Create account';
   if (footerRow) footerRow.innerHTML  = isLogin
     ? `<button class="auth-link-btn" onclick="handleResetPassword()">Reset password</button>
        <span>New user? <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('signup')">Sign up</button></span>`
     : `<span style="color:#888;font-size:13px;">Already registered?</span>
-       <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('login')">Sign in</button>`;
+       <button class="auth-link-btn auth-link-bold" onclick="switchAuthTab('login')">Log in</button>`;
   document.getElementById('auth-password').autocomplete = isLogin ? 'current-password' : 'new-password';
   document.getElementById('auth-error').classList.remove('show');
   document.getElementById('auth-success').classList.remove('show');
