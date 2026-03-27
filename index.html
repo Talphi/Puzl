@@ -150,14 +150,16 @@
   .option-btn.wrong .option-letter { background: var(--red); color: var(--white); }
   .option-btn.reveal-best { background: #EAF0FC; }
   .option-btn.reveal-best .option-letter { background: var(--blue); color: var(--white); }
-  .feedback-box { display: none; border: var(--border); border-radius: 10px; padding: 20px; margin-top: 4px; background: #FAFAFA; }
+  .feedback-box { display: none; border-radius: 16px; padding: 20px 24px; margin-top: 4px; background: #F5F4EF; border-left: 3px solid transparent; }
   .feedback-box.show { display: block; }
-  .feedback-verdict { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 8px; }
+  .feedback-box.win { border-left-color: var(--green); }
+  .feedback-box.lose { border-left-color: var(--red); }
+  .feedback-verdict { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
   .feedback-verdict.win { color: var(--green); }
   .feedback-verdict.lose { color: var(--red); }
-  .feedback-text { font-size: 14px; line-height: 1.6; color: #444; }
-  .tip-tag { display: inline-block; margin-top: 10px; font-size: 10px; font-weight: 700; background: var(--yellow); padding: 3px 9px; text-transform: uppercase; letter-spacing: 0.06em; }
-  .btn-next { margin-top: 12px; background: var(--black); color: var(--white); border: none; padding: 14px 28px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; display: none; align-self: flex-start; border-radius: 10px; }
+  .feedback-text { font-size: 14px; line-height: 1.7; color: #555; }
+  .tip-tag { display: inline-block; margin-top: 10px; font-size: 10px; font-weight: 700; background: var(--yellow); padding: 4px 10px; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 6px; }
+  .btn-next { margin-top: 12px; background: var(--black); color: var(--white); border: none; padding: 14px 28px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; display: none; align-self: flex-start; border-radius: 999px; }
   .btn-next:hover { background: #333; }
   .btn-next.show { display: inline-block; }
   #screen-results { background: var(--bg); color: var(--black); align-items: center; justify-content: center; text-align: center; padding: 60px 40px; position: relative; overflow: hidden; }
@@ -3079,7 +3081,8 @@ function restoreAnsweredState(q, opts) {
   verdict.className = 'feedback-verdict ' + (wasCorrect ? 'win' : 'lose');
   document.getElementById('feedback-text').textContent = q.feedback;
   document.getElementById('feedback-tip').textContent = q.tip;
-  document.getElementById('feedback-box').classList.add('show');
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box show ' + (wasCorrect ? 'win' : 'lose');
   document.getElementById('btn-next').classList.add('show');
 }
 
@@ -3108,7 +3111,8 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
   verdict.className = 'feedback-verdict ' + (isCorrect ? 'win' : 'lose');
   document.getElementById('feedback-text').textContent = q.feedback;
   document.getElementById('feedback-tip').textContent = q.tip;
-  document.getElementById('feedback-box').classList.add('show');
+  const fb2 = document.getElementById('feedback-box');
+  fb2.className = 'feedback-box show ' + (isCorrect ? 'win' : 'lose');
   document.getElementById('btn-next').classList.add('show');
   renderDrawer();
 
