@@ -1021,8 +1021,13 @@
   .coll-desc { font-size: 13px; color: #777; line-height: 1.6; flex: 1; margin-bottom: 20px; }
   .coll-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
   .coll-count { font-size: 11px; font-weight: 600; color: #AAA; text-transform: uppercase; letter-spacing: 0.05em; }
-  .coll-badge-pro { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; background: var(--black); color: var(--white); padding: 3px 8px; border-radius: 4px; }
-  .coll-badge-new { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; background: var(--yellow); color: var(--black); padding: 3px 8px; border-radius: 4px; margin-right: 4px; }
+  .coll-badge-pro  { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; background: var(--black); color: var(--white); padding: 3px 8px; border-radius: 4px; }
+  .coll-badge-new  { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; background: var(--yellow); color: var(--black); padding: 3px 8px; border-radius: 4px; margin-right: 4px; }
+  .coll-badge-soon { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; background: #E8E5DE; color: #AAA; padding: 3px 8px; border-radius: 4px; }
+  .coll-card.coming-soon { cursor: default; opacity: 0.6; }
+  .coll-card.coming-soon:hover { box-shadow: none; border-color: var(--border-color, #E8E5DC); }
+  .coll-card.coming-soon .coll-name { color: #AAA; }
+  .coll-card.coming-soon .coll-desc { color: #CCC; }
   .coll-progress { width: 100%; background: #F0EFE8; border-radius: 999px; height: 3px; margin-top: 4px; }
   .coll-progress-fill { background: var(--yellow); height: 100%; border-radius: 999px; transition: width 0.4s; }
   /* Scenario progress grid */
@@ -3518,17 +3523,17 @@ const COLLECTIONS = [
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="4" y="3" width="26" height="32" rx="3" fill="#FEE2E2"/><rect x="4" y="3" width="26" height="32" rx="3" stroke="#D62828" stroke-width="1.5"/><path d="M10 13h14" stroke="#D62828" stroke-width="2" stroke-linecap="round" opacity="0.8"/><path d="M10 19h9" stroke="#D62828" stroke-width="1.5" stroke-linecap="round" opacity="0.45"/><path d="M10 25h11" stroke="#D62828" stroke-width="1.5" stroke-linecap="round" opacity="0.45"/><path d="M33 25l-7 7-2.5 1 1-2.5 7-7 1.5 1.5z" fill="#D62828"/><path d="M31.5 23.5l1.5 1.5" stroke="#D62828" stroke-width="1.5" stroke-linecap="round"/></svg>` },
   { id: 'pm', name: 'PM Essential Conversations', description: 'Navigate the messy reality of product decisions — timelines, stakeholders, and scope.', count: 21, access: 'free', color: 'var(--blue)',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="4" y="6" width="36" height="30" rx="3" fill="#EBF0FA"/><rect x="4" y="6" width="36" height="30" rx="3" stroke="#1550A2" stroke-width="1.5"/><rect x="9" y="14" width="9" height="6" rx="2" fill="#1550A2"/><rect x="21" y="14" width="13" height="6" rx="2" fill="#1550A2" opacity="0.4"/><rect x="9" y="24" width="15" height="5" rx="2" fill="#1550A2" opacity="0.25"/><rect x="27" y="24" width="8" height="5" rx="2" fill="#1550A2" opacity="0.6"/></svg>` },
-  { id: '0to1', name: '0-to-1 Builder', description: 'For PMs building from scratch — ambiguity, first principles, and founder dynamics.', count: 20, access: 'pro', color: 'var(--yellow)',
+  { id: '0to1', name: '0-to-1 Builder', description: 'For PMs building from scratch — ambiguity, first principles, and founder dynamics.', count: 20, access: 'pro', comingSoon: true, color: 'var(--yellow)',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><path d="M22 3c0 0-9 11-9 22 0 6 3.5 10 9 11 5.5-1 9-5 9-11 0-11-9-22-9-22z" fill="#FEF3C7" stroke="#F2C200" stroke-width="1.5"/><circle cx="22" cy="24" r="4" fill="#F2C200"/><circle cx="22" cy="24" r="2" fill="white"/><rect x="18" y="37" width="8" height="4" rx="1" fill="#F2C200" opacity="0.55"/><path d="M16 39l-4 3" stroke="#F2C200" stroke-width="2" stroke-linecap="round"/><path d="M28 39l4 3" stroke="#F2C200" stroke-width="2" stroke-linecap="round"/></svg>` },
-  { id: '0to1designer', name: '0-to-1 Designer', description: 'Designing when there\'s no brief, no system, and no precedent — just a blank canvas and a deadline.', count: 20, access: 'pro', color: '#E07B00',
+  { id: '0to1designer', name: '0-to-1 Designer', description: 'Designing when there\'s no brief, no system, and no precedent — just a blank canvas and a deadline.', count: 20, access: 'pro', comingSoon: true, color: '#E07B00',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="6" y="12" width="24" height="22" rx="2.5" fill="#FFF4E6" stroke="#E07B00" stroke-width="1.5"/><rect x="10" y="16" width="8" height="5" rx="1" fill="#E07B00" opacity="0.3"/><path d="M10 25h16M10 29h11" stroke="#E07B00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><path d="M30 5l6 6-4 4-6-6z" fill="#E07B00"/><circle cx="28" cy="13" r="1.5" fill="white" stroke="#E07B00" stroke-width="1"/><path d="M24 17l2-2" stroke="#E07B00" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/></svg>` },
-  { id: 'multiplehats', name: 'Managing Multiple Hats', description: 'When you\'re part designer, part PM, part everything — navigating the blur between roles.', count: 18, access: 'pro', color: '#7C3AED',
+  { id: 'multiplehats', name: 'Managing Multiple Hats', description: 'When you\'re part designer, part PM, part everything — navigating the blur between roles.', count: 18, access: 'pro', comingSoon: true, color: '#7C3AED',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="4" y="18" width="17" height="9" rx="2" fill="#FEE2E2" stroke="#D62828" stroke-width="1.5"/><path d="M7 18v-3a4.5 4.5 0 0 1 9 0v3" stroke="#D62828" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="23" y="18" width="17" height="9" rx="2" fill="#EBF0FA" stroke="#1550A2" stroke-width="1.5"/><path d="M26 18v-3a4.5 4.5 0 0 1 9 0v3" stroke="#1550A2" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="22" cy="36" r="3.5" fill="#DDD"/><path d="M15 43c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="#DDD" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>` },
-  { id: 'enterprise', name: 'Enterprise Dynamics', description: 'Navigate large org complexity — stakeholder management, alignment, and politics.', count: 20, access: 'pro', color: '#9B59B6',
+  { id: 'enterprise', name: 'Enterprise Dynamics', description: 'Navigate large org complexity — stakeholder management, alignment, and politics.', count: 20, access: 'pro', comingSoon: true, color: '#9B59B6',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="16" y="3" width="12" height="9" rx="2.5" fill="#F3E8FF" stroke="#9B59B6" stroke-width="1.5"/><rect x="3" y="28" width="12" height="9" rx="2.5" fill="#F3E8FF" stroke="#9B59B6" stroke-width="1.5"/><rect x="29" y="28" width="12" height="9" rx="2.5" fill="#F3E8FF" stroke="#9B59B6" stroke-width="1.5"/><path d="M22 12v9" stroke="#9B59B6" stroke-width="1.5" stroke-linecap="round"/><path d="M22 21l-13 7" stroke="#9B59B6" stroke-width="1.5" stroke-linecap="round"/><path d="M22 21l13 7" stroke="#9B59B6" stroke-width="1.5" stroke-linecap="round"/></svg>` },
-  { id: 'scaling', name: 'Scaling Teams', description: 'For when headcount doubles faster than process — delegation, culture, and growing pains.', count: 20, access: 'pro', color: '#16A085',
+  { id: 'scaling', name: 'Scaling Teams', description: 'For when headcount doubles faster than process — delegation, culture, and growing pains.', count: 20, access: 'pro', comingSoon: true, color: '#16A085',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><path d="M6 40h32" stroke="#16A085" stroke-width="1.5" stroke-linecap="round"/><rect x="7" y="28" width="7" height="12" rx="2" fill="#16A085" opacity="0.3"/><rect x="18" y="20" width="7" height="20" rx="2" fill="#16A085" opacity="0.6"/><rect x="29" y="10" width="7" height="30" rx="2" fill="#16A085"/><path d="M9 24l11-8 12-10" stroke="#16A085" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/></svg>` },
-  { id: 'march2026', name: 'March 2026 Drop', description: 'Fresh scenarios from real team stories. New drops every month for Pro members.', count: 15, access: 'pro', isNew: true, color: 'var(--black)',
+  { id: 'march2026', name: 'March 2026 Drop', description: 'Fresh scenarios from real team stories. New drops every month for Pro members.', count: 15, access: 'pro', isNew: true, comingSoon: true, color: 'var(--black)',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="5" y="9" width="34" height="30" rx="3" fill="#F5F5F3" stroke="#111" stroke-width="1.5"/><path d="M5 17h34" stroke="#111" stroke-width="1.5"/><rect x="5" y="9" width="34" height="8" rx="3" fill="#111"/><rect x="5" y="13" width="34" height="4" fill="#111"/><path d="M14 6v6M30 6v6" stroke="#111" stroke-width="2" stroke-linecap="round"/><path d="M22 24l1.2 2.5 2.8.4-2 2 .5 2.8L22 30.4l-2.5 1.3.5-2.8-2-2 2.8-.4L22 24z" fill="#111" opacity="0.65"/></svg>` },
   { id: 'overyourshoulder', name: 'Over Your Shoulder', description: 'Dealing with a micromanaging PM — control, pushback, and protecting your work without burning the relationship.', count: 11, access: 'pro', color: '#C2410C',
     illus: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="14" r="7" fill="#FEE9DF" stroke="#C2410C" stroke-width="1.5"/><path d="M8 38c0-7.7 6.3-14 14-14s14 6.3 14 14" stroke="#C2410C" stroke-width="1.5" stroke-linecap="round" fill="none"/><circle cx="34" cy="12" r="5" fill="#FEE9DF" stroke="#C2410C" stroke-width="1.5"/><path d="M37 22c2.5 1.5 4 4.2 4 7" stroke="#C2410C" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>` },
@@ -3639,10 +3644,11 @@ function renderDashboardV2() {
     const badges = [];
     if (isProCollection) badges.push(`<span class="coll-badge-pro">PRO</span>`);
     if (c.isNew) badges.push(`<span class="coll-badge-new">NEW</span>`);
+    if (c.comingSoon) badges.push(`<span class="coll-badge-soon">COMING SOON</span>`);
 
     const lockIcon = locked ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#CCC"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>` : '';
 
-    const accessibleCount = locked ? 0
+    const accessibleCount = (locked || c.comingSoon) ? 0
       : (!loggedIn && !isProCollection) ? FREE_PREVIEW_COUNT
       : (!isPro && !isProCollection) ? dripUnlocked(poolSize)
       : c.count;
@@ -3655,19 +3661,19 @@ function renderDashboardV2() {
       return `<div class="coll-sq sq-${state}"></div>`;
     }).join('');
 
-    const clickHandler = locked ? `showUpgradePrompt('${c.id}')` : `openCollection('${c.id}')`;
+    const clickHandler = c.comingSoon ? '' : (locked ? `showUpgradePrompt('${c.id}')` : `openCollection('${c.id}')`);
     const povBadgeMap = { design: ['design','Design'], pm: ['pm','PM'], both: ['both','Design · PM'] };
     const povEntry = povBadgeMap[povContext];
     const povBadge = povEntry ? `<div class="coll-pov-badge ${povEntry[0]}">${povEntry[1]}</div>` : '';
 
-    return `<div class="coll-card${locked ? ' locked' : ''}" onclick="${clickHandler}">
+    return `<div class="coll-card${locked ? ' locked' : ''}${c.comingSoon ? ' coming-soon' : ''}" ${clickHandler ? `onclick="${clickHandler}"` : ''}>
       <div class="coll-illus">${c.illus || ''}</div>
       ${povBadge}
       <div class="coll-name">${c.name}</div>
       <div class="coll-desc">${c.description}</div>
       <div class="coll-sq-grid">${squares}</div>
       <div class="coll-footer" style="margin-top:14px">
-        <span class="coll-count">${countLabel}</span>
+        <span class="coll-count">${c.comingSoon ? `${c.count} scenarios` : countLabel}</span>
         <div style="display:flex;align-items:center;gap:6px">${lockIcon}${badges.join('')}</div>
       </div>
       ${progressHtml}
