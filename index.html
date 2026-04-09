@@ -73,8 +73,8 @@
   .quiz-header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
   .score-chip { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 13px; background: var(--yellow); padding: 5px 14px; color: var(--black); white-space: nowrap; border-radius: 10px; letter-spacing: 0.04em; }
   .quiz-body { flex: 1; display: grid; grid-template-columns: 1fr 220px; overflow: hidden; }
-  .quiz-content { display: grid; grid-template-columns: minmax(320px, 480px) 1fr; overflow-y: auto; -webkit-overflow-scrolling: touch; min-width: 0; align-items: start; }
-  .scenario-panel { padding: 40px 40px 40px 48px; display: flex; flex-direction: column; gap: 20px; position: relative; background: var(--bg); flex-shrink: 0; border-right: var(--border); overflow-y: auto; }
+  .quiz-content { display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; min-width: 0; align-items: center; }
+  .scenario-panel { padding: 40px 48px; display: flex; flex-direction: column; gap: 20px; position: relative; background: var(--bg); flex-shrink: 0; width: 100%; max-width: 680px; box-sizing: border-box; }
   .scenario-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 6px; margin-bottom: 4px; }
   .scenario-q-counter { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; line-height: 1; color: var(--black); }
   .scenario-q-sep { color: #CCC; font-size: 14px; font-weight: 400; }
@@ -90,7 +90,7 @@
   .pm-avatar { width: 20px; height: 20px; background: rgba(214,40,40,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
   .pm-text { padding: 18px 20px; font-size: 16px; font-weight: 500; line-height: 1.6; font-style: italic; background: var(--white); }
   .scenario-question { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 30px; line-height: 1.08; letter-spacing: 0.01em; border-top: var(--border-light); padding-top: 20px; margin-top: 4px; }
-  .options-panel { padding: 40px 40px 48px; display: flex; flex-direction: column; gap: 0; background: var(--white); flex-shrink: 0; overflow-y: auto; max-width: 640px; }
+  .options-panel { padding: 32px 48px 48px; display: flex; flex-direction: column; gap: 0; background: var(--white); flex-shrink: 0; width: 100%; max-width: 680px; box-sizing: border-box; }
 
   /* ---- RIGHT NAV PANEL ---- */
   .quiz-nav-panel { display: flex; flex-direction: column; overflow: hidden; border-left: var(--border); background: var(--white); flex-shrink: 0; }
@@ -125,7 +125,7 @@
   .nav-legend .legend-dot.correct { background: var(--green); border-color: var(--green); }
   .nav-legend .legend-dot.wrong { background: var(--red); border-color: var(--red); }
   .nav-legend .legend-dot.unanswered { background: transparent; border: 1.5px solid #D4D0C4; }
-  .options-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-bottom: 16px; padding-top: 0; border-top: none; }
+  .options-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-bottom: 16px; padding-top: 24px; border-top: var(--border); }
   .option-btn { border: none; padding: 14px 0; background: transparent; cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.5; transition: background 0.12s; display: flex; gap: 16px; align-items: flex-start; animation: slideUp 0.3s ease both; margin: 0 -40px; padding-left: 40px; padding-right: 40px; border-radius: 8px; }
   .option-btn:last-of-type { }
   @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -876,10 +876,10 @@
     .filter-dropdown { left: 0; }
     #screen-quiz { min-height: 100vh; height: auto; }
     .quiz-body { grid-template-columns: 1fr; overflow: visible; }
-    .quiz-content { grid-template-columns: 1fr; overflow-y: visible; }
+    .quiz-content { overflow-y: visible; }
     .quiz-nav-panel { display: none; }
-    .scenario-panel { border-right: none; border-bottom: var(--border); padding: 24px 20px; gap: 16px; overflow-y: visible; }
-    .options-panel { padding: 20px; gap: 0; overflow-y: visible; }
+    .scenario-panel { padding: 24px 20px; gap: 16px; }
+    .options-panel { padding: 20px; gap: 0; }
     .scenario-q-num { display: none; }
     .scenario-context { font-size: 12px; padding: 12px 14px; }
     .pm-text { font-size: 15px; padding: 14px; }
