@@ -2927,26 +2927,41 @@ const PM_CATEGORIES = [
 ];
 
 function updateNavFilters(role) {
-  const cats = role === 'pm' ? PM_CATEGORIES : DESIGNER_CATEGORIES;
+  // Derive categories from the current questions pool (pathway-scoped)
+  // Fall back to hardcoded lists only if questions aren't loaded yet
+  const sourcePool = role === 'pm' ? PM_CATEGORIES : DESIGNER_CATEGORIES;
+  const poolToUse = questions && questions.length > 0 ? questions : [];
+  const uniqueCats = poolToUse.length > 0
+    ? [...new Map(poolToUse.map(s => [s.category, s.category])).keys()]
+        .map(val => ({ value: val, label: val.replace(/^[\p{Emoji}\s]+/u, '').trim() }))
+    : sourcePool;
 
-  // Rebuild sidebar nav filters
+  // If only one category, hide the filter UI entirely
+  const showFilters = uniqueCats.length > 1;
+
+  const filterBar = document.getElementById('filter-bar');
+  if (filterBar) filterBar.style.display = showFilters ? '' : 'none';
+
   const drawerFilterEl = document.getElementById('drawer-filter');
   if (drawerFilterEl) {
-    drawerFilterEl.innerHTML = '<button class="nav-filter-btn active" onclick="setDrawerFilter(\'all\', this)">All</button>';
-    cats.forEach(cat => {
-      const btn = document.createElement('button');
-      btn.className = 'nav-filter-btn';
-      btn.textContent = cat.label;
-      btn.onclick = function() { setDrawerFilter(cat.value, this); };
-      drawerFilterEl.appendChild(btn);
-    });
+    drawerFilterEl.style.display = showFilters ? '' : 'none';
+    if (showFilters) {
+      drawerFilterEl.innerHTML = '<button class="nav-filter-btn active" onclick="setDrawerFilter(\'all\', this)">All</button>';
+      uniqueCats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'nav-filter-btn';
+        btn.textContent = cat.label;
+        btn.onclick = function() { setDrawerFilter(cat.value, this); };
+        drawerFilterEl.appendChild(btn);
+      });
+    }
   }
 
   // Rebuild top filter-bar dropdown
   const filterDropdown = document.getElementById('filter-dropdown');
-  if (filterDropdown) {
+  if (filterDropdown && showFilters) {
     filterDropdown.innerHTML = '<button class="filter-btn active" onclick="setFilter(\'all\', this)">All Categories</button>';
-    cats.forEach(cat => {
+    uniqueCats.forEach(cat => {
       const btn = document.createElement('button');
       btn.className = 'filter-btn';
       btn.textContent = cat.label;
@@ -2957,9 +2972,9 @@ function updateNavFilters(role) {
 
   // Rebuild mobile select
   const filterSelectMobile = document.getElementById('filter-select-mobile');
-  if (filterSelectMobile) {
+  if (filterSelectMobile && showFilters) {
     filterSelectMobile.innerHTML = '<option value="all">All Categories</option>';
-    cats.forEach(cat => {
+    uniqueCats.forEach(cat => {
       const opt = document.createElement('option');
       opt.value = cat.value;
       opt.textContent = cat.label;
@@ -3013,7 +3028,8 @@ function startQuiz(filterCat) {
   const filtered = activeFilter === 'all' ? unlockedPool : unlockedPool.filter(s => s.category === activeFilter);
   questions = filtered; // ordered by order_num — no shuffle, preserves drip progression
   currentIndex = 0; score = 0; answered = false; categoryScores = {}; questionResults = {};
-  sourcePool.forEach(s => { if (!categoryScores[s.category]) categoryScores[s.category] = { correct: 0, total: 0 }; });
+  pathwayPool.forEach(s => { if (!categoryScores[s.category]) categoryScores[s.category] = { correct: 0, total: 0 }; });
+  updateNavFilters(currentRole);
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   const activeBtn = [...document.querySelectorAll('.filter-btn')].find(b => {
     const match = b.getAttribute('onclick').match(/'([^']+)'/);
