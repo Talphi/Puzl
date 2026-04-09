@@ -1020,57 +1020,57 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
 
 body.dark-mode {
   /* ── Brand ── */
-  --black:  #F2F2F2;
-  --white:  #1A1A1A;
-  --bg:     #0D0D0D;
+  --black:  #FFFFFF;
+  --white:  #2C2C2E;
+  --bg:     #1C1C1E;
   --yellow: #F2C200;
   --red:    #FF3366;
   --green:  #34D399;
   --blue:   #5B9BF5;
 
   /* ── Text hierarchy ── */
-  --text-primary:   #F2F2F2;
-  --text-secondary: #AAAAAA;
-  --text-muted:     #666666;
-  --text-faint:     #444444;
+  --text-primary:   #FFFFFF;
+  --text-secondary: #8E8E93;
+  --text-muted:     #636366;
+  --text-faint:     #48484A;
 
   /* ── Surface hierarchy ── */
-  --surface-page:   #0D0D0D;
-  --surface-card:   #1A1A1A;
-  --surface-raised: #222222;
-  --surface-inset:  #2A2A2A;
+  --surface-page:   #1C1C1E;
+  --surface-card:   #2C2C2E;
+  --surface-raised: #3A3A3C;
+  --surface-inset:  #3A3A3C;
 
   /* ── Header ── */
-  --header-bg:  rgba(13,13,13,0.88);
-  --header-sep: rgba(255,255,255,0.12);
+  --header-bg:  rgba(28,28,30,0.92);
+  --header-sep: rgba(255,255,255,0.10);
 
   /* ── Quiz — scenario ── */
-  --pm-says-label-bg:  rgba(255,51,102,0.10);
-  --pm-says-avatar-bg: rgba(255,51,102,0.14);
-  --context-bg:        rgba(91,155,245,0.08);
+  --pm-says-label-bg:  rgba(255,51,102,0.12);
+  --pm-says-avatar-bg: rgba(255,51,102,0.16);
+  --context-bg:        rgba(91,155,245,0.10);
   --context-border:    #5B9BF5;
 
   /* ── Quiz — options ── */
-  --option-letter-bg:    #333333;
-  --option-letter-color: #AAAAAA;
-  --option-hover-bg:     #242424;
-  --option-correct-bg:   rgba(52,211,153,0.10);
-  --option-wrong-bg:     rgba(255,51,102,0.10);
-  --option-reveal-bg:    rgba(91,155,245,0.10);
+  --option-letter-bg:    #3A3A3C;
+  --option-letter-color: #8E8E93;
+  --option-hover-bg:     #3A3A3C;
+  --option-correct-bg:   rgba(52,211,153,0.12);
+  --option-wrong-bg:     rgba(255,51,102,0.12);
+  --option-reveal-bg:    rgba(91,155,245,0.12);
 
   /* ── Difficulty tags ── */
-  --tag-easy-bg:      rgba(52,211,153,0.10);
+  --tag-easy-bg:      rgba(52,211,153,0.12);
   --tag-easy-color:   #34D399;
-  --tag-medium-bg:    rgba(242,194,0,0.10);
+  --tag-medium-bg:    rgba(242,194,0,0.12);
   --tag-medium-color: #F2C200;
-  --tag-hard-bg:      rgba(255,51,102,0.10);
+  --tag-hard-bg:      rgba(255,51,102,0.12);
   --tag-hard-color:   #FF3366;
 
   /* ── Nav panel ── */
-  --nav-dot-border:        rgba(255,255,255,0.12);
-  --nav-dot-color:         rgba(242,242,242,0.35);
+  --nav-dot-border:        rgba(255,255,255,0.14);
+  --nav-dot-color:         #8E8E93;
   --nav-dot-locked-border: rgba(255,255,255,0.07);
-  --nav-dot-locked-color:  rgba(242,242,242,0.20);
+  --nav-dot-locked-color:  #48484A;
   --nav-unlock-color:      #F2C200;
   --nav-unlock-line:       rgba(242,194,0,0.40);
 
@@ -1079,11 +1079,11 @@ body.dark-mode {
   --border-light: 1px solid rgba(255,255,255,0.04);
 
   /* ── Shadows ── */
-  --shadow:    0 1px 3px rgba(0,0,0,0.60);
-  --shadow-lg: 0 4px 20px rgba(0,0,0,0.80);
+  --shadow:    0 1px 4px rgba(0,0,0,0.40);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.60);
 
   /* ── Interactive ── */
-  --hover-bg: #242424;
+  --hover-bg: #3A3A3C;
 }
 
 /* Body base */

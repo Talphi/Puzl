@@ -945,7 +945,8 @@
   .dark-toggle:hover { background: var(--hover-bg); border-color: #AAA; }
 
   /* ---- DARK MODE — product overrides ---- */
-  body.dark-mode #screen-dashboard { background-color: var(--surface-page); background-image: radial-gradient(circle, var(--surface-raised) 1px, transparent 1px); }
+  body.dark-mode #screen-dashboard { background-color: var(--surface-page); background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px); }
+  body.dark-mode .coll-illus svg { filter: brightness(0.5) saturate(0.4); }
   body.dark-mode .dv2-nav { background: var(--header-bg); }
   body.dark-mode .dv2-action-btn:hover { background: var(--hover-bg); }
   body.dark-mode #dv2-username { color: var(--text-muted); }
