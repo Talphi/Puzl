@@ -3362,14 +3362,14 @@ function renderDrawer() {
   grid.innerHTML = '';
   const fullPool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
   const unlockedCount = getUnlockedCount();
-  const realTotal = isLoggedIn ? questions.length : fullPool.length;
-  const displayTotal = currentRole === 'pm' ? 200 : fullPool.length;
+  const realTotal = questions.length;
+  const displayTotal = questions.length;
 
   const baseDaysLeft = getDaysUntilNextUnlock();
   const newlyUnlocked = getNewlyUnlockedRange();
   for (let i = 0; i < displayTotal; i++) {
-    const isShell = i >= fullPool.length;
-    const q = isShell ? null : (i < questions.length ? questions[i] : fullPool[i]);
+    const isShell = i >= questions.length;
+    const q = isShell ? null : questions[i];
     const isGuestLocked = !isLoggedIn && i >= FREE_LIMIT;
     const isTimeLocked  = isLoggedIn && i >= unlockedCount;
     const isLocked = isShell || isGuestLocked || isTimeLocked;
