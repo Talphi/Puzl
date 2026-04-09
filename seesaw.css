@@ -1030,9 +1030,9 @@ body.dark-mode {
 
   /* ── Text hierarchy ── */
   --text-primary:   #F2F2F2;
-  --text-secondary: rgba(242,242,242,0.55);
-  --text-muted:     rgba(242,242,242,0.38);
-  --text-faint:     rgba(242,242,242,0.22);
+  --text-secondary: #AAAAAA;
+  --text-muted:     #666666;
+  --text-faint:     #444444;
 
   /* ── Surface hierarchy ── */
   --surface-page:   #0D0D0D;
@@ -1051,8 +1051,8 @@ body.dark-mode {
   --context-border:    #5B9BF5;
 
   /* ── Quiz — options ── */
-  --option-letter-bg:    #2A2A2A;
-  --option-letter-color: rgba(242,242,242,0.55);
+  --option-letter-bg:    #333333;
+  --option-letter-color: #AAAAAA;
   --option-hover-bg:     #242424;
   --option-correct-bg:   rgba(52,211,153,0.10);
   --option-wrong-bg:     rgba(255,51,102,0.10);
