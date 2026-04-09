@@ -17,12 +17,18 @@
 :root {
   /* Colour */
   --black:  #111111;
-  --white:  #FFFFFF;
-  --bg:     #FFFFFF;
+  --white:  #FAFAF8;   /* warm off-white — surfaces, cards, inputs */
+  --bg:     #F5F4EF;   /* slightly deeper — page background         */
   --yellow: #F2C200;
   --red:    #D62828;
   --green:  #2B7A44;
   --blue:   #1550A2;
+
+  /* On-dark colour variants — AA-compliant on #111111 */
+  --red-on-dark:    #FF3366;   /* 4.72:1 on #111 — hot pink-red */
+  --blue-on-dark:   #5B9BF5;   /* 6.70:1 on #111 */
+  --green-on-dark:  #34D399;   /* 9.82:1 on #111 */
+  --yellow-on-dark: #F2C200;   /* 11.23:1 on #111 */
 
   /* Borders */
   --border:       1px solid #E4E4E4;
@@ -79,7 +85,7 @@ body {
 
 /* On dark backgrounds */
 .ss-wordmark--on-dark .wm-de   { color: var(--white); }
-.ss-wordmark--on-dark .wm-sep  { color: var(--white); opacity: 0.55; }
+.ss-wordmark--on-dark .wm-sep  { color: var(--white); opacity: 0.75; }
 .ss-wordmark--on-dark .wm-puzl { color: var(--white); }
 
 /* PM mode: Puzl shifts to blue */
@@ -963,3 +969,86 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
   .waitlist-row { grid-template-columns: 1fr; gap: 0; }
   .waitlist-box { padding: 32px 24px; }
 }
+
+
+/* ============================================================
+   DARK MODE
+   Activate with body.dark-mode. Overrides all design tokens
+   and patches hardcoded colours across every component.
+   Toggle via JS: document.body.classList.toggle('dark-mode')
+   ============================================================ */
+
+body.dark-mode {
+  /* Core tokens */
+  --black:        #F2F2F2;          /* text — cool bright white    */
+  --white:        #1A1A1A;          /* surfaces                    */
+  --bg:           #0D0D0D;          /* page background — near black */
+
+  /* Brand — unchanged, all pop on near-black */
+  --yellow:       #F2C200;
+  --red:          #FF3366;
+  --green:        #34D399;
+  --blue:         #5B9BF5;
+
+  /* Borders — barely-there */
+  --border:       1px solid rgba(255,255,255,0.07);
+  --border-light: 1px solid rgba(255,255,255,0.04);
+
+  /* Shadows */
+  --shadow:    0 1px 3px rgba(0,0,0,0.60);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.80);
+
+  /* Interactive surfaces */
+  --hover-bg: #242424;
+}
+
+/* Body base */
+body.dark-mode { background: var(--bg); color: var(--black); }
+
+/* ── Dividers ── */
+body.dark-mode .ss-divider::before,
+body.dark-mode .ss-divider::after { background: rgba(255,255,255,0.07); }
+
+/* ── Difficulty tags ── */
+body.dark-mode .ss-tag--easy   { background: rgba(52,211,153,0.12); color: #34D399; }
+body.dark-mode .ss-tag--medium { background: rgba(242,194,0,0.12);  color: #F2C200; }
+body.dark-mode .ss-tag--hard   { background: rgba(255,51,102,0.12); color: #FF3366; }
+
+/* ── Error / success alerts ── */
+body.dark-mode .ss-error        { background: rgba(255,51,102,0.10); }
+body.dark-mode .waitlist-error  { background: rgba(255,51,102,0.10); }
+body.dark-mode .auth-success    { background: rgba(52,211,153,0.10); color: #34D399; border-left-color: #34D399; }
+
+/* ── Inputs & selects — focus ring ── */
+body.dark-mode .ss-input:focus,
+body.dark-mode .ss-select:focus { outline-color: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.20); }
+
+/* ── Select arrow — light SVG on dark ── */
+body.dark-mode .ss-select,
+body.dark-mode .waitlist-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23F2F2F2' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+}
+
+/* ── Login overlay ── */
+body.dark-mode .login-box            { box-shadow: 0 24px 60px rgba(0,0,0,0.70); }
+body.dark-mode .login-input          { border-color: rgba(255,255,255,0.10); }
+body.dark-mode .login-input:focus    { border-color: rgba(255,255,255,0.25); outline-color: rgba(255,255,255,0.06); }
+body.dark-mode .login-divider::before,
+body.dark-mode .login-divider::after { background: rgba(255,255,255,0.07); }
+body.dark-mode .btn-google-login             { border-color: rgba(255,255,255,0.10); }
+body.dark-mode .btn-google-login:hover       { background: #242424; border-color: rgba(255,255,255,0.20); }
+
+/* ── Onboarding ── */
+body.dark-mode .onb-tile              { border-color: rgba(255,255,255,0.08); }
+body.dark-mode .onb-tile:hover        { border-color: rgba(255,255,255,0.20); }
+body.dark-mode .onb-tile.selected     { border-color: var(--black); background: #242424; }
+body.dark-mode .onb-chip              { border-color: rgba(255,255,255,0.08); }
+body.dark-mode .onb-chip:hover        { border-color: rgba(255,255,255,0.20); }
+body.dark-mode .onb-chip.selected     { border-color: var(--black); background: #242424; font-weight: 700; }
+body.dark-mode .onb-dot               { background: rgba(255,255,255,0.15); }
+body.dark-mode .onb-dot.active        { background: var(--black); width: 20px; }
+
+/* ── PM mode in dark ── */
+body.dark-mode.pm-mode .ss-wordmark .wm-puzl  { color: var(--blue); }
+body.dark-mode.pm-mode .ss-display .accent     { color: var(--blue); }
+body.dark-mode.pm-mode .ss-btn:hover           { background: var(--blue); }
