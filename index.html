@@ -3165,7 +3165,7 @@ function renderQuestion() {
   const allDone = isLoggedIn && getUnlockedCount() >= pool.length;
   btnNext.textContent = (isLastQ && allDone) ? 'Finish!' : 'NEXT SCENARIO \u2192';
   const letters = ['A', 'B', 'C', 'D'];
-  const opts = shuffle(q.options.map((o, i) => ({ ...o, origIndex: i })));
+  const opts = q.options.map((o, i) => ({ ...o, origIndex: i }));
   const feedbackBox = document.getElementById('feedback-box');
   opts.forEach((opt, i) => {
     const btn = document.createElement('button');
