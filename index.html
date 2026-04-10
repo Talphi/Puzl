@@ -1098,6 +1098,10 @@
   .settings-plan-pill { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
   .settings-plan-pill.free { background: var(--surface-card); color: var(--text-muted); border: 1.5px solid #D8D4CC; }
   .settings-plan-pill.pro { background: var(--yellow); color: var(--black); }
+  .settings-upgrade-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #FFF9E6; border: 1.5px solid rgba(242,194,0,0.4); border-radius: 10px; padding: 12px 14px; }
+  .settings-upgrade-text { font-size: 12px; font-weight: 600; color: #7A5800; line-height: 1.45; }
+  .settings-upgrade-btn { flex-shrink: 0; background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 8px 14px; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+  .settings-upgrade-btn:hover { background: var(--red); }
   .settings-pw-btn { background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-secondary); padding: 0; text-align: left; transition: color 0.12s; text-decoration: underline; text-underline-offset: 2px; }
   .settings-pw-btn:hover { color: var(--black); }
   .settings-foot { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 10px; }
@@ -1757,6 +1761,10 @@
       <div class="settings-plan-row">
         <span class="settings-plan-label">Current plan</span>
         <span class="settings-plan-pill free" id="settings-plan-pill">Free</span>
+      </div>
+      <div class="settings-upgrade-row" id="settings-upgrade-row" style="display:none">
+        <div class="settings-upgrade-text">Unlock all decks and skip the drip unlock.</div>
+        <button class="settings-upgrade-btn" onclick="closeSettings();showUpgradePrompt()">Upgrade to Pro</button>
       </div>
     </div>
     <div class="settings-foot">
@@ -4023,6 +4031,8 @@ function renderDashboardV2() {
     const plan = currentProfile?.plan || 'free';
     planPill.textContent = plan === 'pro' ? 'Pro' : 'Free';
     planPill.className = 'settings-plan-pill ' + plan;
+    const upgradeRow = document.getElementById('settings-upgrade-row');
+    if (upgradeRow) upgradeRow.style.display = (plan === 'pro' || currentProfile?.is_admin) ? 'none' : 'flex';
     _settingsRole = currentProfile?.onb_role || null;
     document.querySelectorAll('.settings-rpill').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.role === _settingsRole);
