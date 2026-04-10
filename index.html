@@ -1102,6 +1102,42 @@
   .settings-upgrade-text { font-size: 12px; font-weight: 600; color: #7A5800; line-height: 1.45; }
   .settings-upgrade-btn { flex-shrink: 0; background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 8px 14px; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
   .settings-upgrade-btn:hover { background: var(--red); }
+
+  /* ---- PLANS COMPARISON MODAL ---- */
+  .plans-backdrop { display: none; position: fixed; inset: 0; z-index: 3100; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px; }
+  .plans-backdrop.show { display: flex; }
+  .plans-modal { background: var(--white); border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.20); overflow: hidden; }
+  .plans-head { display: flex; align-items: center; justify-content: space-between; padding: 24px 24px 0; }
+  .plans-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 17px; color: var(--black); }
+  .plans-x { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 17px; line-height: 1; padding: 4px 6px; border-radius: 6px; transition: color 0.12s; }
+  .plans-x:hover { color: var(--black); }
+  .plans-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px 24px; }
+  .plans-col { border-radius: 12px; overflow: hidden; }
+  .plans-col-head { padding: 14px 16px; }
+  .plans-col.free .plans-col-head { background: var(--surface-inset); }
+  .plans-col.pro .plans-col-head { background: var(--black); }
+  .plans-col-name { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .plans-col.free .plans-col-name { color: var(--text-muted); }
+  .plans-col.pro .plans-col-name { color: var(--yellow); }
+  .plans-col-price { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; margin-top: 4px; }
+  .plans-col.free .plans-col-price { color: var(--black); }
+  .plans-col.pro .plans-col-price { color: var(--white); }
+  .plans-col-sub { font-size: 11px; font-weight: 500; margin-top: 2px; }
+  .plans-col.free .plans-col-sub { color: var(--text-faint); }
+  .plans-col.pro .plans-col-sub { color: rgba(255,255,255,0.5); }
+  .plans-features { padding: 12px 16px; display: flex; flex-direction: column; gap: 9px; }
+  .plans-col.free .plans-features { background: #F5F4EF; }
+  .plans-col.pro .plans-features { background: #1A1A1A; }
+  .plans-feat { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; line-height: 1.45; font-weight: 500; }
+  .plans-col.free .plans-feat { color: var(--text-secondary); }
+  .plans-col.pro .plans-feat { color: rgba(255,255,255,0.85); }
+  .plans-feat-icon { flex-shrink: 0; font-size: 11px; margin-top: 1px; }
+  .plans-col.free .plans-feat-icon { color: var(--text-faint); }
+  .plans-col.pro .plans-feat-icon { color: var(--yellow); }
+  .plans-foot { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .plans-cta { width: 100%; background: var(--black); color: var(--white); border: none; border-radius: 10px; padding: 14px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+  .plans-cta:hover { background: var(--red); }
+  .plans-note { font-size: 11px; color: var(--text-faint); text-align: center; font-weight: 500; }
   .settings-pw-btn { background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-secondary); padding: 0; text-align: left; transition: color 0.12s; text-decoration: underline; text-underline-offset: 2px; }
   .settings-pw-btn:hover { color: var(--black); }
   .settings-foot { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 10px; }
@@ -1731,6 +1767,49 @@
   </div>
 </div>
 
+<!-- PLANS COMPARISON MODAL -->
+<div class="plans-backdrop" id="plans-backdrop" onclick="if(event.target===this)closePlansModal()">
+  <div class="plans-modal">
+    <div class="plans-head">
+      <div class="plans-title">Compare plans</div>
+      <button class="plans-x" onclick="closePlansModal()">✕</button>
+    </div>
+    <div class="plans-cols">
+      <div class="plans-col free">
+        <div class="plans-col-head">
+          <div class="plans-col-name">Free</div>
+          <div class="plans-col-price">₹0</div>
+          <div class="plans-col-sub">Always free</div>
+        </div>
+        <div class="plans-features">
+          <div class="plans-feat"><span class="plans-feat-icon">✓</span>5 scenarios without an account</div>
+          <div class="plans-feat"><span class="plans-feat-icon">✓</span>Designer & PM decks</div>
+          <div class="plans-feat"><span class="plans-feat-icon">✓</span>Scenarios unlock gradually over time</div>
+          <div class="plans-feat"><span class="plans-feat-icon">✓</span>Score tracking & results breakdown</div>
+        </div>
+      </div>
+      <div class="plans-col pro">
+        <div class="plans-col-head">
+          <div class="plans-col-name">Pro</div>
+          <div class="plans-col-price">Coming soon</div>
+          <div class="plans-col-sub">One price, everything included</div>
+        </div>
+        <div class="plans-features">
+          <div class="plans-feat"><span class="plans-feat-icon">✦</span>Everything in Free</div>
+          <div class="plans-feat"><span class="plans-feat-icon">✦</span>Instant access to all scenarios</div>
+          <div class="plans-feat"><span class="plans-feat-icon">✦</span>Over Your Shoulder deck</div>
+          <div class="plans-feat"><span class="plans-feat-icon">✦</span>All future decks as they ship</div>
+          <div class="plans-feat"><span class="plans-feat-icon">✦</span>No waiting</div>
+        </div>
+      </div>
+    </div>
+    <div class="plans-foot">
+      <button class="plans-cta" onclick="closePlansModal();showUpgradePrompt()">Upgrade to Pro →</button>
+      <div class="plans-note">Pricing will be announced soon. Join the waitlist to get early access.</div>
+    </div>
+  </div>
+</div>
+
 <!-- SETTINGS MODAL -->
 <div class="settings-backdrop" id="settings-backdrop" onclick="if(event.target===this)closeSettings()">
   <div class="settings-modal">
@@ -1764,7 +1843,7 @@
       </div>
       <div class="settings-upgrade-row" id="settings-upgrade-row" style="display:none">
         <div class="settings-upgrade-text">Get instant access to every deck and scenario — no waiting.</div>
-        <button class="settings-upgrade-btn" onclick="closeSettings();showUpgradePrompt()">Upgrade to Pro</button>
+        <button class="settings-upgrade-btn" onclick="openPlansModal()">Learn more</button>
       </div>
     </div>
     <div class="settings-foot">
@@ -4080,6 +4159,13 @@ function renderDashboardV2() {
     }
   }
 
+  function openPlansModal() {
+    document.getElementById('plans-backdrop').classList.add('show');
+  }
+  function closePlansModal() {
+    document.getElementById('plans-backdrop').classList.remove('show');
+  }
+
   async function sendPasswordReset(e) {
     if (!currentUser?.email) return;
     const btn = e.currentTarget;
@@ -4168,6 +4254,8 @@ function renderDashboardV2() {
   window.saveSettings       = saveSettings;
   window.sendPasswordReset  = sendPasswordReset;
   window.selectSettingsRole = selectSettingsRole;
+  window.openPlansModal     = openPlansModal;
+  window.closePlansModal    = closePlansModal;
 
   let html = '';
 
