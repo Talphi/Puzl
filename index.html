@@ -60,6 +60,19 @@
   .quiz-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 17px; color: var(--black); letter-spacing: 0.01em; line-height: 1; }
   .quiz-header-sep { color: var(--header-sep); font-size: 14px; font-weight: 400; line-height: 1; user-select: none; }
   .quiz-pack-name { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; line-height: 1; }
+  .quiz-info-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); padding: 4px; display: flex; align-items: center; transition: color 0.12s; flex-shrink: 0; }
+  .quiz-info-btn:hover { color: var(--black); }
+  /* Deck info modal */
+  .deck-info-backdrop { display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px; }
+  .deck-info-backdrop.show { display: flex; }
+  .deck-info-modal { background: var(--white); border-radius: 20px; width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.18); padding: 32px 28px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; position: relative; }
+  .deck-info-close { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 16px; padding: 4px 6px; border-radius: 6px; transition: color 0.12s; }
+  .deck-info-close:hover { color: var(--black); }
+  .deck-info-illus { line-height: 0; margin-bottom: 4px; }
+  .deck-info-name { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--black); line-height: 1.2; }
+  .deck-info-desc { font-size: 14px; line-height: 1.65; color: var(--text-secondary); max-width: 300px; }
+  .deck-info-ok { margin-top: 8px; background: var(--black); color: var(--white); border: none; border-radius: 10px; padding: 11px 28px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+  .deck-info-ok:hover { background: var(--red); }
   .quiz-upgrade-btn { font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; background: var(--black); color: var(--white); border: none; border-radius: 8px; padding: 7px 14px; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; letter-spacing: 0.02em; }
   .quiz-upgrade-btn:hover { opacity: 0.8; }
   .quiz-auth-btns { display: flex; align-items: center; gap: 8px; }
@@ -1767,6 +1780,17 @@
   </div>
 </div>
 
+<!-- DECK INFO MODAL -->
+<div class="deck-info-backdrop" id="deck-info-backdrop" onclick="if(event.target===this)closeDeckInfo()">
+  <div class="deck-info-modal">
+    <button class="deck-info-close" onclick="closeDeckInfo()">✕</button>
+    <div class="deck-info-illus" id="deck-info-illus"></div>
+    <div class="deck-info-name" id="deck-info-name"></div>
+    <div class="deck-info-desc" id="deck-info-desc"></div>
+    <button class="deck-info-ok" onclick="closeDeckInfo()">Got it</button>
+  </div>
+</div>
+
 <!-- PLANS COMPARISON MODAL -->
 <div class="plans-backdrop" id="plans-backdrop" onclick="if(event.target===this)closePlansModal()">
   <div class="plans-modal">
@@ -2348,6 +2372,9 @@
       <div class="quiz-logo" id="quiz-logo"><span style="color:var(--black)">De</span><span style="color:var(--black);opacity:0.3">:</span><span style="color:var(--red)">Puzl</span></div>
       <span class="quiz-header-sep">|</span>
       <div class="quiz-pack-name" id="quiz-pack-name">PD Essential Conversations</div>
+      <button class="quiz-info-btn" onclick="openDeckInfo()" title="About this deck">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </button>
     </div>
     <div class="progress-wrap" style="display:none">
       <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -4172,6 +4199,18 @@ function renderDashboardV2() {
     }
   }
 
+  function openDeckInfo() {
+    const coll = COLLECTIONS.find(c => c.id === currentCollectionId);
+    if (!coll) return;
+    document.getElementById('deck-info-name').textContent = coll.name;
+    document.getElementById('deck-info-desc').textContent = coll.description;
+    document.getElementById('deck-info-illus').innerHTML = coll.illus || '';
+    document.getElementById('deck-info-backdrop').classList.add('show');
+  }
+  function closeDeckInfo() {
+    document.getElementById('deck-info-backdrop').classList.remove('show');
+  }
+
   function openPlansModal() {
     document.getElementById('plans-backdrop').classList.add('show');
   }
@@ -4269,6 +4308,8 @@ function renderDashboardV2() {
   window.selectSettingsRole = selectSettingsRole;
   window.openPlansModal     = openPlansModal;
   window.closePlansModal    = closePlansModal;
+  window.openDeckInfo       = openDeckInfo;
+  window.closeDeckInfo      = closeDeckInfo;
 
   let html = '';
 
