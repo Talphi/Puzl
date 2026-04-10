@@ -956,6 +956,10 @@
   body.dark-mode .coll-pov-badge.pm     { background: rgba(91,155,245,0.12); color: var(--blue); }
   body.dark-mode .coll-pov-badge.both   { background: var(--surface-inset); color: var(--text-muted); }
   body.dark-mode .coll-card:hover { box-shadow: var(--shadow-lg); border-color: rgba(255,255,255,0.14); }
+  body.dark-mode .coll-add-btn { border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.25); }
+  body.dark-mode .coll-add-btn:hover { border-color: rgba(255,255,255,0.30); color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.04); }
+  body.dark-mode .coll-add-btn.active { border-color: rgba(255,255,255,0.50); color: var(--text-primary); background: var(--hover-bg); }
+  body.dark-mode .coll-pick-card { background: var(--surface-card); }
   body.dark-mode .coll-progress { background: var(--surface-inset); }
   body.dark-mode .coll-sq.sq-locked { background: var(--surface-inset); }
   body.dark-mode .coll-desc { color: var(--text-muted); }
@@ -1009,8 +1013,39 @@
 
   /* Collection carousels */
   .coll-grid { display: flex; flex-direction: column; gap: 28px; }
-  .coll-section-label { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #C4C0B8; margin-bottom: 14px; }
+  .coll-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .coll-section-label { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #C4C0B8; }
   .coll-row { display: flex; gap: 16px; align-items: stretch; }
+
+  /* Add deck button at end of each row */
+  .coll-add-btn { flex: 0 0 80px; border: 1.5px dashed #D8D4CC; border-radius: 12px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; color: #C4C0B8; transition: border-color 0.15s, color 0.15s, background 0.15s; padding: 0; min-height: 120px; }
+  .coll-add-btn:hover { border-color: #AAA; color: #888; background: rgba(0,0,0,0.02); }
+  .coll-add-btn.active { border-color: var(--black); color: var(--black); background: var(--hover-bg); }
+  .coll-add-icon { font-size: 20px; line-height: 1; font-weight: 300; }
+  .coll-add-label { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* Picker tray that expands below the row */
+  .coll-picker-tray { overflow: hidden; max-height: 0; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s; opacity: 0; }
+  .coll-picker-tray.open { max-height: 400px; opacity: 1; }
+  .coll-picker-inner { display: flex; flex-wrap: wrap; gap: 12px; padding: 16px 0 4px; }
+
+  /* Mini picker cards */
+  .coll-pick-card { border: var(--border); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: var(--white); width: 280px; }
+  .coll-pick-illus { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+  .coll-pick-illus svg { width: 32px; height: 32px; }
+  .coll-pick-info { flex: 1; min-width: 0; }
+  .coll-pick-name { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 12px; color: var(--black); margin-bottom: 2px; }
+  .coll-pick-meta { font-size: 10px; color: #AAA; font-weight: 500; }
+  .coll-pick-action { flex-shrink: 0; }
+  .coll-pick-add { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: var(--black); color: var(--white); border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; transition: background 0.12s; }
+  .coll-pick-add:hover { background: var(--red); }
+  .coll-pick-remove { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: transparent; color: #AAA; border: var(--border); border-radius: 6px; padding: 5px 10px; cursor: pointer; transition: border-color 0.12s, color 0.12s; }
+  .coll-pick-remove:hover { border-color: var(--red); color: var(--red); }
+
+  /* Pinned coming-soon card gets an unpin ×  */
+  .coll-card .coll-unpin { position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 99px; background: rgba(0,0,0,0.08); border: none; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; color: #888; transition: background 0.12s; }
+  .coll-card .coll-unpin:hover { background: rgba(0,0,0,0.14); color: #333; }
+  .coll-card { position: relative; }
   .coll-card { flex: none; }
   .coll-card { border: var(--border); border-radius: 12px; background: var(--white); padding: 24px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; display: flex; flex-direction: column; flex: 0 0 290px; min-width: 0; }
   .coll-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: #C0BCB4; }
@@ -3711,13 +3746,117 @@ function renderDashboardV2() {
     </div>`;
   }
 
-  function renderSection(cat) {
-    const cards = cat.ids.map(id => {
-      const c = COLLECTIONS.find(col => col.id === id);
-      return c ? renderCard(c, cat.pov) : '';
-    }).join('');
-    return `<div class="coll-section"><div class="coll-section-label">${cat.label}</div><div class="coll-row">${cards}</div></div>`;
+  // ── Pin system ──────────────────────────────────────────────
+  const PINS_KEY = 'depuzl_pinned_decks';
+  function getPins() {
+    try { return JSON.parse(localStorage.getItem(PINS_KEY) || '{}'); } catch { return {}; }
   }
+  function savePins(pins) {
+    localStorage.setItem(PINS_KEY, JSON.stringify(pins));
+  }
+  function isPinned(catLabel, id) { return (getPins()[catLabel] || []).includes(id); }
+  function pin(catLabel, id) {
+    const p = getPins(); p[catLabel] = [...new Set([...(p[catLabel] || []), id])]; savePins(p);
+  }
+  function unpin(catLabel, id) {
+    const p = getPins(); p[catLabel] = (p[catLabel] || []).filter(x => x !== id); savePins(p);
+  }
+
+  function togglePicker(catLabel) {
+    const tray = document.getElementById(`tray-${CSS.escape(catLabel)}`);
+    const btn  = document.getElementById(`addbtn-${CSS.escape(catLabel)}`);
+    if (!tray || !btn) return;
+    const open = tray.classList.toggle('open');
+    btn.classList.toggle('active', open);
+  }
+
+  function pinDeck(catLabel, id) {
+    pin(catLabel, id);
+    renderDashboardV2();
+    // Re-open tray after re-render
+    requestAnimationFrame(() => {
+      const tray = document.getElementById(`tray-${CSS.escape(catLabel)}`);
+      const btn  = document.getElementById(`addbtn-${CSS.escape(catLabel)}`);
+      if (tray) tray.classList.add('open');
+      if (btn)  btn.classList.add('active');
+    });
+  }
+  function unpinDeck(catLabel, id) {
+    unpin(catLabel, id);
+    renderDashboardV2();
+  }
+
+  function renderSection(cat) {
+    const pinnedIds = getPins()[cat.label] || [];
+    // Default shown: not comingSoon. Pinned: extras the user added.
+    const shownIds  = cat.ids.filter(id => {
+      const c = COLLECTIONS.find(col => col.id === id);
+      return c && !c.comingSoon;
+    });
+    const pinnedShown = pinnedIds.filter(id => !shownIds.includes(id) && cat.ids.includes(id));
+    const visibleIds  = [...shownIds, ...pinnedShown];
+
+    // Addable = comingSoon decks in this category not already shown
+    const addableIds = cat.ids.filter(id => !visibleIds.includes(id));
+
+    // Don't render section at all if nothing to show and nothing addable
+    if (visibleIds.length === 0 && addableIds.length === 0) return '';
+
+    const cards = visibleIds.map(id => {
+      const c = COLLECTIONS.find(col => col.id === id);
+      if (!c) return '';
+      const isPinned = pinnedShown.includes(id);
+      let cardHtml = renderCard(c, cat.pov);
+      if (isPinned) {
+        // Inject unpin button before closing </div>
+        cardHtml = cardHtml.replace('</div>', `<button class="coll-unpin" onclick="event.stopPropagation();unpinDeck('${cat.label.replace(/'/g,"\\'")}','${id}')" title="Remove from dashboard">×</button></div>`);
+      }
+      return cardHtml;
+    }).join('');
+
+    const addBtn = addableIds.length > 0
+      ? `<button class="coll-add-btn" id="addbtn-${cat.label}" onclick="togglePicker('${cat.label.replace(/'/g,"\\'")}')">
+           <span class="coll-add-icon">+</span>
+           <span class="coll-add-label">Add</span>
+         </button>`
+      : '';
+
+    const pickerItems = addableIds.map(id => {
+      const c = COLLECTIONS.find(col => col.id === id);
+      if (!c) return '';
+      const alreadyPinned = pinnedShown.includes(id);
+      const actionBtn = alreadyPinned
+        ? `<button class="coll-pick-remove" onclick="unpinDeck('${cat.label.replace(/'/g,"\\'")}','${id}')">Remove</button>`
+        : `<button class="coll-pick-add" onclick="pinDeck('${cat.label.replace(/'/g,"\\'")}','${id}')">+ Add</button>`;
+      return `<div class="coll-pick-card">
+        <div class="coll-pick-illus">${c.illus || ''}</div>
+        <div class="coll-pick-info">
+          <div class="coll-pick-name">${c.name}</div>
+          <div class="coll-pick-meta">${c.count} scenarios · Coming soon</div>
+        </div>
+        <div class="coll-pick-action">${actionBtn}</div>
+      </div>`;
+    }).join('');
+
+    const pickerTray = addableIds.length > 0
+      ? `<div class="coll-picker-tray" id="tray-${cat.label}">
+           <div class="coll-picker-inner">${pickerItems}</div>
+         </div>`
+      : '';
+
+    return `<div class="coll-section">
+      <div class="coll-section-header">
+        <div class="coll-section-label">${cat.label}</div>
+      </div>
+      <div class="coll-row">${cards}${addBtn}</div>
+      ${pickerTray}
+    </div>`;
+  }
+
+  // Expose helpers globally so onclick handlers work
+  window.togglePicker = togglePicker;
+  window.pinDeck      = pinDeck;
+  window.unpinDeck    = unpinDeck;
 
   let html = '';
 
