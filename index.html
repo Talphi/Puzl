@@ -2606,6 +2606,12 @@ PM_SCENARIOS = PM_SCENARIOS_RAW.map(s => Object.assign({}, s));
 // progressMap: key (UUID or _key) → 'correct' | 'wrong'
 window.progressMap = {};
 
+// ---- ACCESS HELPER ----
+// Full access = pro plan, alpha tier, or admin
+function hasFullAccess() {
+  return !!(currentProfile?.plan === 'pro' || currentProfile?.tier === 'alpha' || currentProfile?.is_admin);
+}
+
 // ---- QUIZ ENGINE ----
 const FREE_LIMIT = 5;        // guest cap
 const UNLOCK_START  = 10;   // scenarios on day 0
@@ -2615,7 +2621,7 @@ const UNLOCK_DAYS   = 3;    // days between batches
 function getUnlockedCount() {
   const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
   if (!isLoggedIn || !currentUser) return FREE_LIMIT;
-  if (currentProfile?.plan === 'pro' || currentProfile?.is_admin) return pool.length;
+  if (hasFullAccess()) return pool.length;
   const signedUpAt = new Date(currentProfile?.created_at || currentUser.created_at);
   const daysSince = Math.floor((Date.now() - signedUpAt) / 86400000);
   const batches = Math.floor(daysSince / UNLOCK_DAYS);
@@ -2624,7 +2630,7 @@ function getUnlockedCount() {
 
 function getNewlyUnlockedRange() {
   if (!isLoggedIn || !currentUser) return null;
-  if (currentProfile?.plan === 'pro' || currentProfile?.is_admin) return null;
+  if (hasFullAccess()) return null;
   const signedUpAt = new Date(currentProfile?.created_at || currentUser.created_at);
   const daysSince = (Date.now() - signedUpAt) / 86400000;
   const batches = Math.floor(daysSince / UNLOCK_DAYS);
@@ -3323,7 +3329,7 @@ function startQuiz(filterCat) {
   if (packNameEl && _coll) packNameEl.textContent = _coll.name;
   const upgradeBtn = document.getElementById('quiz-upgrade-btn');
   const quizAuthBtns = document.getElementById('quiz-auth-btns');
-  if (currentProfile?.plan === 'pro') {
+  if (hasFullAccess()) {
     if (upgradeBtn) upgradeBtn.style.display = 'none';
     if (quizAuthBtns) quizAuthBtns.style.display = 'none';
   } else if (isLoggedIn) {
@@ -3843,7 +3849,7 @@ function renderDashboardV2() {
   const grid = document.getElementById('coll-grid');
   if (!grid) return;
 
-  const isPro = currentProfile?.plan === 'pro';
+  const isPro = hasFullAccess();
   const loggedIn = isLoggedIn;
 
   // Update welcome text
@@ -4098,10 +4104,11 @@ function renderDashboardV2() {
     document.getElementById('settings-email-input').value = currentUser.email || '';
     const planPill = document.getElementById('settings-plan-pill');
     const plan = currentProfile?.plan || 'free';
-    planPill.textContent = plan === 'pro' ? 'Pro' : 'Free';
-    planPill.className = 'settings-plan-pill ' + plan;
+    const isAlpha = currentProfile?.tier === 'alpha';
+    planPill.textContent = hasFullAccess() ? (isAlpha ? 'Alpha' : 'Pro') : 'Free';
+    planPill.className = 'settings-plan-pill ' + (hasFullAccess() ? 'pro' : 'free');
     const upgradeRow = document.getElementById('settings-upgrade-row');
-    if (upgradeRow) upgradeRow.style.display = (plan === 'pro' || currentProfile?.is_admin) ? 'none' : 'flex';
+    if (upgradeRow) upgradeRow.style.display = hasFullAccess() ? 'none' : 'flex';
     _settingsRole = currentProfile?.onb_role || null;
     document.querySelectorAll('.settings-rpill').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.role === _settingsRole);
