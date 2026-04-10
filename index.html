@@ -3585,15 +3585,25 @@ function showResults() {
   document.getElementById('results-desc').textContent = desc;
   const breakdown = document.getElementById('category-breakdown');
   breakdown.innerHTML = '';
-  const cats = currentRole === 'pm'
-    ? [{ key:'📋 Writing Briefs', icon:'📋', name:'Writing<br>Briefs' }, { key:'🔍 Running Design Reviews', icon:'🔍', name:'Design<br>Reviews' }, { key:'🗣️ Responding to Pushback', icon:'🗣️', name:'Pushback' }, { key:'📢 Advocating for Design', icon:'📢', name:'Advocating' }]
-    : [{ key:'✂️ Cutting Time', icon:'✂️', name:'Cutting<br>Time' }, { key:'🔬 Skipping Research', icon:'🔬', name:'Skipping<br>Research' }, { key:'♿ Accessibility', icon:'♿', name:'Accessibility' }, { key:'📦 Scope Creep', icon:'📦', name:'Scope<br>Creep' }, { key:'🎨 Design Override', icon:'🎨', name:'Design<br>Override' }, { key:'💼 Power Dynamics', icon:'💼', name:'Power<br>Dynamics' }];
-  cats.forEach(c => {
-    const d = categoryScores[c.key] || { correct: 0, total: 0 };
+  // Derive categories from the actual questions played — works for any deck
+  const activeCatKeys = Object.keys(categoryScores).filter(k => categoryScores[k].total > 0);
+  const cols = activeCatKeys.length;
+  breakdown.style.gridTemplateColumns = cols > 0 ? `repeat(${Math.min(cols, 6)}, 1fr)` : '';
+  activeCatKeys.forEach(key => {
+    const d = categoryScores[key];
     const p = d.total > 0 ? Math.round((d.correct / d.total) * 100) : 0;
+    // Extract emoji icon and clean label from the category key (e.g. '✂️ Cutting Time')
+    const iconMatch = key.match(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\s*/u);
+    const icon = iconMatch ? iconMatch[0].trim() : '📁';
+    const label = key.replace(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\s*/u, '').trim();
+    // Wrap long labels at spaces for display (max 2 words per line)
+    const words = label.split(' ');
+    const name = words.length > 2
+      ? words.slice(0, Math.ceil(words.length / 2)).join(' ') + '<br>' + words.slice(Math.ceil(words.length / 2)).join(' ')
+      : label;
     const box = document.createElement('div');
     box.className = 'cat-score-box';
-    box.innerHTML = `<div class="cat-score-icon">${c.icon}</div><div class="cat-score-pct">${p}%</div><div class="cat-score-name">${c.name}</div>`;
+    box.innerHTML = `<div class="cat-score-icon">${icon}</div><div class="cat-score-pct">${p}%</div><div class="cat-score-name">${name}</div>`;
     breakdown.appendChild(box);
   });
   showScreen('results');
