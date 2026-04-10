@@ -3760,12 +3760,12 @@ function renderDashboardV2() {
     const poolSize = pool ? pool.length : c.count;
     let locked = false;
     let progressHtml = '';
-    let countLabel = `${c.count} scenarios`;
+    let countLabel = `${poolSize} scenarios`;
 
     if (isProCollection && !isPro) {
       locked = true;
     } else if (!isProCollection && !loggedIn) {
-      countLabel = `${FREE_PREVIEW_COUNT} of ${c.count} free`;
+      countLabel = `${FREE_PREVIEW_COUNT} of ${poolSize} free`;
     } else if (!isProCollection && loggedIn && !isPro) {
       const unlocked = dripUnlocked(poolSize);
       const pct = Math.round((unlocked / poolSize) * 100);
@@ -3783,9 +3783,9 @@ function renderDashboardV2() {
     const accessibleCount = (locked || c.comingSoon) ? 0
       : (!loggedIn && !isProCollection) ? FREE_PREVIEW_COUNT
       : (!isPro && !isProCollection) ? dripUnlocked(poolSize)
-      : c.count;
+      : poolSize;
 
-    const squares = Array.from({ length: c.count }, (_, i) => {
+    const squares = Array.from({ length: poolSize }, (_, i) => {
       if (i >= accessibleCount) return `<div class="coll-sq sq-locked"></div>`;
       const scenario = pool ? pool[i] : null;
       const pkey = scenario ? (scenario.id || scenario._key) : null;
