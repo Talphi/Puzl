@@ -1035,7 +1035,8 @@
   .coll-pick-illus svg { width: 32px; height: 32px; }
   .coll-pick-info { flex: 1; min-width: 0; }
   .coll-pick-name { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 12px; color: var(--black); margin-bottom: 2px; }
-  .coll-pick-meta { font-size: 10px; color: #AAA; font-weight: 500; }
+  .coll-pick-meta { font-size: 10px; color: #AAA; font-weight: 500; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .coll-pick-soon { font-family: 'Outfit', sans-serif; font-size: 8px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; background: #E8E5DE; color: #888; padding: 2px 6px; border-radius: 4px; }
   .coll-pick-action { flex-shrink: 0; }
   .coll-pick-add { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: var(--black); color: var(--white); border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; transition: background 0.12s; }
   .coll-pick-add:hover { background: var(--red); }
@@ -3837,7 +3838,7 @@ function renderDashboardV2() {
         <div class="coll-pick-illus">${c.illus || ''}</div>
         <div class="coll-pick-info">
           <div class="coll-pick-name">${c.name}</div>
-          <div class="coll-pick-meta">${c.count} scenarios · Coming soon</div>
+          <div class="coll-pick-meta">${c.count} scenarios <span class="coll-pick-soon">Coming soon</span></div>
         </div>
         <div class="coll-pick-action">${actionBtn}</div>
       </div>`;
