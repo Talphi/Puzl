@@ -824,10 +824,11 @@ body.pm-mode .ss-display .accent { color: var(--blue); }
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
   background: var(--yellow);
   color: var(--black);
+  white-space: nowrap;
 }
 
 

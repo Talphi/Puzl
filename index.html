@@ -2607,9 +2607,23 @@ PM_SCENARIOS = PM_SCENARIOS_RAW.map(s => Object.assign({}, s));
 window.progressMap = {};
 
 // ---- ACCESS HELPER ----
-// Full access = pro plan, alpha tier, or admin
+// Full access = pro plan, alpha (trial) tier within 30 days, or admin
 function hasFullAccess() {
-  return !!(currentProfile?.plan === 'pro' || currentProfile?.tier === 'alpha' || currentProfile?.is_admin);
+  if (currentProfile?.is_admin) return true;
+  if (currentProfile?.plan === 'pro') return true;
+  if (currentProfile?.tier === 'alpha') {
+    const grantedAt = currentProfile.tier_granted_at;
+    if (!grantedAt) return true; // column not yet migrated — grant access
+    return (Date.now() - new Date(grantedAt)) / 86400000 <= 30;
+  }
+  return false;
+}
+
+function trialDaysLeft() {
+  if (currentProfile?.tier !== 'alpha') return null;
+  const grantedAt = currentProfile.tier_granted_at;
+  if (!grantedAt) return null;
+  return Math.max(0, Math.ceil(30 - (Date.now() - new Date(grantedAt)) / 86400000));
 }
 
 // ---- QUIZ ENGINE ----
@@ -3879,11 +3893,12 @@ function renderDashboardV2() {
     if (userChip)  { userChip.style.display = 'flex'; }
     if (usernameEl && currentUser) usernameEl.textContent = currentUser.email?.split('@')[0] || '';
     if (avatarEl   && currentUser) avatarEl.textContent   = (currentUser.email?.[0] || '?').toUpperCase();
-    if (tierBadge && currentProfile?.tier && currentProfile.tier !== 'pro' && !currentProfile?.is_admin) {
-      tierBadge.textContent = currentProfile.tier;
+    if (tierBadge && currentProfile?.tier === 'alpha' && !currentProfile?.is_admin) {
+      const daysLeft = trialDaysLeft();
+      tierBadge.textContent = daysLeft !== null ? `Trial · ${daysLeft}d left` : 'Trial';
       tierBadge.style.display = '';
-      tierBadge.style.background = currentProfile.tier === 'alpha' ? 'var(--yellow)' : currentProfile.tier === 'beta' ? '#EBF0FA' : '#EDEAE2';
-      tierBadge.style.color = currentProfile.tier === 'beta' ? '#1550A2' : 'var(--black)';
+      tierBadge.style.background = 'var(--yellow)';
+      tierBadge.style.color = 'var(--black)';
     } else if (tierBadge) { tierBadge.style.display = 'none'; }
   } else {
     if (actionBtn) actionBtn.style.display = 'none';
@@ -4105,7 +4120,8 @@ function renderDashboardV2() {
     const planPill = document.getElementById('settings-plan-pill');
     const plan = currentProfile?.plan || 'free';
     const isAlpha = currentProfile?.tier === 'alpha';
-    planPill.textContent = hasFullAccess() ? (isAlpha ? 'Alpha' : 'Pro') : 'Free';
+    const daysLeft = trialDaysLeft();
+    planPill.textContent = isAlpha ? (daysLeft !== null ? `Trial · ${daysLeft}d left` : 'Trial') : (hasFullAccess() ? 'Pro' : 'Free');
     planPill.className = 'settings-plan-pill ' + (hasFullAccess() ? 'pro' : 'free');
     const upgradeRow = document.getElementById('settings-upgrade-row');
     if (upgradeRow) upgradeRow.style.display = hasFullAccess() ? 'none' : 'flex';
