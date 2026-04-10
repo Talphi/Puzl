@@ -3762,9 +3762,12 @@ function renderDashboardV2() {
     const p = getPins(); p[catLabel] = (p[catLabel] || []).filter(x => x !== id); savePins(p);
   }
 
+  function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
+
   function togglePicker(catLabel) {
-    const tray = document.getElementById(`tray-${CSS.escape(catLabel)}`);
-    const btn  = document.getElementById(`addbtn-${CSS.escape(catLabel)}`);
+    const slug = slugify(catLabel);
+    const tray = document.getElementById(`tray-${slug}`);
+    const btn  = document.getElementById(`addbtn-${slug}`);
     if (!tray || !btn) return;
     const open = tray.classList.toggle('open');
     btn.classList.toggle('active', open);
@@ -3775,8 +3778,9 @@ function renderDashboardV2() {
     renderDashboardV2();
     // Re-open tray after re-render
     requestAnimationFrame(() => {
-      const tray = document.getElementById(`tray-${CSS.escape(catLabel)}`);
-      const btn  = document.getElementById(`addbtn-${CSS.escape(catLabel)}`);
+      const slug = slugify(catLabel);
+      const tray = document.getElementById(`tray-${slug}`);
+      const btn  = document.getElementById(`addbtn-${slug}`);
       if (tray) tray.classList.add('open');
       if (btn)  btn.classList.add('active');
     });
@@ -3814,8 +3818,9 @@ function renderDashboardV2() {
       return cardHtml;
     }).join('');
 
+    const slug = slugify(cat.label);
     const addBtn = addableIds.length > 0
-      ? `<button class="coll-add-btn" id="addbtn-${cat.label}" onclick="togglePicker('${cat.label.replace(/'/g,"\\'")}')">
+      ? `<button class="coll-add-btn" id="addbtn-${slug}" onclick="togglePicker('${cat.label.replace(/'/g,"\\'")}')">
            <span class="coll-add-icon">+</span>
            <span class="coll-add-label">Add</span>
          </button>`
@@ -3839,7 +3844,7 @@ function renderDashboardV2() {
     }).join('');
 
     const pickerTray = addableIds.length > 0
-      ? `<div class="coll-picker-tray" id="tray-${cat.label}">
+      ? `<div class="coll-picker-tray" id="tray-${slug}">
            <div class="coll-picker-inner">${pickerItems}</div>
          </div>`
       : '';
