@@ -1073,6 +1073,47 @@
   .unpin-modal-confirm { flex: 1; background: var(--black); color: var(--white); border: none; border-radius: 10px; padding: 12px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
   .unpin-modal-confirm:hover { background: var(--red); }
 
+  /* ---- SETTINGS MODAL ---- */
+  .settings-backdrop { display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px; }
+  .settings-backdrop.show { display: flex; }
+  .settings-modal { background: var(--white); border-radius: 20px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.18); overflow: hidden; }
+  .settings-head { display: flex; align-items: center; justify-content: space-between; padding: 24px 24px 0; }
+  .settings-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 17px; color: var(--black); }
+  .settings-x { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 17px; line-height: 1; padding: 4px 6px; border-radius: 6px; transition: color 0.12s; }
+  .settings-x:hover { color: var(--black); }
+  .settings-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .settings-field { display: flex; flex-direction: column; gap: 5px; }
+  .settings-flabel { font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); }
+  .settings-finput { width: 100%; border: 1.5px solid #E4E4E4; border-radius: 10px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--black); background: var(--white); box-sizing: border-box; transition: border-color 0.15s; }
+  .settings-finput:focus { border-color: var(--black); outline: 2px solid rgba(17,17,17,0.07); outline-offset: 0; }
+  .settings-finput[readonly] { background: var(--surface-inset); color: var(--text-secondary); cursor: default; }
+  .settings-finput[readonly]:focus { border-color: #E4E4E4; outline: none; }
+  .settings-hr { height: 1px; background: #EFEFEF; }
+  .settings-roles { display: flex; gap: 6px; }
+  .settings-rpill { flex: 1; padding: 9px 6px; border: 1.5px solid #E4E4E4; border-radius: 10px; background: transparent; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); cursor: pointer; transition: border-color 0.12s, background 0.12s, color 0.12s; }
+  .settings-rpill:hover { border-color: var(--black); color: var(--black); }
+  .settings-rpill.active { background: var(--black); color: var(--white); border-color: var(--black); }
+  .settings-plan-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: var(--surface-inset); border-radius: 10px; }
+  .settings-plan-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+  .settings-plan-pill { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
+  .settings-plan-pill.free { background: var(--surface-card); color: var(--text-muted); border: 1.5px solid #D8D4CC; }
+  .settings-plan-pill.pro { background: var(--yellow); color: var(--black); }
+  .settings-pw-btn { background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-secondary); padding: 0; text-align: left; transition: color 0.12s; text-decoration: underline; text-underline-offset: 2px; }
+  .settings-pw-btn:hover { color: var(--black); }
+  .settings-foot { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .settings-save { width: 100%; background: var(--black); color: var(--white); border: none; border-radius: 10px; padding: 12px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+  .settings-save:hover { background: var(--red); }
+  .settings-save:disabled { opacity: 0.5; cursor: default; }
+  .settings-msg { font-size: 12px; font-weight: 600; text-align: center; min-height: 14px; }
+  .settings-msg.ok { color: var(--green); }
+  .settings-msg.err { color: var(--red); }
+  .settings-bottom-row { display: flex; justify-content: space-between; align-items: center; }
+  .settings-signout { background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--text-faint); padding: 0; transition: color 0.12s; }
+  .settings-signout:hover { color: var(--red); }
+  /* User chip clickable */
+  .dv2-user { cursor: pointer; border-radius: 8px; padding: 4px 6px; margin: -4px -6px; transition: background 0.12s; }
+  .dv2-user:hover { background: var(--surface-inset); }
+
   /* Pinned coming-soon card gets an unpin ×  */
   .coll-card .coll-unpin { position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 99px; background: rgba(0,0,0,0.08); border: none; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; color: #888; transition: background 0.12s; }
   .coll-card .coll-unpin:hover { background: rgba(0,0,0,0.14); color: #333; }
@@ -1686,6 +1727,48 @@
   </div>
 </div>
 
+<!-- SETTINGS MODAL -->
+<div class="settings-backdrop" id="settings-backdrop" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-modal">
+    <div class="settings-head">
+      <div class="settings-title">Account Settings</div>
+      <button class="settings-x" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-body">
+      <div class="settings-field">
+        <div class="settings-flabel">Display name</div>
+        <input class="settings-finput" id="settings-name-input" type="text" placeholder="Your name" maxlength="40">
+      </div>
+      <div class="settings-field">
+        <div class="settings-flabel">Email</div>
+        <input class="settings-finput" id="settings-email-input" type="email" readonly>
+      </div>
+      <button class="settings-pw-btn" onclick="sendPasswordReset(event)">Send password reset email</button>
+      <div class="settings-hr"></div>
+      <div class="settings-field">
+        <div class="settings-flabel">I train as a</div>
+        <div class="settings-roles">
+          <button class="settings-rpill" data-role="designer" onclick="selectSettingsRole('designer')">Designer</button>
+          <button class="settings-rpill" data-role="pm" onclick="selectSettingsRole('pm')">PM</button>
+          <button class="settings-rpill" data-role="both" onclick="selectSettingsRole('both')">Both</button>
+        </div>
+      </div>
+      <div class="settings-hr"></div>
+      <div class="settings-plan-row">
+        <span class="settings-plan-label">Current plan</span>
+        <span class="settings-plan-pill free" id="settings-plan-pill">Free</span>
+      </div>
+    </div>
+    <div class="settings-foot">
+      <div class="settings-msg" id="settings-msg"></div>
+      <button class="settings-save" id="settings-save-btn" onclick="saveSettings()">Save changes</button>
+      <div class="settings-bottom-row">
+        <button class="settings-signout" onclick="logout();closeSettings()">Sign out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- DECK PICKER SIDE PANEL -->
 <div class="deck-panel-backdrop" id="deck-panel-backdrop" onclick="closeDeckPanel()"></div>
 <div class="deck-panel" id="deck-panel">
@@ -1708,7 +1791,7 @@
     </div>
     <div class="dv2-nav-right">
       <button class="dv2-admin-btn" id="dv2-admin-btn" onclick="openAdmin()" style="display:none">Admin</button>
-      <div class="dv2-user" id="dv2-user" style="display:none">
+      <div class="dv2-user" id="dv2-user" style="display:none" onclick="openSettings()" title="Account settings">
         <div class="dv2-avatar" id="dv2-avatar">?</div>
         <span id="dv2-username"></span>
         <span class="dv2-tier-badge" id="dv2-tier-badge" style="display:none"></span>
@@ -3928,6 +4011,83 @@ function renderDashboardV2() {
     _pendingUnpin = null;
     document.getElementById('unpin-modal-backdrop').classList.remove('show');
   }
+
+  // ---- SETTINGS MODAL ----
+  let _settingsRole = null;
+
+  function openSettings() {
+    if (!currentUser) return;
+    document.getElementById('settings-name-input').value = currentProfile?.username || currentUser.email?.split('@')[0] || '';
+    document.getElementById('settings-email-input').value = currentUser.email || '';
+    const planPill = document.getElementById('settings-plan-pill');
+    const plan = currentProfile?.plan || 'free';
+    planPill.textContent = plan === 'pro' ? 'Pro' : 'Free';
+    planPill.className = 'settings-plan-pill ' + plan;
+    _settingsRole = currentProfile?.onb_role || null;
+    document.querySelectorAll('.settings-rpill').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.role === _settingsRole);
+    });
+    const msg = document.getElementById('settings-msg');
+    msg.textContent = ''; msg.className = 'settings-msg';
+    document.getElementById('settings-backdrop').classList.add('show');
+  }
+
+  function closeSettings() {
+    document.getElementById('settings-backdrop').classList.remove('show');
+  }
+
+  function selectSettingsRole(role) {
+    _settingsRole = role;
+    document.querySelectorAll('.settings-rpill').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.role === role);
+    });
+  }
+
+  async function saveSettings() {
+    if (!currentUser) return;
+    const btn = document.getElementById('settings-save-btn');
+    const msg = document.getElementById('settings-msg');
+    const name = document.getElementById('settings-name-input').value.trim();
+    btn.disabled = true; btn.textContent = 'Saving…';
+    msg.textContent = ''; msg.className = 'settings-msg';
+    const updates = { username: name || null };
+    if (_settingsRole) updates.onb_role = _settingsRole;
+    const { error } = await _supa.from('profiles').update(updates).eq('id', currentUser.id);
+    btn.disabled = false; btn.textContent = 'Save changes';
+    if (error) {
+      msg.textContent = 'Could not save. Try again.';
+      msg.className = 'settings-msg err';
+    } else {
+      if (currentProfile) {
+        currentProfile.username = updates.username;
+        if (_settingsRole) currentProfile.onb_role = _settingsRole;
+      }
+      const usernameEl = document.getElementById('dv2-username');
+      if (usernameEl) usernameEl.textContent = name || currentUser.email?.split('@')[0] || '';
+      msg.textContent = 'Saved!';
+      msg.className = 'settings-msg ok';
+      setTimeout(() => { msg.textContent = ''; msg.className = 'settings-msg'; }, 2000);
+    }
+  }
+
+  async function sendPasswordReset(e) {
+    if (!currentUser?.email) return;
+    const btn = e.currentTarget;
+    const msg = document.getElementById('settings-msg');
+    const origText = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    const { error } = await _supa.auth.resetPasswordForEmail(currentUser.email);
+    btn.disabled = false; btn.textContent = origText;
+    if (error) {
+      msg.textContent = 'Could not send email. Try again.';
+      msg.className = 'settings-msg err';
+    } else {
+      msg.textContent = 'Reset email sent — check your inbox.';
+      msg.className = 'settings-msg ok';
+      setTimeout(() => { msg.textContent = ''; msg.className = 'settings-msg'; }, 3000);
+    }
+  }
+
   function doUnpin(catLabel, id) {
     unpin(catLabel, id);
     renderDashboardV2();
@@ -3987,12 +4147,17 @@ function renderDashboardV2() {
   }
 
   // Expose helpers globally so onclick handlers work
-  window.openDeckPanel  = openDeckPanel;
-  window.closeDeckPanel = closeDeckPanel;
-  window.pinDeck        = pinDeck;
-  window.unpinDeck      = unpinDeck;
-  window.confirmUnpin   = confirmUnpin;
-  window.closeUnpinModal = closeUnpinModal;
+  window.openDeckPanel      = openDeckPanel;
+  window.closeDeckPanel     = closeDeckPanel;
+  window.pinDeck            = pinDeck;
+  window.unpinDeck          = unpinDeck;
+  window.confirmUnpin       = confirmUnpin;
+  window.closeUnpinModal    = closeUnpinModal;
+  window.openSettings       = openSettings;
+  window.closeSettings      = closeSettings;
+  window.saveSettings       = saveSettings;
+  window.sendPasswordReset  = sendPasswordReset;
+  window.selectSettingsRole = selectSettingsRole;
 
   let html = '';
 
