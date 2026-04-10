@@ -1053,6 +1053,26 @@
   .coll-pick-remove { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background: transparent; color: #AAA; border: var(--border); border-radius: 8px; padding: 8px 14px; cursor: pointer; transition: border-color 0.12s, color 0.12s; }
   .coll-pick-remove:hover { border-color: var(--red); color: var(--red); }
 
+  /* Progress inside panel pick cards */
+  .coll-pick-progress { margin-top: 8px; }
+  .coll-pick-prog-bar { height: 3px; background: var(--surface-inset); border-radius: 999px; overflow: hidden; margin-bottom: 4px; }
+  .coll-pick-prog-fill { height: 100%; border-radius: 999px; background: var(--green); transition: width 0.3s; }
+  .coll-pick-prog-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+  .coll-pick-prog-label span { color: var(--green); font-weight: 700; }
+
+  /* Remove confirmation modal */
+  .unpin-modal-backdrop { display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.35); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); align-items: center; justify-content: center; }
+  .unpin-modal-backdrop.show { display: flex; }
+  .unpin-modal { background: var(--white); border-radius: 16px; padding: 28px; width: 100%; max-width: 360px; box-shadow: 0 16px 48px rgba(0,0,0,0.18); }
+  .unpin-modal-icon { font-size: 28px; margin-bottom: 12px; }
+  .unpin-modal-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 17px; color: var(--black); margin-bottom: 8px; }
+  .unpin-modal-msg { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 24px; }
+  .unpin-modal-btns { display: flex; gap: 8px; }
+  .unpin-modal-cancel { flex: 1; background: var(--surface-inset); color: var(--text-primary); border: none; border-radius: 10px; padding: 12px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
+  .unpin-modal-cancel:hover { background: var(--hover-bg); }
+  .unpin-modal-confirm { flex: 1; background: var(--black); color: var(--white); border: none; border-radius: 10px; padding: 12px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.12s; }
+  .unpin-modal-confirm:hover { background: var(--red); }
+
   /* Pinned coming-soon card gets an unpin ×  */
   .coll-card .coll-unpin { position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 99px; background: rgba(0,0,0,0.08); border: none; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; color: #888; transition: background 0.12s; }
   .coll-card .coll-unpin:hover { background: rgba(0,0,0,0.14); color: #333; }
@@ -1650,6 +1670,19 @@
     <button class="onb-next-btn" id="onb-next-btn" onclick="onbNext()" disabled>Next →</button>
     <button class="onb-skip-btn" onclick="skipOnboarding()">Skip for now</button>
 
+  </div>
+</div>
+
+<!-- REMOVE FROM DASHBOARD CONFIRMATION MODAL -->
+<div class="unpin-modal-backdrop" id="unpin-modal-backdrop">
+  <div class="unpin-modal">
+    <div class="unpin-modal-icon">📌</div>
+    <div class="unpin-modal-title">Remove from dashboard?</div>
+    <div class="unpin-modal-msg">This deck will be removed from your dashboard. Your progress will be saved and you can add it back any time.</div>
+    <div class="unpin-modal-btns">
+      <button class="unpin-modal-cancel" onclick="closeUnpinModal()">Cancel</button>
+      <button class="unpin-modal-confirm" id="unpin-modal-confirm-btn">Remove</button>
+    </div>
   </div>
 </div>
 
@@ -3790,14 +3823,41 @@ function renderDashboardV2() {
 
   let _activePanelCat = null;
 
+  function getDeckProgress(id) {
+    const collMap2 = {
+      'designer':         { src: SCENARIOS,    pathway: 'default'           },
+      'pm':               { src: PM_SCENARIOS, pathway: 'default'           },
+      '0to1designer':     { src: SCENARIOS,    pathway: '0to1'              },
+      '0to1':             { src: PM_SCENARIOS, pathway: '0to1'              },
+      'multiplehats':     { src: SCENARIOS,    pathway: 'multiplehats'      },
+      'enterprise':       { src: PM_SCENARIOS, pathway: 'enterprise'        },
+      'scaling':          { src: PM_SCENARIOS, pathway: 'scaling'           },
+      'march2026':        { src: SCENARIOS,    pathway: 'march2026'         },
+      'overyourshoulder': { src: SCENARIOS,    pathway: 'overyourshoulder'  },
+    };
+    const cm = collMap2[id];
+    if (!cm) return null;
+    const pool = cm.pathway === 'default'
+      ? cm.src.filter(s => !s.pathway || s.pathway === 'default')
+      : cm.src.filter(s => s.pathway === cm.pathway);
+    if (!pool.length) return null;
+    let correct = 0, wrong = 0;
+    pool.forEach(s => {
+      const state = window.progressMap[s.id || s._key];
+      if (state === 'correct') correct++;
+      else if (state === 'wrong') wrong++;
+    });
+    return { correct, wrong, total: pool.length, answered: correct + wrong };
+  }
+
   function openDeckPanel(catLabel) {
     _activePanelCat = catLabel;
     const cat = CATEGORIES.find(c => c.label === catLabel);
     if (!cat) return;
-    const pinnedIds  = getPins()[catLabel] || [];
-    const shownIds   = cat.ids.filter(id => { const c = COLLECTIONS.find(col => col.id === id); return c && !c.comingSoon; });
+    const pinnedIds   = getPins()[catLabel] || [];
+    const shownIds    = cat.ids.filter(id => { const c = COLLECTIONS.find(col => col.id === id); return c && !c.comingSoon; });
     const pinnedShown = pinnedIds.filter(id => !shownIds.includes(id) && cat.ids.includes(id));
-    const addableIds = cat.ids.filter(id => !shownIds.includes(id));
+    const addableIds  = cat.ids.filter(id => !shownIds.includes(id));
 
     document.getElementById('deck-panel-title').textContent = cat.label;
     document.getElementById('deck-panel-subtitle').textContent = `${addableIds.length} deck${addableIds.length !== 1 ? 's' : ''} available to add`;
@@ -3807,13 +3867,28 @@ function renderDashboardV2() {
       if (!c) return '';
       const pinned = pinnedShown.includes(id);
       const actionBtn = pinned
-        ? `<button class="coll-pick-remove" onclick="unpinDeck('${catLabel.replace(/'/g,"\\'")}','${id}')">Remove</button>`
+        ? `<button class="coll-pick-remove" onclick="confirmUnpin('${catLabel.replace(/'/g,"\\'")}','${id}')">Remove</button>`
         : `<button class="coll-pick-add" onclick="pinDeck('${catLabel.replace(/'/g,"\\'")}','${id}')">+ Add</button>`;
+
+      // Progress bar — only show for pinned decks that have been attempted
+      let progressHtml = '';
+      if (pinned) {
+        const prog = getDeckProgress(id);
+        if (prog && prog.answered > 0) {
+          const pct = Math.round((prog.answered / prog.total) * 100);
+          progressHtml = `<div class="coll-pick-progress">
+            <div class="coll-pick-prog-bar"><div class="coll-pick-prog-fill" style="width:${pct}%"></div></div>
+            <div class="coll-pick-prog-label"><span>${prog.correct}</span> correct · ${prog.answered} of ${prog.total} answered</div>
+          </div>`;
+        }
+      }
+
       return `<div class="coll-pick-card">
         <div class="coll-pick-illus">${c.illus || ''}</div>
         <div class="coll-pick-info">
           <div class="coll-pick-name">${c.name}</div>
           <div class="coll-pick-meta">${c.count} scenarios <span class="coll-pick-soon">Coming soon</span></div>
+          ${progressHtml}
         </div>
         <div class="coll-pick-action">${actionBtn}</div>
       </div>`;
@@ -3830,16 +3905,33 @@ function renderDashboardV2() {
     document.getElementById('deck-panel').classList.remove('open');
   }
 
-  function pinDeck(catLabel, id) {
-    pin(catLabel, id);
-    renderDashboardV2();
-    // Refresh panel contents without closing
-    if (_activePanelCat === catLabel) openDeckPanel(catLabel);
+  // ── Unpin confirmation modal ─────────────────────────────────
+  let _pendingUnpin = null;
+  function confirmUnpin(catLabel, id) {
+    _pendingUnpin = { catLabel, id };
+    document.getElementById('unpin-modal-backdrop').classList.add('show');
+    document.getElementById('unpin-modal-confirm-btn').onclick = () => {
+      if (_pendingUnpin) { doUnpin(_pendingUnpin.catLabel, _pendingUnpin.id); }
+      closeUnpinModal();
+    };
   }
-  function unpinDeck(catLabel, id) {
+  function closeUnpinModal() {
+    _pendingUnpin = null;
+    document.getElementById('unpin-modal-backdrop').classList.remove('show');
+  }
+  function doUnpin(catLabel, id) {
     unpin(catLabel, id);
     renderDashboardV2();
     if (_activePanelCat === catLabel) openDeckPanel(catLabel);
+  }
+
+  function pinDeck(catLabel, id) {
+    pin(catLabel, id);
+    renderDashboardV2();
+    if (_activePanelCat === catLabel) openDeckPanel(catLabel);
+  }
+  function unpinDeck(catLabel, id) {
+    confirmUnpin(catLabel, id);
   }
 
   function renderSection(cat) {
@@ -3865,7 +3957,7 @@ function renderDashboardV2() {
       let cardHtml = renderCard(c, cat.pov);
       if (isPinned) {
         // Inject unpin button before closing </div>
-        cardHtml = cardHtml.replace('</div>', `<button class="coll-unpin" onclick="event.stopPropagation();unpinDeck('${cat.label.replace(/'/g,"\\'")}','${id}')" title="Remove from dashboard">×</button></div>`);
+        cardHtml = cardHtml.replace('</div>', `<button class="coll-unpin" onclick="event.stopPropagation();confirmUnpin('${cat.label.replace(/'/g,"\\'")}','${id}')" title="Remove from dashboard">×</button></div>`);
       }
       return cardHtml;
     }).join('');
@@ -3890,6 +3982,8 @@ function renderDashboardV2() {
   window.closeDeckPanel = closeDeckPanel;
   window.pinDeck        = pinDeck;
   window.unpinDeck      = unpinDeck;
+  window.confirmUnpin   = confirmUnpin;
+  window.closeUnpinModal = closeUnpinModal;
 
   let html = '';
 
