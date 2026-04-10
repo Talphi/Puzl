@@ -14,6 +14,10 @@
       --red: #D62828;
       --green: #2B7A44;
       --blue: #1550A2;
+      --red-on-dark: #FF3366;
+      --blue-on-dark: #5B9BF5;
+      --green-on-dark: #34D399;
+      --yellow-on-dark: #F2C200;
       --border: 1px solid #E4E4E4;
       --border-light: 1px solid #EFEFEF;
       --font-display: 'Outfit', sans-serif;
@@ -122,6 +126,10 @@
 
     /* ── SECTION ── */
     .ds-section { margin-bottom: 88px; }
+    .ds-section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+    .ds-section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #AAA; margin-bottom: 6px; }
+    .ds-section-desc { font-size: 14px; color: #666; line-height: 1.6; margin-top: 10px; max-width: 560px; }
+    .ds-sub-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #BBB; margin-bottom: 14px; }
     .ds-section-title {
       font-family: var(--font-display);
       font-weight: 800;
@@ -137,6 +145,42 @@
       margin-top: 10px;
       line-height: 1.6;
     }
+    .docs-dark-toggle {
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #E4E4E4;
+      background: var(--white);
+      color: var(--black);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      margin-top: 4px;
+    }
+    .docs-dark-toggle:hover { background: #F5F4EF; border-color: #AAA; }
+
+    /* ── DOCS DARK MODE ── */
+    body.docs-dark { background: #111; color: #F0EFE9; }
+    body.docs-dark .docs-sidebar { background: #161616; border-right-color: #2C2C2C; }
+    body.docs-dark .docs-nav-link { color: #555; border-left-color: transparent; }
+    body.docs-dark .docs-nav-link:hover { color: #F0EFE9; background: #222; }
+    body.docs-dark .docs-nav-link.active { color: #F0EFE9; background: #222; border-left-color: #F0EFE9; }
+    body.docs-dark .docs-nav-section { color: #333; }
+    body.docs-dark .docs-main { background: #111; }
+    body.docs-dark .ds-section-title { border-bottom-color: #F0EFE9; color: #F0EFE9; }
+    body.docs-dark .ds-section-sub, body.docs-dark .ds-section-desc { color: #666; }
+    body.docs-dark .ds-code-wrap { background: #161616; border-color: #2C2C2C; }
+    body.docs-dark .ds-code { color: #C8C4BC; }
+    body.docs-dark .copy-btn { background: #222; color: #666; }
+    body.docs-dark .copy-btn:hover { background: #2C2C2C; color: #F0EFE9; }
+    body.docs-dark .docs-dark-toggle { background: #1A1A1A; border-color: #2C2C2C; color: #F0EFE9; }
+    body.docs-dark .docs-dark-toggle:hover { background: #222; }
+    body.docs-dark table tr { border-bottom-color: #2C2C2C !important; }
+    body.docs-dark table th { color: #555 !important; }
     .ds-subsection { margin-bottom: 36px; }
     .ds-subsection-title {
       font-family: var(--font-mono);
@@ -331,6 +375,7 @@
     .ss-eyebrow { font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#AAA;line-height:1; }
     .ss-display { font-family:var(--font-display);font-weight:800;line-height:0.95;color:var(--black); }
     .ss-display .accent { color: var(--red); }
+    #mode-accent { color: var(--red-on-dark); }
     .ss-heading { font-family:var(--font-display);font-weight:800;line-height:1.05;color:var(--black); }
     .ss-body-muted { font-size:14px;color:#555;line-height:1.6; }
     .ss-badge { display:inline-block;font-size:11px;font-weight:600;padding:5px 12px;letter-spacing:0.07em;text-transform:uppercase;width:fit-content;border-radius:4px; }
@@ -354,7 +399,7 @@
     .ss-divider::before,.ss-divider::after { content:'';flex:1;height:1px;background:#E4E4E4; }
     .ss-wordmark { font-family:var(--font-display);font-weight:800;letter-spacing:-0.01em;line-height:1; }
     .ss-wordmark--on-dark .wm-de { color:var(--white); }
-    .ss-wordmark--on-dark .wm-sep { color:var(--white);opacity:0.55; }
+    .ss-wordmark--on-dark .wm-sep { color:var(--white);opacity:0.75; }
     .ss-wordmark--on-dark .wm-puzl { color:var(--white); }
 
     /* Auth */
@@ -463,6 +508,7 @@
     <a class="docs-nav-link" onclick="scrollTo('typography')">Typography</a>
     <a class="docs-nav-link" onclick="scrollTo('spacing')">Spacing</a>
     <a class="docs-nav-link" onclick="scrollTo('radius')">Radius Rules</a>
+    <a class="docs-nav-link" onclick="scrollTo('darkmode')">Dark Mode</a>
 
     <div class="docs-nav-section">Components</div>
     <a class="docs-nav-link" onclick="scrollTo('wordmark')">Wordmark</a>
@@ -519,6 +565,17 @@
           <div class="token-row" onclick="copyText('--blue', this)"><div class="token-swatch" style="background:#1550A2"></div><div><div class="token-name">--blue</div><div class="token-value">#1550A2</div></div><span class="token-copy-hint">click to copy</span></div>
           <div class="token-row" onclick="copyText('--bg', this)"><div class="token-swatch" style="background:#F7F6F2;border:var(--border)"></div><div><div class="token-name">--bg</div><div class="token-value">#F7F6F2</div></div><span class="token-copy-hint">click to copy</span></div>
           <div class="token-row" onclick="copyText('--hover-bg', this)"><div class="token-swatch" style="background:#F5F4EF;border:var(--border)"></div><div><div class="token-name">--hover-bg</div><div class="token-value">#F5F4EF</div></div><span class="token-copy-hint">click to copy</span></div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">On-Dark Colour Variants</div>
+        <p class="ss-body-muted" style="margin:0 0 12px">Use these tokens instead of the base colours when placing text or icons on dark (#111) backgrounds. Each passes WCAG AA (4.5:1) on <code>#111111</code>.</p>
+        <div class="token-grid">
+          <div class="token-row" onclick="copyText('var(--yellow-on-dark)', this)" style="background:#111;border-radius:8px"><div class="token-swatch" style="background:#F2C200"></div><div><div class="token-name" style="color:#fff">--yellow-on-dark</div><div class="token-value" style="color:#aaa">#F2C200 · 11.23:1</div></div><span class="token-copy-hint" style="color:#666">click to copy</span></div>
+          <div class="token-row" onclick="copyText('var(--red-on-dark)', this)" style="background:#111;border-radius:8px"><div class="token-swatch" style="background:#FF3366"></div><div><div class="token-name" style="color:#fff">--red-on-dark</div><div class="token-value" style="color:#aaa">#FF3366 · 4.72:1</div></div><span class="token-copy-hint" style="color:#666">click to copy</span></div>
+          <div class="token-row" onclick="copyText('var(--green-on-dark)', this)" style="background:#111;border-radius:8px"><div class="token-swatch" style="background:#34D399"></div><div><div class="token-name" style="color:#fff">--green-on-dark</div><div class="token-value" style="color:#aaa">#34D399 · 9.82:1</div></div><span class="token-copy-hint" style="color:#666">click to copy</span></div>
+          <div class="token-row" onclick="copyText('var(--blue-on-dark)', this)" style="background:#111;border-radius:8px"><div class="token-swatch" style="background:#5B9BF5"></div><div><div class="token-name" style="color:#fff">--blue-on-dark</div><div class="token-value" style="color:#aaa">#5B9BF5 · 6.70:1</div></div><span class="token-copy-hint" style="color:#666">click to copy</span></div>
         </div>
       </div>
 
@@ -1060,6 +1117,141 @@
       </div>
     </section>
 
+    <!-- ── DARK MODE ── -->
+    <section class="ds-section" id="darkmode">
+      <div class="ds-section-header">
+        <div>
+          <div class="ds-section-label">Foundation</div>
+          <h2 class="ds-section-title">Dark Mode</h2>
+          <p class="ds-section-desc">Toggle with <code style="font-family:monospace;background:#F5F4EF;padding:2px 6px;border-radius:4px;font-size:13px">body.dark-mode</code>. All tokens remap automatically — brand colours switch to their on-dark WCAG AA variants. Persisted via <code style="font-family:monospace;background:#F5F4EF;padding:2px 6px;border-radius:4px;font-size:13px">localStorage</code>.</p>
+        </div>
+        <button class="docs-dark-toggle" id="docs-dark-toggle" onclick="toggleDocsDark()">Switch to Dark</button>
+      </div>
+
+      <!-- Token remap table -->
+      <div class="ds-subsection">
+        <div class="ds-sub-label">Token Remapping</div>
+        <table class="ds-table" style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="border-bottom:var(--ds-border)">
+              <th style="text-align:left;padding:10px 14px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#AAA;font-weight:600">Token</th>
+              <th style="text-align:left;padding:10px 14px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#AAA;font-weight:600">Light</th>
+              <th style="text-align:left;padding:10px 14px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#AAA;font-weight:600">Dark</th>
+              <th style="text-align:left;padding:10px 14px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#AAA;font-weight:600">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #F0EFE9">
+              <td style="padding:10px 14px;font-family:monospace;font-size:12px;color:#555">--bg</td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#FFFFFF;border:1px solid #E4E4E4;flex-shrink:0"></span>#FFFFFF</span></td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#111111;flex-shrink:0"></span>#111111</span></td>
+              <td style="padding:10px 14px;color:#AAA;font-size:12px">Page background</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EFE9">
+              <td style="padding:10px 14px;font-family:monospace;font-size:12px;color:#555">--white</td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#FFFFFF;border:1px solid #E4E4E4;flex-shrink:0"></span>#FFFFFF</span></td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#1A1A1A;flex-shrink:0"></span>#1A1A1A</span></td>
+              <td style="padding:10px 14px;color:#AAA;font-size:12px">Surfaces, cards, overlays</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EFE9">
+              <td style="padding:10px 14px;font-family:monospace;font-size:12px;color:#555">--black</td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#111111;flex-shrink:0"></span>#111111</span></td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#F0EFE9;border:1px solid #E4E4E4;flex-shrink:0"></span>#F0EFE9</span></td>
+              <td style="padding:10px 14px;color:#AAA;font-size:12px">Primary text, buttons</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EFE9">
+              <td style="padding:10px 14px;font-family:monospace;font-size:12px;color:#555">--red</td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#D62828;flex-shrink:0"></span>#D62828</span></td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#FF3366;flex-shrink:0"></span>#FF3366</span></td>
+              <td style="padding:10px 14px;color:#AAA;font-size:12px">4.72:1 on #111 — AA ✓</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EFE9">
+              <td style="padding:10px 14px;font-family:monospace;font-size:12px;color:#555">--blue</td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#1550A2;flex-shrink:0"></span>#1550A2</span></td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#5B9BF5;flex-shrink:0"></span>#5B9BF5</span></td>
+              <td style="padding:10px 14px;color:#AAA;font-size:12px">6.70:1 on #111 — AA ✓</td>
+            </tr>
+            <tr style="border-bottom:1px solid #F0EFE9">
+              <td style="padding:10px 14px;font-family:monospace;font-size:12px;color:#555">--green</td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#2B7A44;flex-shrink:0"></span>#2B7A44</span></td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#34D399;flex-shrink:0"></span>#34D399</span></td>
+              <td style="padding:10px 14px;color:#AAA;font-size:12px">9.82:1 on #111 — AAA ✓</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px;font-family:monospace;font-size:12px;color:#555">--yellow</td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#F2C200;flex-shrink:0"></span>#F2C200</span></td>
+              <td style="padding:10px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border-radius:4px;background:#F2C200;flex-shrink:0"></span>#F2C200</span></td>
+              <td style="padding:10px 14px;color:#AAA;font-size:12px">11.23:1 on #111 — unchanged</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Live preview -->
+      <div class="ds-subsection">
+        <div class="ds-sub-label">Component Preview</div>
+        <div id="dark-preview-canvas" style="background:#111111;border-radius:12px;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:24px;border:1px solid #2C2C2C">
+
+          <!-- Buttons on dark -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Buttons</div>
+            <button style="display:inline-flex;align-items:center;justify-content:center;background:#F0EFE9;color:#111;border:none;padding:12px 24px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:8px;cursor:pointer">Primary</button>
+            <button style="display:inline-flex;align-items:center;justify-content:center;background:transparent;color:#F0EFE9;border:1px solid #2C2C2C;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer">Outline</button>
+          </div>
+
+          <!-- Tags on dark -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-bottom:4px">Tags & Badges</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:3px 9px;background:#F2C200;color:#111;border-radius:4px">Design</span>
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:3px 9px;background:rgba(52,211,153,0.14);color:#34D399;border-radius:4px">Easy</span>
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:3px 9px;background:rgba(255,51,102,0.14);color:#FF3366;border-radius:4px">Hard</span>
+            </div>
+            <div style="display:flex;gap:8px">
+              <span style="font-size:11px;font-weight:600;padding:5px 12px;letter-spacing:0.07em;text-transform:uppercase;border-radius:4px;background:#5B9BF5;color:#111">PM</span>
+              <span style="font-size:11px;font-weight:600;padding:5px 12px;letter-spacing:0.07em;text-transform:uppercase;border-radius:4px;background:#F0EFE9;color:#111">Pro</span>
+            </div>
+          </div>
+
+          <!-- Typography on dark -->
+          <div>
+            <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-bottom:12px">Typography</div>
+            <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:32px;line-height:0.95;color:#F0EFE9;margin-bottom:8px">De:<span style="color:#FF3366">Puzl</span></div>
+            <div style="font-size:14px;color:#666;line-height:1.6">Muted body copy on dark.</div>
+          </div>
+
+          <!-- Stat on dark -->
+          <div>
+            <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-bottom:12px">Stat</div>
+            <div style="border:1px solid #2C2C2C;padding:16px 20px;background:#1A1A1A;border-radius:6px;display:inline-block">
+              <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:36px;line-height:1;color:#F0EFE9">200+</div>
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.07em;margin-top:4px;color:#555;font-weight:600">Scenarios</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Usage -->
+      <div class="ds-subsection">
+        <div class="ds-sub-label">Usage</div>
+        <div class="ds-code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <div class="ds-code"><span class="cmt">// Toggle dark mode</span>
+document.body.classList.toggle(<span class="val">'dark-mode'</span>);
+
+<span class="cmt">// Persist preference</span>
+localStorage.setItem(<span class="val">'theme'</span>, <span class="val">'dark'</span>);
+
+<span class="cmt">// Apply on load</span>
+<span class="kw">if</span> (localStorage.getItem(<span class="val">'theme'</span>) === <span class="val">'dark'</span>) {
+  document.body.classList.add(<span class="val">'dark-mode'</span>);
+}</div>
+        </div>
+      </div>
+
+    </section>
+
     </div>
   </main>
 </div>
@@ -1132,12 +1324,13 @@
     document.querySelectorAll('.sidebar-mode-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const accent = document.getElementById('mode-accent');
-    if (accent) accent.style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
+    // mode-accent lives on a dark canvas — use on-dark token for AA contrast
+    if (accent) accent.style.color = mode === 'pm' ? 'var(--blue-on-dark)' : 'var(--red-on-dark)';
     const displayDemo = document.getElementById('display-demo');
     if (displayDemo) {
-      displayDemo.querySelector('.accent').style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
+      displayDemo.querySelector('.accent').style.color = mode === 'pm' ? 'var(--blue-on-dark)' : 'var(--red-on-dark)';
     }
-    // Update wordmark Puzl colour in sidebar
+    // Update wordmark Puzl colour in sidebar (light bg — use base blue)
     document.querySelectorAll('.wm-puzl').forEach(el => {
       el.style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
     });
@@ -1149,7 +1342,8 @@
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const accent = document.getElementById('mode-accent');
-    if (accent) accent.style.color = mode === 'pm' ? 'var(--blue)' : 'var(--red)';
+    // mode-accent lives on a dark canvas — use on-dark token for AA contrast
+    if (accent) accent.style.color = mode === 'pm' ? 'var(--blue-on-dark)' : 'var(--red-on-dark)';
   };
 
   // ── TILE SELECTION ──
@@ -1164,6 +1358,13 @@
   document.querySelectorAll('.onb-chip').forEach(chip => {
     chip.addEventListener('click', () => chip.classList.toggle('selected'));
   });
+
+  // ── DOCS DARK MODE ──
+  window.toggleDocsDark = function() {
+    const isDark = document.body.classList.toggle('docs-dark');
+    const btn = document.getElementById('docs-dark-toggle');
+    if (btn) btn.textContent = isDark ? 'Switch to Light' : 'Switch to Dark';
+  };
 </script>
 </body>
 </html>

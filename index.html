@@ -1919,21 +1919,22 @@
   </div>
 </div>
 
-<!-- PRO COMING SOON OVERLAY -->
+<!-- PRO UPGRADE OVERLAY -->
 <div class="paywall-overlay" id="pro-soon-overlay">
   <div class="waitlist-box" style="max-width:480px;text-align:center;">
     <div id="pro-soon-default">
-      <div class="waitlist-success-icon">🚀</div>
-      <div class="waitlist-title">PRO MODE<br><span>COMING SOON.</span></div>
-      <p class="waitlist-desc">We're putting the finishing touches on Pro. Join the waitlist and we'll let you know the moment it's ready.</p>
-      <button class="btn-waitlist" onclick="joinProWaitlist()">JOIN THE WAITLIST →</button>
+      <div class="waitlist-success-icon">⚡</div>
+      <div class="waitlist-title">UNLOCK<br><span>PRO.</span></div>
+      <p class="waitlist-desc">Get access to every deck, every scenario, and every drop — including Over Your Shoulder and everything that ships next.</p>
+      <button class="btn-waitlist" id="btn-upgrade-checkout" onclick="startStripeCheckout()">UPGRADE TO PRO →</button>
+      <div id="upgrade-error" style="display:none;font-size:12px;color:var(--red);margin-top:8px;"></div>
       <button class="waitlist-back" onclick="document.getElementById('pro-soon-overlay').classList.remove('show')">Maybe later</button>
     </div>
     <div id="pro-soon-confirm" style="display:none;">
       <div class="waitlist-success-icon">✅</div>
-      <div class="waitlist-success-title">YOU'RE ON<br>THE LIST.</div>
-      <p class="waitlist-success-msg">We'll reach out the moment Pro is ready. Stay sharp in the meantime.</p>
-      <button class="btn-waitlist" onclick="document.getElementById('pro-soon-overlay').classList.remove('show');document.getElementById('pro-soon-confirm').style.display='none';document.getElementById('pro-soon-default').style.display=''">BACK TO PRACTICE →</button>
+      <div class="waitlist-success-title">YOU'RE PRO.</div>
+      <p class="waitlist-success-msg">Full access unlocked. All decks and future drops are yours.</p>
+      <button class="btn-waitlist" onclick="document.getElementById('pro-soon-overlay').classList.remove('show');document.getElementById('pro-soon-confirm').style.display='none';document.getElementById('pro-soon-default').style.display='';renderDashboardV2()">START EXPLORING →</button>
     </div>
   </div>
 </div>
@@ -4200,16 +4201,73 @@ function showUpgradePrompt(collId) {
   if (isLoggedIn && !isPro) {
     document.getElementById('pro-soon-default').style.display = '';
     document.getElementById('pro-soon-confirm').style.display = 'none';
+    document.getElementById('upgrade-error').style.display = 'none';
+    document.getElementById('btn-upgrade-checkout').textContent = 'UPGRADE TO PRO →';
+    document.getElementById('btn-upgrade-checkout').disabled = false;
     document.getElementById('pro-soon-overlay').classList.add('show');
   } else if (!isLoggedIn) {
     showAuthOverlay('signup');
   }
 }
 
-function joinProWaitlist() {
-  document.getElementById('pro-soon-default').style.display = 'none';
-  document.getElementById('pro-soon-confirm').style.display = '';
+async function startStripeCheckout() {
+  const btn = document.getElementById('btn-upgrade-checkout');
+  const errEl = document.getElementById('upgrade-error');
+  btn.textContent = 'Redirecting…';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Please log in first');
+
+    const res = await fetch(
+      'https://cgoywnjsalkjbdjqwphy.supabase.co/functions/v1/create-checkout',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ origin: window.location.origin }),
+      }
+    );
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (data.url) window.location.href = data.url;
+
+  } catch (err) {
+    errEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errEl.style.display = 'block';
+    btn.textContent = 'UPGRADE TO PRO →';
+    btn.disabled = false;
+  }
 }
+
+// Handle redirect back from Stripe Checkout
+(function handleStripeReturn() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('upgraded') === 'true') {
+    // Clean the URL
+    window.history.replaceState({}, '', window.location.pathname);
+    // Wait for auth to load, then show success
+    const check = setInterval(async () => {
+      if (!isLoggedIn) return;
+      clearInterval(check);
+      // Refresh profile from DB in case webhook already fired
+      const { data: profile } = await _supa
+        .from('profiles').select('*').eq('id', currentUser.id).single();
+      if (profile) currentProfile = profile;
+      document.getElementById('pro-soon-default').style.display = 'none';
+      document.getElementById('pro-soon-confirm').style.display = '';
+      document.getElementById('pro-soon-overlay').classList.add('show');
+      renderDashboardV2();
+    }, 300);
+    // Timeout after 5s if auth never loads
+    setTimeout(() => clearInterval(check), 5000);
+  }
+})();
 
 // ---- LANDING PARALLAX + GRANULE SYSTEM ----
 (function() {

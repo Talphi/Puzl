@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Hold the Line (static)",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/Users/rhiddhit/Desktop/Personal/Design/AI Projects/Hold the Line/serve.py"],
+      "port": 8080
+    },
+    {
+      "name": "loans-tracker (Vite)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/rhiddhit/Desktop/Personal/Design/AI Projects/loans-tracker"],
+      "port": 5173
+    },
+    {
+      "name": "amazon-receive-v3 (static)",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/Users/rhiddhit/Desktop/Personal/Design/AI Projects/amazon-receive-v3/serve.py"],
+      "port": 8090
+    }
+  ]
+}
