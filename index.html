@@ -946,7 +946,7 @@
 
   /* ---- DARK MODE — product overrides ---- */
   body.dark-mode #screen-dashboard { background-color: var(--surface-page); background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px); }
-  body.dark-mode .coll-illus svg { filter: brightness(0.5) saturate(0.4); }
+  body.dark-mode .coll-illus svg { filter: grayscale(1) invert(1) brightness(0.80) opacity(0.65); }
   body.dark-mode .dv2-nav { background: var(--header-bg); }
   body.dark-mode .dv2-action-btn:hover { background: var(--hover-bg); }
   body.dark-mode #dv2-username { color: var(--text-muted); }
@@ -967,6 +967,22 @@
   body.dark-mode .lv2-screen { background: var(--surface-page); }
   body.dark-mode .lv2-nav { background: var(--surface-page); }
   body.dark-mode .lv2-right { background: var(--surface-card); }
+
+  /* ── Awwwards dark mode polish ── */
+  /* Deck cards: depth gradient + hairline highlight from above */
+  body.dark-mode .coll-card { background: linear-gradient(160deg, #2C2C2E 0%, #252527 100%); border-top-color: rgba(255,255,255,0.13); }
+  /* Nav dot: yellow glow on current question */
+  body.dark-mode .nav-questions .q-dot.current { box-shadow: 0 0 12px rgba(242,194,0,0.40); }
+  /* Score chip: yellow glow */
+  body.dark-mode .score-chip { box-shadow: 0 0 18px rgba(242,194,0,0.28); }
+  /* PM says quote: slightly deeper than card to create real inset */
+  body.dark-mode .pm-text { background: #222224; }
+  /* Feedback box: lifted panel feel */
+  body.dark-mode .feedback-box { background: #272729; border: 1px solid rgba(255,255,255,0.06); }
+  /* Active filter tab: glow accent */
+  body.dark-mode .nav-filter-btn.active { box-shadow: inset 0 -2px 0 rgba(242,194,0,0.60); }
+  /* Context block: keep blue tint, bump saturation slightly */
+  body.dark-mode .scenario-context { border-left-color: #5B9BF5; }
 
   /* ---- DASHBOARD V2 ---- */
   #screen-dashboard { background-color: #F0EFEB; background-image: radial-gradient(circle, #D8D4CC 1px, transparent 1px); background-size: 24px 24px; display: flex; flex-direction: column; padding-top: 0; scrollbar-gutter: stable both-edges; }
