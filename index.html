@@ -3265,7 +3265,7 @@ function updateNavFilters(role) {
   const showFilters = uniqueCats.length > 1;
 
   const filterBar = document.getElementById('filter-bar');
-  if (filterBar) filterBar.style.display = showFilters ? '' : 'none';
+  if (filterBar) filterBar.style.display = 'none';
 
   const drawerFilterEl = document.getElementById('drawer-filter');
   if (drawerFilterEl) {
@@ -3313,7 +3313,7 @@ function updateNavFilters(role) {
 function beginTraining() {
   document.body.classList.add('quiz-active');
   const filterBar = document.getElementById('filter-bar');
-  filterBar.style.display = currentRole === 'pm' ? 'none' : '';
+  filterBar.style.display = 'none';
   document.getElementById('speaker-label').textContent = currentRole === 'pm' ? 'DESIGNER SAYS' : 'PM SAYS';
   const roleLabel = document.getElementById('quiz-role-label');
   if (roleLabel) roleLabel.textContent = currentRole === 'designer' ? 'Product Designer' : 'Product Manager';
@@ -3465,10 +3465,10 @@ function renderQuestion() {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('score-display').textContent = score;
   const navCount = document.getElementById('nav-count');
-  const displayTotal = currentRole === 'pm' ? 200 : questions.length;
-  if (navCount) navCount.textContent = (currentIndex + 1) + ' / ' + displayTotal;
+  const fullPoolSize = (currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS).length;
+  if (navCount) navCount.textContent = (currentIndex + 1) + ' / ' + fullPoolSize;
   document.getElementById('q-num-bg').textContent = String(currentIndex + 1).padStart(2, '0');
-  document.getElementById('q-total').textContent = displayTotal;
+  document.getElementById('q-total').textContent = fullPoolSize;
   document.getElementById('q-category').textContent = q.category.replace(/^\p{Emoji}\s*/u, '');
   const diffEl = document.getElementById('q-difficulty');
   diffEl.textContent = q.difficulty;
@@ -3695,7 +3695,7 @@ function renderDrawer() {
   const fullPool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
   const unlockedCount = getUnlockedCount();
   const realTotal = questions.length;
-  const displayTotal = questions.length;
+  const displayTotal = fullPool.length;
 
   const baseDaysLeft = getDaysUntilNextUnlock();
   const newlyUnlocked = getNewlyUnlockedRange();
