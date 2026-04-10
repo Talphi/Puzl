@@ -2175,8 +2175,8 @@
           <div class="lv2-prop"><div class="lv2-prop-dot" style="background:var(--yellow)"></div><span>Build decision confidence</span></div>
           <div class="lv2-prop"><div class="lv2-prop-dot" style="background:var(--black)"></div><span>Reduce team friction for good</span></div>
         </div>
-        <button class="lv2-cta" onclick="startGuest()">START FOR FREE →</button>
-        <p class="lv2-subline">Already have an account? <button onclick="showAuthOverlay('login')" class="lv2-subline-link">Log in</button> for access to 200+ scenarios.</p>
+        <button class="lv2-cta" onclick="showAuthOverlay('signup')">SIGN UP FOR FREE →</button>
+        <p class="lv2-subline">Already have an account? <button onclick="showAuthOverlay('login')" class="lv2-subline-link">Log in</button></p>
       </div>
 
       <!-- Right: scenario preview card -->
@@ -2934,7 +2934,7 @@ function startGuest() {
   if (isLoggedIn) {
     showScreen('dashboard');
   } else {
-    showScreen('dashboard'); // guests can browse collections
+    showAuthOverlay('signup');
   }
 }
 
@@ -3532,11 +3532,7 @@ function selectOption(isCorrect, clickedBtn, opts, q) {
 function nextQuestion() {
   const nextIdx = currentIndex + 1;
 
-  // Guest hit their free limit
-  if (!isLoggedIn && nextIdx >= FREE_LIMIT) {
-    document.getElementById('paywall-overlay').classList.add('show');
-    return;
-  }
+  if (!isLoggedIn) { showAuthOverlay('signup'); return; }
 
   // Logged-in user hit their drip limit mid-deck
   if (isLoggedIn && nextIdx >= getUnlockedCount()) {
@@ -3600,11 +3596,6 @@ function completionSeeResults() {
 }
 
 function jumpToQuestion(idx) {
-  if (!isLoggedIn && idx >= FREE_LIMIT) {
-    closeDrawer();
-    document.getElementById('paywall-overlay').classList.add('show');
-    return;
-  }
   if (isLoggedIn && idx >= getUnlockedCount()) {
     closeDrawer();
     const pool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
@@ -3664,9 +3655,8 @@ function renderDrawer() {
   for (let i = 0; i < displayTotal; i++) {
     const isShell = i >= questions.length;
     const q = isShell ? null : questions[i];
-    const isGuestLocked = !isLoggedIn && i >= FREE_LIMIT;
     const isTimeLocked  = isLoggedIn && i >= unlockedCount;
-    const isLocked = isShell || isGuestLocked || isTimeLocked;
+    const isLocked = isShell || isTimeLocked;
     const hidden = !isShell && drawerFilter !== 'all' && q?.category !== drawerFilter;
 
     // Insert "Newly unlocked!" divider for fresh batch
@@ -4260,29 +4250,9 @@ function renderDashboardV2() {
   let html = '';
 
   if (!loggedIn) {
-    // Guest: PD Essential Conversations + PM Essential Conversations side by side, gate peek in same row
-    const designerC = COLLECTIONS.find(c => c.id === 'designer');
-    const pmC       = COLLECTIONS.find(c => c.id === 'pm');
-    const peekIds   = ['0to1designer', '0to1', 'multiplehats', 'enterprise'];
-    const peekCols  = peekIds.map(id => {
-      const c = COLLECTIONS.find(col => col.id === id);
-      const pov = id === '0to1' ? 'pm' : id === 'enterprise' ? null : 'design';
-      return c ? `<div class="coll-col"><div class="coll-section-label">&nbsp;</div>${renderCard(c, pov)}</div>` : '';
-    }).join('');
-    html = `<div class="coll-section"><div class="coll-row">
-      <div class="coll-col"><div class="coll-section-label">Design POV</div>${renderCard(designerC, 'design')}</div>
-      <div class="coll-col"><div class="coll-section-label">Management POV</div>${renderCard(pmC, 'pm')}</div>
-      <div class="coll-gate-peek">
-        <div class="coll-gate-peek-inner">${peekCols}</div>
-        <div class="coll-gate-fade"></div>
-      </div>
-      <div class="coll-gate-cta">
-        <div class="coll-gate-msg">Sign up to unlock more scenarios</div>
-        <div class="coll-gate-btns">
-          <button class="lv2-btn-login" onclick="showAuthOverlay('signup')">Sign up</button>
-        </div>
-      </div>
-    </div></div>`;
+    grid.innerHTML = '';
+    showAuthOverlay('signup');
+    return;
   } else {
     // Logged in: full carousel per category
     html = CATEGORIES.map(renderSection).join('');
@@ -4434,6 +4404,7 @@ function showPackLoading(callback) {
 }
 
 function openCollection(id) {
+  if (!isLoggedIn) { showAuthOverlay('signup'); return; }
   const coll = COLLECTIONS.find(c => c.id === id);
   if (!coll) return;
 
