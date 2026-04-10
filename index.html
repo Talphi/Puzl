@@ -3465,10 +3465,14 @@ function renderQuestion() {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('score-display').textContent = score;
   const navCount = document.getElementById('nav-count');
-  const fullPoolSize = (currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS).length;
-  if (navCount) navCount.textContent = (currentIndex + 1) + ' / ' + fullPoolSize;
+  const srcPool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+  const deckPool = currentCollectionPathway === 'default'
+    ? srcPool.filter(s => !s.pathway || s.pathway === 'default')
+    : srcPool.filter(s => s.pathway === currentCollectionPathway);
+  const deckTotal = deckPool.length;
+  if (navCount) navCount.textContent = (currentIndex + 1) + ' / ' + deckTotal;
   document.getElementById('q-num-bg').textContent = String(currentIndex + 1).padStart(2, '0');
-  document.getElementById('q-total').textContent = fullPoolSize;
+  document.getElementById('q-total').textContent = deckTotal;
   document.getElementById('q-category').textContent = q.category.replace(/^\p{Emoji}\s*/u, '');
   const diffEl = document.getElementById('q-difficulty');
   diffEl.textContent = q.difficulty;
@@ -3692,16 +3696,20 @@ function setDrawerFilter(cat, btn) {
 function renderDrawer() {
   const grid = document.getElementById('drawer-grid');
   grid.innerHTML = '';
-  const fullPool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+  const sourcePool = currentRole === 'pm' ? PM_SCENARIOS : SCENARIOS;
+  const fullPool = currentCollectionPathway === 'default'
+    ? sourcePool.filter(s => !s.pathway || s.pathway === 'default')
+    : sourcePool.filter(s => s.pathway === currentCollectionPathway);
+  const fullPoolOrdered = [...fullPool].sort((a, b) => (a.order_num ?? 999) - (b.order_num ?? 999));
   const unlockedCount = getUnlockedCount();
   const realTotal = questions.length;
-  const displayTotal = fullPool.length;
+  const displayTotal = fullPoolOrdered.length;
 
   const baseDaysLeft = getDaysUntilNextUnlock();
   const newlyUnlocked = getNewlyUnlockedRange();
   for (let i = 0; i < displayTotal; i++) {
-    const isShell = i >= questions.length;
-    const q = isShell ? null : questions[i];
+    const isShell = i >= fullPoolOrdered.length;
+    const q = fullPoolOrdered[i] || null;
     const isTimeLocked  = isLoggedIn && i >= unlockedCount;
     const isLocked = isShell || isTimeLocked;
     const hidden = !isShell && drawerFilter !== 'all' && q?.category !== drawerFilter;
